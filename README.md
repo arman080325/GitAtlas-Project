@@ -2,26 +2,26 @@
 
 <img src="https://capsule-render.vercel.app/api?type=waving&color=0:0d1117,100:2f81f7&height=220&section=header&text=GitAtlas&fontSize=70&fontColor=ffffff&fontAlignY=38&desc=A%20searchable%20field%20guide%20to%20Git%20%26%20GitHub&descAlignY=58&descSize=18&animation=fadeIn" width="100%"/>
 
-<a href="https://gitatlas.vercel.app">
-  <img src="https://readme-typing-svg.demolab.com?font=IBM+Plex+Mono&weight=700&size=24&duration=2500&pause=800&color=2F81F7&center=true&vCenter=true&width=650&lines=381+commands.+26+sections.+One+tap+copy.;Now+it+knows+what+you're+searching+for.;Built+for+devs%2C+by+a+dev+who+got+tired+of+tabs." alt="Typing SVG" />
+<a href="https://git-atlas-project.vercel.app">
+  <img src="https://readme-typing-svg.demolab.com?font=IBM+Plex+Mono&weight=700&size=24&duration=2500&pause=800&color=2F81F7&center=true&vCenter=true&width=650&lines=381+commands.+26+sections.+One+tap+copy.;Now+it+knows+what+you%27re+searching+for.;Built+for+devs%2C+by+a+dev+who+got+tired+of+tabs." alt="Typing SVG" />
 </a>
 
 <br/>
 
-[![Live Demo](https://img.shields.io/badge/Live-gitatlas.vercel.app-2F81F7?style=for-the-badge&logo=vercel&logoColor=white)](https://gitatlas.vercel.app)
+[![Live Demo](https://img.shields.io/badge/Live-git--atlas--project.vercel.app-2F81F7?style=for-the-badge&logo=vercel&logoColor=white)](https://git-atlas-project.vercel.app)
 [![GitHub Repo stars](https://img.shields.io/github/stars/arman080325/GitAtlas-Project?style=for-the-badge&logo=github&color=0d1117&labelColor=2F81F7)](https://github.com/arman080325/GitAtlas-Project/stargazers)
 [![Made by](https://img.shields.io/badge/Made%20by-Arman%20Ahemad%20Khan-0d1117?style=for-the-badge&logo=vercel&logoColor=2F81F7)](https://arman-portfolio.online)
-[![License](https://img.shields.io/badge/License-MIT-blueviolet?style=for-the-badge)](#license)
+[![License](https://img.shields.io/badge/License-MIT-blueviolet?style=for-the-badge)](LICENSE)
 [![Privacy first](https://img.shields.io/badge/Analytics-No%20cookies%2C%20no%20IPs-2F81F7?style=for-the-badge&logo=upstash&logoColor=white)](#-analytics)
 
-<img src="https://profile-counter.glitch.me/gitatlas-project/count.svg" alt="visitor badge" />
+<img src="https://komarev.com/ghpvc/?username=arman080325-gitatlas&label=Repo+Views&color=2F81F7&style=for-the-badge" alt="visitor badge" />
 
 </div>
 
 <br/>
 
 <div align="center">
-<img src="https://user-images.githubusercontent.com/74038190/212284100-561aa473-3905-4a80-b561-0d28506553ee.gif" width="900">
+  <img src="og.png" width="900" alt="GitAtlas — 381 commands, 26 sections, 80 worked examples"/>
 </div>
 
 <br/>
@@ -52,9 +52,9 @@ Every developer has been mid-merge, mid-rebase, or mid-panic and typed **"how do
 
 ### 📚 Command Coverage
 - **381 commands** across **26 sections**
+- **80 worked examples** with multi-line, copyable blocks
 - Plain-English **description** for every command
 - Real-world **use case** for every command
-- Optional multi-line **example** blocks
 - Concepts and error messages render as clean headings instead of runnable cards
 
 </td>
@@ -62,6 +62,7 @@ Every developer has been mid-merge, mid-rebase, or mid-panic and typed **"how do
 
 ### 🔎 Search & Navigation
 - Instant search across command, description, use case, example, and section name
+- Multi-term AND matching with live highlighting
 - `/` or `Ctrl`/`Cmd` + `K` to jump straight into search
 - `Esc` clears search or closes the mobile section rail
 - Sidebar grouped by tag for fast scanning
@@ -96,7 +97,7 @@ Every developer has been mid-merge, mid-rebase, or mid-panic and typed **"how do
 - Wordmark rises letter by letter, then a slow wave crosses it, then a caret blinks
 - Looping **terminal demo**: branch → two commits → push → PR → squash merge → tag, with the commit graph drawing one step behind
 - Hero description fades in word by word
-- 16 hand-mapped **SVG scenes** act out what each section's commands actually do
+- **17 hand-built SVG scenes** act out what each section's commands actually do
 - Footer icons pick up their real brand colour on hover and lift, label underlines
 - Everything freezes to a finished state under `prefers-reduced-motion`
 
@@ -106,7 +107,7 @@ Every developer has been mid-merge, mid-rebase, or mid-panic and typed **"how do
 ### 📊 Analytics (privacy-first, optional)
 - Own Redis counters via **Upstash** — same-origin, so ad blockers don't stop it
 - Tracks copies, searches, **empty searches**, section views, example opens, theme changes
-- Public read-only stats endpoint feeds the hero counter
+- Public read-only stats endpoint feeds the live hero counter
 - No cookies, no accounts, no IP storage — honours DNT / GPC, one-line opt-out
 - Optional **PostHog** layer and **Vercel Web Analytics** — both inert until configured
 
@@ -120,18 +121,32 @@ Every developer has been mid-merge, mid-rebase, or mid-panic and typed **"how do
 - Progress bar animates `transform: scaleX()` only — never triggers layout
 - Eased anchor jumps (`easeInOutCubic`, 420–1150ms) cancel the instant you scroll manually
 - Hero demo parallax runs on `translate3d` only
+- Section animations pause while off screen
 
 </td>
 <td width="50%" valign="top">
 
-### 🖋️ Typography System
+### ♿ Accessibility
+- Skip link straight to the commands
+- Visible keyboard focus throughout
+- Full `prefers-reduced-motion` support — nothing moves, nothing is lost
+- Decorative SVG hidden from screen readers; the wordmark keeps a text label
+- Copy feedback announced via `aria-live`
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+
+### 🖋️ Typography
+
 | Role | Typeface |
 |---|---|
 | Wordmark & headings | Manrope 700 / 800 |
 | Body | IBM Plex Sans |
 | Commands / data | IBM Plex Mono |
 
-Fonts degrade gracefully to system fonts if Google Fonts is blocked.
+Fonts load from Google Fonts and degrade gracefully to system fonts if blocked.
 
 </td>
 </tr>
@@ -139,30 +154,30 @@ Fonts degrade gracefully to system fonts if Google Fonts is blocked.
 
 <br/>
 
-<div align="center">
-<img src="https://user-images.githubusercontent.com/74038190/212284087-bbe7e430-757e-4901-90bf-4cd2ce3e1852.gif" width="900">
-</div>
-
-<br/>
-
 ## 🗂️ Project structure
 
 ```
-gitatlas/
+GitAtlas/
 ├── index.html     page shell — header, hero, layout, footer
-├── styles.css     blueprint theme, both colour modes, responsive rules
+├── styles.css     GitHub Primer palette, both colour modes, motion, responsive rules
 ├── data.js        the command database (edit this to add commands)
-├── app.js         rendering, search, copy, navigation, theme
+├── app.js         rendering, search, copy, navigation, theme, hero demo
 ├── analytics.js   anonymous event tracking (client)
+├── og.png         1200×630 social preview card
 ├── api/
 │   ├── track.js   POST endpoint — turns events into Redis counters
 │   ├── stats.js   GET endpoint  — public aggregate, feeds the hero counter
-│   └── _lib/      Upstash client + generated command allowlist
+│   └── _lib/
+│       ├── redis.js      Upstash REST client (no dependencies)
+│       └── commands.js   generated allowlist — do not edit by hand
 ├── tools/
 │   └── build-allowlist.js   regenerates the allowlist from data.js
 ├── vercel.json    static hosting config
+├── LICENSE
 └── README.md
 ```
+
+Nothing here is generated by a bundler. There is no `package.json`, no `node_modules`, and no build step — the API talks to Upstash over plain `fetch`.
 
 <br/>
 
@@ -177,12 +192,20 @@ cd GitAtlas-Project
 
 Open `index.html` directly in your browser — that's the whole setup.
 
-Prefer a local server (clipboard API behaves best on `localhost`):
+Prefer a local server (the clipboard API behaves best on `localhost`):
 
 ```bash
 python -m http.server 5173
 # then open http://localhost:5173
 ```
+
+To exercise the `/api` endpoints locally as well:
+
+```bash
+npx vercel dev        # serves the site and the functions on :3000
+```
+
+> A plain static server has no `/api`, so the live counter simply stays hidden. That is expected — the site never depends on analytics being reachable.
 
 <br/>
 
@@ -199,7 +222,7 @@ git init
 git add .
 git commit -m "feat: GitAtlas command reference"
 git branch -M main
-git remote add origin git@github.com:arman080325/gitatlas.git
+git remote add origin git@github.com:arman080325/GitAtlas-Project.git
 git push -u origin main
 ```
 
@@ -219,7 +242,7 @@ Then on **vercel.com** → **Add New → Project** → import the repo:
 
 ```bash
 npm i -g vercel
-cd gitatlas
+cd GitAtlas-Project
 vercel --prod
 ```
 
@@ -228,6 +251,8 @@ Every push to `main` redeploys automatically. 🔁
 </td>
 </tr>
 </table>
+
+> **Hosting note:** the site itself is pure static and will run anywhere — GitHub Pages, Netlify, S3. The two analytics endpoints need a platform that runs serverless functions, so on a static-only host they simply 404 and the tracker fails silently by design.
 
 <br/>
 
@@ -243,12 +268,20 @@ Two layers, because they answer different questions.
 
 ### Setup
 
-1. In Vercel, add the **Upstash** integration from the Marketplace and create a Redis database, then connect it to the project with **all three environments ticked** and the custom prefix left empty.
+1. In Vercel, add the **Upstash** integration from the Marketplace and create a Redis database, then connect it to the project with **all three environments ticked** and the custom prefix left **empty**.
 
    The integration provisions `KV_REST_API_URL` and `KV_REST_API_TOKEN`; a database created directly on upstash.com gives you `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` instead. `api/_lib/redis.js` reads either pair, so there is nothing to rename.
-2. Optionally add `TRACK_SALT` — any random string. It salts the hash used for rate limiting, so raw IPs never exist even in memory beyond the request.
-3. Optionally paste a PostHog project key into `window.GITATLAS_ANALYTICS.posthogKey`.
-4. Redeploy. Nothing else to configure — with no environment variables set, the endpoints return cleanly and the hero counter stays hidden.
+2. Add `TRACK_SALT` — any random string. It salts the hash used for rate limiting, so raw IPs never exist even in memory beyond the request.
+3. Optionally paste a PostHog project key into `window.GITATLAS_ANALYTICS.posthogKey` in `index.html`.
+4. Redeploy — environment variables only reach functions at build time.
+
+| Variable | Required | Purpose |
+|---|---|---|
+| `KV_REST_API_URL` *or* `UPSTASH_REDIS_REST_URL` | yes | Redis REST endpoint |
+| `KV_REST_API_TOKEN` *or* `UPSTASH_REDIS_REST_TOKEN` | yes | Write token |
+| `TRACK_SALT` | recommended | Salts the rate-limit IP hash |
+
+With none of them set, both endpoints return cleanly, the counter stays hidden, and the site behaves normally.
 
 ### What gets recorded
 
@@ -264,20 +297,22 @@ Two layers, because they answer different questions.
 Read them back any time:
 
 ```bash
-curl https://your-site.vercel.app/api/stats            # totals only
-curl https://your-site.vercel.app/api/stats?detail=1   # + top commands and missed searches
+curl "https://git-atlas-project.vercel.app/api/stats"            # totals only
+curl "https://git-atlas-project.vercel.app/api/stats?detail=1"   # + top commands and missed searches
 ```
+
+The hero counter appears once the total passes `MIN_COPIES` in `app.js` — set to `1` so it shows immediately. Raise it to 25–100 once there is real traffic; a counter reading "3" undersells the project.
 
 ### Privacy and abuse
 
 - No cookies, no accounts, no IP storage. The only identifier is a random string in `sessionStorage` that dies with the tab.
-- `Do Not Track` and Global Privacy Control are honoured — those visitors send nothing.
+- `Do Not Track` and Global Privacy Control are honoured — those visitors send nothing at all.
 - Anyone can opt out permanently from the footer link, or from the console with `GitAtlasAnalytics.optOut()`.
 - `/api/track` **rejects any command string not in the generated allowlist**, so a public write endpoint cannot be used to pollute the leaderboard with junk keys. Search terms are stripped to `[a-z0-9 ._:/-]` and capped at 40 characters before they can become a Redis key.
-- Rate limited to 120 requests per minute per hashed IP, 25 events per request, 300 events per browser tab.
+- Rate limited to 120 requests per minute per **hashed** IP, 25 events per request, 300 events per browser tab.
 - Every failure is silent. A blocked or offline request never affects the page.
 
-> After adding or editing commands in `data.js`, run `node tools/build-allowlist.js` so the API will count the new ones.
+> ⚠️ After adding or editing commands in `data.js`, run `node tools/build-allowlist.js` so the API will count the new ones.
 
 <br/>
 
@@ -304,9 +339,10 @@ Everything lives in `data.js`. A section looks like this:
 
 The app handles the rest automatically:
 
-- **Copy buttons** appear only on runnable commands — concept/error entries become plain headings.
+- **Copy buttons** appear only on runnable commands — concept and error entries become plain headings.
 - **Risk badges** are computed, not tagged, via `riskOf()` in `app.js`.
 - **Search** indexes every field for free.
+- **Section animations** are mapped in `SCENE_FOR`; a new section falls back to a sensible default.
 - Group names for `tag` live in `GROUPS` at the top of `app.js`.
 
 <br/>
@@ -324,17 +360,17 @@ The app handles the rest automatically:
 
 Colours follow GitHub's Primer palette:
 
-| Mode | Background | Accent |
-|---|---|---|
-| Dark | `#0d1117` | `#2f81f7` |
-| Light | `#ffffff` | `#0969da` |
+| Mode | Background | Surface | Accent | Destructive |
+|---|---|---|---|---|
+| Dark | `#0d1117` | `#161b22` | `#2f81f7` | `#f85149` |
+| Light | `#ffffff` | `#f6f8fa` | `#0969da` | `#cf222e` |
 
 <br/>
 
 ## 🔗 Add it to your portfolio
 
 ```html
-<a class="project-card" href="https://gitatlas.vercel.app" target="_blank" rel="noopener">
+<a class="project-card" href="https://git-atlas-project.vercel.app" target="_blank" rel="noopener">
   <h3>GitAtlas</h3>
   <p>A searchable field guide to 381 Git &amp; GitHub commands — plain-English
      descriptions, real use cases and one-tap copy, in a GitHub-native interface.</p>
@@ -343,6 +379,8 @@ Colours follow GitHub's Primer palette:
 ```
 
 Want it on a subdomain? In **Vercel → Project → Settings → Domains**, add `git.arman-portfolio.online`, then point a matching CNAME at it from your DNS.
+
+> After moving to a custom domain, update the four absolute URLs in `index.html`'s `<head>` — `canonical`, `og:url`, `og:image` and `twitter:image` — or link previews will keep resolving to the old address.
 
 <br/>
 
@@ -360,6 +398,8 @@ Want it on a subdomain? In **Vercel → Project → Settings → Domains**, add 
 
 </div>
 
+No framework, no bundler, no runtime dependencies.
+
 <br/>
 
 ## 🤝 Contributing
@@ -367,22 +407,24 @@ Want it on a subdomain? In **Vercel → Project → Settings → Domains**, add 
 Found a command that's missing, wrong, or explained badly? Pull requests are very welcome.
 
 1. Fork the repo
-2. Add/edit an entry in `data.js`
-3. Run `node tools/build-allowlist.js` if you touched `data.js`
-4. Open a PR with a short note on what changed and why
+2. Add or edit an entry in `data.js` — keep the description plain and the use case concrete
+3. Run `node tools/build-allowlist.js` (required whenever `data.js` changes)
+4. Open `index.html` and check your entry renders, searches and copies
+5. Open a PR with a short note on what changed and why
 
 <br/>
 
 ## 📌 Notes
 
-- No `localStorage` is used for anything except the theme choice.
+- Browser storage is used for exactly three things: your theme choice and an analytics opt-out flag in `localStorage`, and a throwaway session id in `sessionStorage`. Nothing else is stored.
 - Fonts load from Google Fonts and degrade to system fonts if blocked.
+- `api/_lib/commands.js` is generated — edit `data.js` and regenerate instead.
 
 <br/>
 
 ## 📄 License
 
-Released under the **MIT License** — use it, fork it, ship your own version.
+Released under the **MIT License** — see [LICENSE](LICENSE). Use it, fork it, ship your own version.
 
 <br/>
 
