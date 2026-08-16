@@ -3,7 +3,7 @@
 A searchable field guide to Git and GitHub. **381 commands** across 26 sections, each with a
 plain-English description, the situation you would actually use it in, and one-tap copy.
 
-Built with nothing but HTML, CSS and JavaScript — no framework, no build step, no dependencies.
+Maintained by Arman Ahemad Khan — [arman-portfolio.online](https://arman-portfolio.online)
 
 ---
 
@@ -65,15 +65,15 @@ Every push to `main` redeploys automatically.
 
 ## Link it from your portfolio
 
-Add it as a project card, and put a link back in this site's footer (already stubbed in
-`index.html` → `.footer-links`).
+Add it as a project card. The site's footer already links back to your portfolio, GitHub and
+LinkedIn (`index.html` → `.footer-col`).
 
 ```html
 <a class="project-card" href="https://gitatlas.vercel.app" target="_blank" rel="noopener">
   <h3>GitAtlas</h3>
   <p>A searchable field guide to 381 Git &amp; GitHub commands — plain-English
-     descriptions, real use cases, one-tap copy. Vanilla HTML/CSS/JS.</p>
-  <span>HTML · CSS · JavaScript</span>
+     descriptions, real use cases and one-tap copy, in a GitHub-native interface.</p>
+  <span>Developer tooling · Reference</span>
 </a>
 ```
 
@@ -134,16 +134,26 @@ of the wrong colours on load.
 
 | Where | What happens |
 |---|---|
-| Wordmark | Letters rise in one by one, then a slow wave crosses them; a terminal caret blinks after the last letter |
+| Wordmark | Set in Syne ExtraBold. Letters rise in one by one, then a slow wave crosses them; a terminal caret blinks after the last letter |
 | Hero description | Fades in word by word |
 | Section headers | Slide up as you reach them |
 | Section explainers | A small SVG in every section header acts out what those commands do — a branch splitting, commits lifting onto a new base, work dropping into the stash. 16 scenes mapped across the 26 sections in `SCENE_FOR` (`app.js`) |
 | Commands | A `$` prompt brightens and a block caret blinks on hover |
+| GitHub mark | The commit graph in the hero terminates in the GitHub logo — it arrives as the graph finishes drawing, then breathes inside a slowly orbiting ring. It also appears in the header (tilts on hover) and in the GitHub CLI section |
 | Risk badges | The dot pulses |
 | Copy | The button pops and turns green, the card's left edge lights up |
 
 Section animations are **paused until the section scrolls into view**, so nothing runs off screen.
 All of it is disabled under *prefers-reduced-motion*.
+
+## Typography
+
+| Role | Face |
+|---|---|
+| Wordmark | Syne 800 |
+| Headings | IBM Plex Sans Condensed 700 |
+| Body | IBM Plex Sans |
+| Commands, labels, data | IBM Plex Mono |
 
 ## Notes
 
