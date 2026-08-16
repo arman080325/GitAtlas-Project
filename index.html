@@ -31,7 +31,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -53,13 +53,16 @@
     <div class="search-shell">
       <svg class="search-icon" viewBox="0 0 20 20" aria-hidden="true"><circle cx="9" cy="9" r="6" fill="none" stroke="currentColor" stroke-width="2"/><path d="M13.5 13.5 18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
       <input id="search" type="search" autocomplete="off" spellcheck="false"
-             placeholder="Search 381 commands — try &ldquo;undo&rdquo;, &ldquo;rebase&rdquo;, &ldquo;secret&rdquo;"
+             placeholder="Search commands"
              aria-label="Search Git commands">
       <kbd class="search-key">/</kbd>
       <button class="search-clear" id="searchClear" type="button" aria-label="Clear search" hidden>&times;</button>
     </div>
 
     <div class="topbar-actions">
+      <a class="icon-btn gh-link" href="https://github.com/arman080325" target="_blank" rel="noopener" aria-label="GitHub profile">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path class="gh-mark" d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+      </a>
       <button class="icon-btn theme-btn" id="themeBtn" type="button" aria-label="Theme: System. Click to switch.">
         <svg viewBox="0 0 20 20" aria-hidden="true"><rect x="2" y="3.5" width="16" height="11" rx="1.6" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M7 17.5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
       </button>
@@ -87,7 +90,7 @@
         <div class="hero-stats">
           <span class="stat"><b id="statCommands">381</b><i>commands</i></span>
           <span class="stat"><b id="statSections">26</b><i>sections</i></span>
-          <span class="stat"><b>0</b><i>frameworks</i></span>
+          <span class="stat"><b id="statExamples">80</b><i>worked examples</i></span>
         </div>
 
         <div class="hero-jump">
@@ -98,28 +101,47 @@
         </div>
       </div>
 
-      <figure class="hero-graph" aria-label="An illustration of a Git commit graph: a feature branch splitting from the main line and merging back before a tagged release.">
-        <svg viewBox="0 0 300 260" class="dag" xmlns="http://www.w3.org/2000/svg">
-          <g class="dag-lines" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
-            <path class="draw" d="M60 240 L60 20"/>
-            <path class="draw" d="M60 190 C60 160, 210 165, 210 135 L210 95"/>
-            <path class="draw" d="M210 95 C210 65, 60 70, 60 40"/>
+      <figure class="demo" id="demo" aria-label="An animated demonstration of a complete Git workflow: branching, committing, pushing, opening a pull request, merging and tagging a release.">
+        <div class="demo-win">
+          <div class="demo-bar">
+            <span class="dot dot-1"></span><span class="dot dot-2"></span><span class="dot dot-3"></span>
+            <span class="demo-path">~/projects/myapp</span>
+            <span class="demo-branch" id="demoBranch">main</span>
+          </div>
+          <div class="demo-body">
+            <ol class="demo-lines" id="demoLines"></ol>
+          </div>
+        </div>
+
+        <svg class="demo-graph" id="demoGraph" viewBox="0 0 400 132" aria-hidden="true">
+          <path class="g-line" d="M18 100H382"/>
+          <circle class="g-node" cx="30" cy="100" r="6"/>
+          <circle class="g-node" cx="76" cy="100" r="6"/>
+          <text class="g-label" x="18" y="122">main</text>
+
+          <path class="g-draw" data-step="1" style="--len:150" d="M76 100c44 0 34-58 78-58h84"/>
+          <text class="g-label g-accent g-fade" data-step="1" x="112" y="30">feat/login</text>
+          <circle class="g-node g-pop" data-step="2" cx="152" cy="42" r="6"/>
+          <circle class="g-node g-pop" data-step="3" cx="196" cy="42" r="6"/>
+
+          <path class="g-draw g-accent-s" data-step="4" style="--len:70" d="M240 42h42"/>
+          <g class="g-pop g-remote" data-step="4" transform="translate(300 30)">
+            <circle class="g-ring" r="19" fill="none" stroke-dasharray="4 6" stroke-width="1.5"/>
+            <g transform="translate(-11 -11) scale(.92)">
+              <path class="gh-mark" d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
+            </g>
           </g>
-          <g class="dag-nodes">
-            <circle class="node" cx="60" cy="240" r="7"/>
-            <circle class="node" cx="60" cy="190" r="7"/>
-            <circle class="node" cx="210" cy="135" r="7"/>
-            <circle class="node" cx="210" cy="95" r="7"/>
-            <circle class="node" cx="60" cy="120" r="7"/>
-            <circle class="node node-head" cx="60" cy="40" r="8"/>
+
+          <g class="g-pop g-badge" data-step="5" transform="translate(332 4)">
+            <rect x="0" y="0" width="60" height="20" rx="10"/>
+            <text x="30" y="14">PR #42</text>
           </g>
-          <g class="dag-labels">
-            <text x="82" y="245">init</text>
-            <text x="82" y="195">main</text>
-            <text x="232" y="140">feat/login</text>
-            <text x="232" y="100">tests</text>
-            <text x="82" y="125">docs</text>
-            <text x="82" y="45" class="dag-tag">merge &rarr; v1.0.0</text>
+
+          <path class="g-draw g-accent-s" data-step="6" style="--len:130" d="M196 42h22c46 0 30 58 72 58"/>
+          <circle class="g-node g-merged g-pop" data-step="6" cx="290" cy="100" r="7"/>
+          <g class="g-pop g-tag" data-step="7" transform="translate(306 88)">
+            <path d="M0 12 9 1h47a4 4 0 0 1 4 4v14a4 4 0 0 1-4 4H9z"/>
+            <text x="36" y="16">v1.2.0</text>
           </g>
         </svg>
       </figure>
@@ -152,17 +174,52 @@
 
   <footer class="footer">
     <div class="footer-inner">
-      <div>
+      <div class="footer-about">
         <p class="footer-brand">Git<em>Atlas</em></p>
-        <p class="footer-line">Built with plain HTML, CSS and JavaScript. No build step, no dependencies.</p>
+        <p class="footer-line">A field guide to Git and GitHub &mdash; every command worth knowing, in plain English.</p>
       </div>
-      <div class="footer-links">
-        <a href="https://git-scm.com/docs" target="_blank" rel="noopener">Official Git docs</a>
-        <a href="https://cli.github.com/manual/" target="_blank" rel="noopener">GitHub CLI manual</a>
-        <a href="https://arman-portfolio.online" target="_blank" rel="noopener">Portfolio</a>
-      </div>
+
+      <nav class="footer-col" aria-label="Reference links">
+        <p class="footer-heading">Reference</p>
+        <a class="flink" data-brand="git" href="https://git-scm.com/docs" target="_blank" rel="noopener">
+          <span class="flink-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.09 23.549a1.54 1.54 0 0 1-2.18 0L.451 13.089a1.54 1.54 0 0 1 0-2.179l7.191-7.19 2.733 2.733a1.85 1.85 0 0 0 .964 2.326v6.66a1.849 1.849 0 1 0 1.54 0V8.957l2.508 2.508a1.85 1.85 0 1 0 1.09-1.09l-2.634-2.634a1.85 1.85 0 0 0-2.378-2.377L8.73 2.63 10.91.451a1.54 1.54 0 0 1 2.179 0l10.459 10.46a1.54 1.54 0 0 1 0 2.179z"/></svg></span>
+          <span class="flink-text">Git documentation</span>
+        </a>
+        <a class="flink" data-brand="github" href="https://cli.github.com/manual/" target="_blank" rel="noopener">
+          <span class="flink-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></span>
+          <span class="flink-text">GitHub CLI manual</span>
+        </a>
+        <a class="flink" data-brand="docs" href="https://docs.github.com" target="_blank" rel="noopener">
+          <span class="flink-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 3.5A1.5 1.5 0 0 1 5.5 2H19a1 1 0 0 1 1 1v15.5a1 1 0 0 1-1 1H6a2 2 0 0 0-2 2z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M8 7h8M8 11h5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>
+          <span class="flink-text">GitHub Docs</span>
+        </a>
+      </nav>
+
+      <nav class="footer-col" aria-label="Elsewhere">
+        <p class="footer-heading">Elsewhere</p>
+        <a class="flink" data-brand="site" href="https://arman-portfolio.online" target="_blank" rel="noopener">
+          <span class="flink-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M2.8 12h18.4" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 2.8c3 2.6 4.6 5.8 4.6 9.2s-1.6 6.6-4.6 9.2c-3-2.6-4.6-5.8-4.6-9.2s1.6-6.6 4.6-9.2z" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></span>
+          <span class="flink-text">Portfolio</span>
+        </a>
+        <a class="flink" data-brand="github" href="https://github.com/arman080325" target="_blank" rel="noopener">
+          <span class="flink-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></span>
+          <span class="flink-text">GitHub</span>
+        </a>
+        <a class="flink" data-brand="linkedin" href="https://www.linkedin.com/in/arman-ahemad-khan" target="_blank" rel="noopener">
+          <span class="flink-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="1.6" y="1.6" width="20.8" height="20.8" rx="3.6"/><text class="li-text" x="12" y="17">in</text></svg></span>
+          <span class="flink-text">LinkedIn</span>
+        </a>
+        <a class="flink" data-brand="mail" href="mailto:armankhan082020@gmail.com">
+          <span class="flink-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 0 1 0 19.366V5.457c0-2.023 2.309-3.178 3.927-1.964L5.455 4.64 12 9.548l6.545-4.91 1.528-1.145C21.69 2.28 24 3.434 24 5.457z"/></svg></span>
+          <span class="flink-text">Email</span>
+        </a>
+      </nav>
     </div>
-    <p class="footer-fine">Commands are quoted for reference. Anything that rewrites history is marked — read the note before you run it.</p>
+
+    <div class="footer-base">
+      <p class="footer-credit">Designed and built by <a href="https://arman-portfolio.online" target="_blank" rel="noopener">Arman Ahemad Khan</a></p>
+      <p class="footer-fine">&copy; 2026 &middot; Commands that rewrite history or destroy work are marked. Read the note before you run them.</p>
+    </div>
   </footer>
 </main>
 

@@ -28,6 +28,8 @@
      Each section header carries a small SVG that acts out what the
      commands in it actually do to your history. */
 
+  var GHPATH = 'M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z';
+
   var SCENE = {
     /* two settings sliding along their tracks */
     config:
@@ -141,6 +143,15 @@
       '<circle class="fl fx-slide" cx="23" cy="24" r="4" style="--dx:84px;--dur:3.6s"/>' +
       '<path class="ln ac fx-draw" d="M128 24l4 5 8-11" style="--len:24;--dur:3.6s;--d:1.6s"/>',
 
+    /* local commits travelling up to the remote */
+    github:
+      '<line class="ln" x1="10" y1="32" x2="86" y2="32"/>' +
+      '<circle class="nd" cx="20" cy="32" r="5"/><circle class="nd" cx="44" cy="32" r="5"/>' +
+      '<circle class="fl fx-slide" cx="68" cy="32" r="5" style="--dx:34px;--dur:3.4s"/>' +
+      '<path class="ln ac fx-flow" d="M76 32h22"/>' +
+      '<g class="gh-scene" transform="translate(108 10)"><g transform="scale(1.5)">' +
+      '<path class="gh-mark" d="' + GHPATH + '"/></g></g>',
+
     /* a shield closing over the repository */
     shield:
       '<path class="ln ac fx-draw" d="M60 8l22 7v12c0 10-9 16-22 19-13-3-22-9-22-19V15l22-7z" style="--len:110;--dur:4s"/>' +
@@ -154,7 +165,7 @@
     branch: "branch", merge: "merge", rebase: "rebase", remotes: "sync",
     sync: "sync", fork: "pr", stash: "stash", undo: "undo", cherry: "cherry",
     tags: "tag", advanced: "clone", hooks: "pipeline", maintenance: "pipeline",
-    security: "shield", ghcli: "pr", actions: "pipeline", workflows: "pr",
+    security: "shield", ghcli: "github", actions: "pipeline", workflows: "pr",
     fixes: "undo"
   };
 
@@ -217,6 +228,9 @@
 
   function el(id) { return document.getElementById(id); }
 
+  var reduceMotion = window.matchMedia
+    ? window.matchMedia("(prefers-reduced-motion: reduce)").matches : false;
+
   /* Some entries are concepts or error messages rather than runnable commands. */
   var RUNNABLE = /^(git|gh|npx|npm|pip|java|ssh|ssh-keygen|gpg|cat|echo|ls|chmod|pre-commit|gitleaks)\b/;
 
@@ -246,6 +260,7 @@
 
   el("statCommands").textContent = INDEX.length;
   el("statSections").textContent = ATLAS.length;
+  el("statExamples").textContent = INDEX.filter(function (e) { return !!e.cmd.x; }).length;
   var searchInput = el("search");
   searchInput.placeholder = "Search " + INDEX.length + " commands \u2014 try \u201Cundo\u201D, \u201Crebase\u201D, \u201Csecret\u201D";
 
@@ -322,6 +337,7 @@
     el("sections").innerHTML = html;
     el("empty").hidden = entries.length > 0;
     observeCards();
+    observeSpy();
     updateRailCounts(byCat);
   }
 
@@ -524,13 +540,23 @@
     }
 
     var chip = ev.target.closest("[data-jump]");
-    if (chip) {
-      var target = document.getElementById(chip.getAttribute("data-jump"));
-      if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
+    if (chip) { scrollToId(chip.getAttribute("data-jump")); return; }
+
+    var railLink = ev.target.closest(".rail-link");
+    if (railLink) {
+      ev.preventDefault();
+      var id = railLink.getAttribute("data-rail");
+      history.replaceState(null, "", "#" + id);
+      closeRail();
+      scrollToId(id);
       return;
     }
 
-    if (ev.target.closest(".rail-link")) closeRail();
+    var brandLink = ev.target.closest('.brand[href="#top"], .skip-link');
+    if (brandLink) {
+      ev.preventDefault();
+      brandLink.classList.contains("skip-link") ? scrollToId("atlas") : smoothTo(0);
+    }
   });
 
   /* ---------- mobile rail drawer ---------- */
@@ -621,45 +647,232 @@
     }
   });
 
-  /* ---------- scroll: progress, active rail node, back to top ---------- */
+  /* ---------- scrolling ----------
+     The progress bar is the only thing recalculated per frame; the active
+     section comes from an observer, so scrolling never triggers layout. */
 
   var toTop = el("toTop");
+  var progressBar = el("progress");
   var ticking = false;
+  var lastY = -1;
+  var heroParallax = el("demo");
 
-  function onScroll() {
-    var doc = document.documentElement;
-    var max = doc.scrollHeight - window.innerHeight;
-    var y = window.scrollY || doc.scrollTop;
-
-    el("progress").style.width = (max > 0 ? (y / max) * 100 : 0) + "%";
-    toTop.hidden = y < 600;
-
-    var sections = document.querySelectorAll(".section");
-    var activeId = null;
-    for (var i = 0; i < sections.length; i++) {
-      if (sections[i].getBoundingClientRect().top <= 140) activeId = sections[i].id;
-    }
-    document.querySelectorAll(".rail-link").forEach(function (link) {
-      var on = link.getAttribute("data-rail") === activeId;
-      link.classList.toggle("active", on);
-      if (on) {
-        var box = link.getBoundingClientRect();
-        var pane = link.closest(".rail-scroll").getBoundingClientRect();
-        if (box.top < pane.top || box.bottom > pane.bottom) {
-          link.scrollIntoView({ block: "nearest" });
-        }
-      }
-    });
+  function frame() {
     ticking = false;
+    var doc = document.documentElement;
+    var y = window.scrollY || doc.scrollTop;
+    if (y === lastY) return;
+    lastY = y;
+
+    var max = doc.scrollHeight - window.innerHeight;
+    progressBar.style.transform = "scaleX(" + (max > 0 ? y / max : 0) + ")";
+
+    var showTop = y > 600;
+    if (showTop === toTop.hidden) toTop.hidden = !showTop;
+
+    if (heroParallax && y < window.innerHeight) {
+      heroParallax.style.transform = "translate3d(0," + (y * 0.06).toFixed(2) + "px,0)";
+    }
   }
 
   window.addEventListener("scroll", function () {
-    if (!ticking) { ticking = true; requestAnimationFrame(onScroll); }
+    if (!ticking) { ticking = true; requestAnimationFrame(frame); }
   }, { passive: true });
 
-  toTop.addEventListener("click", function () {
-    window.scrollTo({ top: 0, behavior: "smooth" });
+  /* Which section am I in? Observed, not measured. */
+  var railLinks = {};
+  var activeId = null;
+
+  function setActive(id) {
+    if (id === activeId) return;
+    if (activeId && railLinks[activeId]) railLinks[activeId].classList.remove("active");
+    activeId = id;
+    var link = railLinks[id];
+    if (!link) return;
+    link.classList.add("active");
+    var pane = link.closest(".rail-scroll");
+    if (pane) {
+      var box = link.getBoundingClientRect(), edge = pane.getBoundingClientRect();
+      if (box.top < edge.top || box.bottom > edge.bottom) link.scrollIntoView({ block: "nearest" });
+    }
+  }
+
+  var spy = null;
+  if ("IntersectionObserver" in window) {
+    var seen = new Map();
+    spy = new IntersectionObserver(function (items) {
+      items.forEach(function (i) { seen.set(i.target, i.intersectionRatio); });
+      var best = null, bestRatio = 0;
+      seen.forEach(function (ratio, node) {
+        if (ratio > bestRatio && node.isConnected) { bestRatio = ratio; best = node; }
+      });
+      if (best) setActive(best.id);
+    }, { rootMargin: "-88px 0px -55% 0px", threshold: [0, .01, .2, .6, 1] });
+  }
+
+  function observeSpy() {
+    railLinks = {};
+    document.querySelectorAll(".rail-link").forEach(function (l) {
+      railLinks[l.getAttribute("data-rail")] = l;
+    });
+    if (!spy) return;
+    spy.disconnect();
+    document.querySelectorAll(".section").forEach(function (sec) { spy.observe(sec); });
+  }
+
+  /* Eased anchor scrolling — long jumps should feel carried, not teleported. */
+  var scrolling = null;
+  function stopScroll() { scrolling = null; }
+  ["wheel", "touchstart", "keydown"].forEach(function (evt) {
+    window.addEventListener(evt, stopScroll, { passive: true });
   });
+
+  function smoothTo(targetY) {
+    if (reduceMotion) { window.scrollTo(0, targetY); return; }
+    var startY = window.scrollY || document.documentElement.scrollTop;
+    var delta = targetY - startY;
+    if (Math.abs(delta) < 4) return;
+    var time = Math.min(1150, Math.max(420, Math.abs(delta) * 0.42));
+    var token = {};
+    scrolling = token;
+    var t0 = performance.now();
+
+    (function step(now) {
+      if (scrolling !== token) return;
+      var p = Math.min(1, (now - t0) / time);
+      var eased = p < .5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2;
+      window.scrollTo(0, startY + delta * eased);
+      if (p < 1) requestAnimationFrame(step); else scrolling = null;
+    })(t0);
+  }
+
+  function scrollToId(id) {
+    var target = document.getElementById(id);
+    if (!target) return;
+    var top = target.getBoundingClientRect().top + window.scrollY - 92;
+    smoothTo(Math.max(0, top));
+  }
+
+  toTop.addEventListener("click", function () { smoothTo(0); });
+
+  /* ---------- hero: a real workflow, running end to end ----------
+     Each line types out, its output lands, and the graph advances one step. */
+
+  var WORKFLOW = [
+    { c: "git switch -c feat/login",                  o: "Switched to a new branch 'feat/login'", b: "feat/login", g: 1 },
+    { c: 'git commit -m "feat: add login form"',      o: "1 file changed, 48 insertions(+)", g: 2 },
+    { c: 'git commit -m "test: cover login flow"',    o: "1 file changed, 26 insertions(+)", g: 3 },
+    { c: "git push -u origin feat/login",             o: "branch 'feat/login' set up to track origin", g: 4 },
+    { c: "gh pr create --fill",                       o: "github.com/arman080325/myapp/pull/42", g: 5 },
+    { c: "gh pr merge 42 --squash --delete-branch",   o: "Merged pull request #42", ok: true, b: "main", g: 6 },
+    { c: 'git tag -a v1.2.0 -m "Release 1.2.0"',      o: "Tagged v1.2.0 \u00b7 pushed to origin", ok: true, g: 7 }
+  ];
+
+  var demoTimers = [];
+  function demoWait(fn, ms) { demoTimers.push(setTimeout(fn, ms)); }
+  function demoStop() { demoTimers.forEach(clearTimeout); demoTimers = []; }
+
+  function runDemo() {
+    var list = el("demoLines"), graph = el("demoGraph"), branch = el("demoBranch");
+    if (!list || !graph) return;
+
+    var steps = graph.querySelectorAll("[data-step]");
+    function showStep(n) {
+      steps.forEach(function (node) {
+        if (+node.getAttribute("data-step") <= n) node.classList.add("on");
+      });
+    }
+    function resetGraph() {
+      steps.forEach(function (node) { node.classList.remove("on"); });
+    }
+
+    if (reduceMotion) {
+      list.innerHTML = WORKFLOW.map(function (s) {
+        return '<li><span class="demo-cmd">' + esc(s.c) + '</span>' +
+               '<span class="demo-out on' + (s.ok ? " ok" : "") + '">' + esc(s.o) + "</span></li>";
+      }).join("");
+      showStep(7);
+      branch.textContent = "main";
+      return;
+    }
+
+    var i = 0;
+
+    function scrollTerminal() {
+      var body = list.parentElement;
+      var over = list.scrollHeight - body.clientHeight;
+      list.style.transform = over > 0 ? "translateY(" + -over + "px)" : "none";
+    }
+
+    function typeLine() {
+      var step = WORKFLOW[i];
+      var li = document.createElement("li");
+      var cmd = document.createElement("span");
+      cmd.className = "demo-cmd";
+      var cursor = document.createElement("span");
+      cursor.className = "demo-cursor";
+      li.appendChild(cmd);
+      cmd.appendChild(cursor);
+      list.appendChild(li);
+      scrollTerminal();
+
+      var n = 0;
+      (function tick() {
+        if (n <= step.c.length) {
+          cmd.textContent = step.c.slice(0, n);
+          cmd.appendChild(cursor);
+          n++;
+          demoWait(tick, 26);
+          return;
+        }
+        cursor.remove();
+
+        demoWait(function () {
+          var out = document.createElement("span");
+          out.className = "demo-out" + (step.ok ? " ok" : "");
+          out.textContent = step.o;
+          li.appendChild(out);
+          requestAnimationFrame(function () { out.classList.add("on"); });
+
+          if (step.b) branch.textContent = step.b;
+          showStep(step.g);
+          scrollTerminal();
+
+          i++;
+          if (i < WORKFLOW.length) demoWait(typeLine, 780);
+          else demoWait(restart, 3600);
+        }, 340);
+      })();
+    }
+
+    function restart() {
+      list.style.transition = "opacity .45s ease";
+      list.style.opacity = "0";
+      demoWait(function () {
+        list.innerHTML = "";
+        list.style.transform = "none";
+        resetGraph();
+        branch.textContent = "main";
+        list.style.opacity = "1";
+        i = 0;
+        demoWait(typeLine, 500);
+      }, 480);
+    }
+
+    /* Only run while the hero is actually on screen. */
+    var demoEl = el("demo");
+    if ("IntersectionObserver" in window) {
+      var started = false;
+      new IntersectionObserver(function (items) {
+        items.forEach(function (item) {
+          if (item.isIntersecting && !started) { started = true; typeLine(); }
+          else if (!item.isIntersecting && started) { demoStop(); started = false; i = 0; list.innerHTML = ""; resetGraph(); branch.textContent = "main"; list.style.transform = "none"; }
+        });
+      }, { threshold: 0.25 }).observe(demoEl);
+    } else {
+      typeLine();
+    }
+  }
 
   /* ---------- go ---------- */
 
@@ -692,10 +905,11 @@
   animateLede();
   buildRail();
   render(INDEX, []);
-  onScroll();
+  frame();
+  runDemo();
 
   if (location.hash) {
-    var target = document.getElementById(location.hash.slice(1));
-    if (target) setTimeout(function () { target.scrollIntoView(); }, 60);
+    var hashTarget = document.getElementById(location.hash.slice(1));
+    if (hashTarget) setTimeout(function () { hashTarget.scrollIntoView(); }, 60);
   }
 })();
