@@ -91,6 +91,9 @@
           <span class="stat"><b id="statCommands">381</b><i>commands</i></span>
           <span class="stat"><b id="statSections">26</b><i>sections</i></span>
           <span class="stat"><b id="statExamples">80</b><i>worked examples</i></span>
+          <span class="stat stat-live" id="statCopies" hidden>
+            <b><span id="copyCount">0</span></b><i><span class="live-dot"></span>commands copied</i>
+          </span>
         </div>
 
         <div class="hero-jump">
@@ -218,7 +221,8 @@
 
     <div class="footer-base">
       <p class="footer-credit">Designed and built by <a href="https://arman-portfolio.online" target="_blank" rel="noopener">Arman Ahemad Khan</a></p>
-      <p class="footer-fine">&copy; 2026 &middot; Commands that rewrite history or destroy work are marked. Read the note before you run them.</p>
+      <p class="footer-fine">&copy; 2026 &middot; Commands that rewrite history or destroy work are marked. Read the note before you run them.<br>
+        Anonymous counts of which commands get copied. No cookies, no accounts, nothing personal &mdash; <a href="#" id="optOut">turn it off</a>.</p>
     </div>
   </footer>
 </main>
@@ -229,6 +233,18 @@
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
+<script>
+/* Analytics configuration.
+   Leave posthogKey empty to run with the self-hosted counters only —
+   /api/track and /api/stats keep working either way. */
+window.GITATLAS_ANALYTICS = {
+  posthogKey: "",                          // e.g. "phc_xxxxxxxxxxxxxxxx"
+  posthogHost: "https://us.i.posthog.com", // "https://eu.i.posthog.com" for the EU region
+  endpoint: "/api/track"
+};
+</script>
+<script defer src="/_vercel/insights/script.js"></script>
+<script src="analytics.js"></script>
 <script src="data.js"></script>
 <script src="app.js"></script>
 </body>

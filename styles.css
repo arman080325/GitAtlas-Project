@@ -1028,3 +1028,24 @@ mark {
   .demo-graph .g-ring { animation: none; }
   .demo-cursor { display: none; }
 }
+
+/* ---------- live copy counter ---------- */
+.stat-live b { color: var(--accent); }
+.stat-live i { display: inline-flex; align-items: center; gap: 6px; }
+.live-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--good);
+  box-shadow: 0 0 0 0 var(--good);
+  animation: livePulse 2.4s ease-out infinite;
+}
+@keyframes livePulse {
+  0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--good) 55%, transparent); }
+  70% { box-shadow: 0 0 0 7px transparent; }
+  100% { box-shadow: 0 0 0 0 transparent; }
+}
+#copyCount { font-variant-numeric: tabular-nums; }
+
+.footer-fine a { color: var(--text-dim); text-decoration: underline; text-underline-offset: 2px; }
+.footer-fine a:hover { color: var(--accent); }
+
+@media (prefers-reduced-motion: reduce) { .live-dot { animation: none; } }
