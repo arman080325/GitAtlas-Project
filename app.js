@@ -419,6 +419,14 @@
     return ATLAS[+p[0]].commands[+p[1]];
   }
 
+  function sectionOf(ref) { return ATLAS[+ref.split(":")[0]].id; }
+
+  /* Analytics is optional: if analytics.js is absent or the visitor opted
+     out, this is a no-op and nothing downstream notices. */
+  function track(name, props) {
+    if (window.GitAtlasAnalytics) window.GitAtlasAnalytics.track(name, props);
+  }
+
   var toastTimer = null;
   function toast(msg) {
     var t = el("toast");
@@ -482,6 +490,8 @@
       return terms.every(function (t) { return e.hay.indexOf(t) !== -1; });
     });
 
+    reportSearch(raw.trim(), hits.length);
+
     note.hidden = false;
     note.innerHTML = hits.length
       ? "<b>" + hits.length + "</b> " + (hits.length === 1 ? "command" : "commands") +
@@ -489,6 +499,18 @@
       : "Nothing matched \u201C" + esc(raw.trim()) + "\u201D";
 
     render(hits, terms);
+  }
+
+  /* Wait for a pause in typing so "g", "gi", "git" is one event, not three. */
+  var reportTimer = null;
+  var lastReported = "";
+  function reportSearch(query, hits) {
+    clearTimeout(reportTimer);
+    if (query.length < 2 || query === lastReported) return;
+    reportTimer = setTimeout(function () {
+      lastReported = query;
+      track(hits ? "search_performed" : "search_no_results", { query: query, hits: hits });
+    }, 900);
   }
 
   var searchTimer = null;
@@ -515,6 +537,13 @@
       copyText(cmd.c).then(function () {
         flash(copyBtn);
         toast("Copied  " + shorten(cmd.c));
+        var risk = riskOf(cmd.c);
+        track("command_copied", {
+          command: cmd.c,
+          section: sectionOf(copyBtn.getAttribute("data-copy")),
+          risk: risk ? risk.k : "none",
+          from_search: currentTerms.length > 0
+        });
       }).catch(function () { toast("Could not copy \u2014 select the text instead"); });
       return;
     }
@@ -526,6 +555,7 @@
         exBtn.classList.add("done");
         setTimeout(function () { exBtn.classList.remove("done"); }, 1500);
         toast("Copied the example");
+        track("example_copied", { command: ex.c, section: sectionOf(exBtn.getAttribute("data-copyex")) });
       }).catch(function () { toast("Could not copy \u2014 select the text instead"); });
       return;
     }
@@ -536,6 +566,7 @@
       toggle.setAttribute("aria-expanded", String(!open));
       var wrap = toggle.nextElementSibling;
       if (wrap) wrap.classList.toggle("open", !open);
+      if (!open) track("example_opened", { command: lookup(toggle.getAttribute("data-ex")).c });
       return;
     }
 
@@ -615,6 +646,7 @@
     try { localStorage.setItem("gitatlas-theme", next); } catch (e) { /* private mode */ }
     if (announce) {
       toast(next === "system" ? "Theme follows your system" : MODE_TEXT[next] + " theme");
+      track("theme_changed", { mode: next });
     }
   }
 
@@ -683,8 +715,11 @@
   var railLinks = {};
   var activeId = null;
 
+  var reported = {};
+
   function setActive(id) {
     if (id === activeId) return;
+    if (!reported[id]) { reported[id] = true; track("section_viewed", { section: id }); }
     if (activeId && railLinks[activeId]) railLinks[activeId].classList.remove("active");
     activeId = id;
     var link = railLinks[id];
@@ -874,6 +909,54 @@
     }
   }
 
+  /* ---------- live counter ----------
+     Reads the public aggregate and counts up to it. If the API is not
+     configured yet, or the number is still tiny, the stat stays hidden. */
+
+  function liveCounter() {
+    var wrap = el("statCopies"), out = el("copyCount");
+    if (!wrap || !out || !window.fetch) return;
+
+    fetch("/api/stats", { headers: { Accept: "application/json" } })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (data) {
+        if (!data || !data.configured || !data.copies || data.copies < 25) return;
+        wrap.hidden = false;
+        countUp(out, data.copies);
+        wrap.title = data.copies.toLocaleString() + " commands copied by " +
+                     (data.copiers || 0).toLocaleString() + " people";
+      })
+      .catch(function () { /* no counter today */ });
+  }
+
+  function countUp(node, target) {
+    if (reduceMotion) { node.textContent = target.toLocaleString(); return; }
+    var start = performance.now(), from = 0, time = 1400;
+
+    (function step(now) {
+      var p = Math.min(1, (now - start) / time);
+      var eased = 1 - Math.pow(1 - p, 3);
+      node.textContent = Math.round(from + (target - from) * eased).toLocaleString();
+      if (p < 1) requestAnimationFrame(step);
+    })(start);
+  }
+
+  /* ---------- opt out link ---------- */
+
+  var optOutLink = el("optOut");
+  if (optOutLink) {
+    optOutLink.addEventListener("click", function (ev) {
+      ev.preventDefault();
+      if (!window.GitAtlasAnalytics) return;
+      var on = window.GitAtlasAnalytics.enabled();
+      toast(on ? window.GitAtlasAnalytics.optOut() : window.GitAtlasAnalytics.optIn());
+      optOutLink.textContent = on ? "turn it back on" : "turn it off";
+    });
+    if (window.GitAtlasAnalytics && !window.GitAtlasAnalytics.enabled()) {
+      optOutLink.textContent = "turn it back on";
+    }
+  }
+
   /* ---------- go ---------- */
 
   /* The wordmark is built letter by letter so each one can arrive on its own. */
@@ -907,6 +990,8 @@
   render(INDEX, []);
   frame();
   runDemo();
+  if (window.requestIdleCallback) requestIdleCallback(liveCounter, { timeout: 3000 });
+  else setTimeout(liveCounter, 1200);
 
   if (location.hash) {
     var hashTarget = document.getElementById(location.hash.slice(1));
