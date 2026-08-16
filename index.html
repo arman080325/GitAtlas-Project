@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark" data-theme-mode="system">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GitAtlas — the field guide to Git &amp; GitHub</title>
+<meta name="description" content="381 Git and GitHub commands explained in plain English, with a real use case for each and one-tap copy. A fast, searchable field guide for developers.">
+<meta name="author" content="Arman Ahemad Khan">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0d1117" media="(prefers-color-scheme: dark)">
+
+<script>
+/* Resolve the theme before first paint so there is no flash of the wrong one. */
+(function () {
+  try {
+    var m = localStorage.getItem("gitatlas-theme");
+    if (["system", "light", "dark"].indexOf(m) === -1) m = "system";
+    var light = window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches;
+    document.documentElement.setAttribute("data-theme", m === "system" ? (light ? "light" : "dark") : m);
+    document.documentElement.setAttribute("data-theme-mode", m);
+  } catch (e) {}
+})();
+</script>
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="GitAtlas — the field guide to Git &amp; GitHub">
+<meta property="og:description" content="381 commands, explained simply, with real use cases and one-tap copy.">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230d1117'/%3E%3Cpath d='M9 25V7M9 14h7a6 6 0 0 1 6 6v5' stroke='%232f81f7' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3Ccircle cx='9' cy='7' r='3' fill='%23e6edf3'/%3E%3Ccircle cx='22' cy='25' r='3' fill='%232f81f7'/%3E%3C/svg%3E">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="scroll-progress" id="progress" aria-hidden="true"></div>
+
+<a class="skip-link" href="#atlas">Skip to the commands</a>
+
+<header class="topbar" id="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="#top" aria-label="GitAtlas home">
+      <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true">
+        <path d="M9 25V7M9 14h7a6 6 0 0 1 6 6v5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        <circle cx="9" cy="7" r="3"/><circle cx="22" cy="25" r="3" class="brand-node"/>
+      </svg>
+      <span class="brand-word">Git<em>Atlas</em></span>
+    </a>
+
+    <div class="search-shell">
+      <svg class="search-icon" viewBox="0 0 20 20" aria-hidden="true"><circle cx="9" cy="9" r="6" fill="none" stroke="currentColor" stroke-width="2"/><path d="M13.5 13.5 18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      <input id="search" type="search" autocomplete="off" spellcheck="false"
+             placeholder="Search 381 commands — try &ldquo;undo&rdquo;, &ldquo;rebase&rdquo;, &ldquo;secret&rdquo;"
+             aria-label="Search Git commands">
+      <kbd class="search-key">/</kbd>
+      <button class="search-clear" id="searchClear" type="button" aria-label="Clear search" hidden>&times;</button>
+    </div>
+
+    <div class="topbar-actions">
+      <button class="icon-btn theme-btn" id="themeBtn" type="button" aria-label="Theme: System. Click to switch.">
+        <svg viewBox="0 0 20 20" aria-hidden="true"><rect x="2" y="3.5" width="16" height="11" rx="1.6" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M7 17.5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+      </button>
+      <button class="icon-btn nav-toggle" id="navBtn" type="button" aria-label="Open section list" aria-expanded="false">
+        <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 5h14M3 10h14M3 15h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+
+  <section class="hero">
+    <div class="hero-grid" aria-hidden="true"></div>
+
+    <div class="hero-inner">
+      <div class="hero-copy">
+        <p class="eyebrow">A field guide to version control</p>
+        <h1 class="hero-title">Git<em>Atlas</em></h1>
+        <p class="hero-lede">
+          Every Git and GitHub command worth knowing — written in plain English,
+          with the situation you would actually reach for it in, and a copy button on all of them.
+        </p>
+
+        <div class="hero-stats">
+          <span class="stat"><b id="statCommands">381</b><i>commands</i></span>
+          <span class="stat"><b id="statSections">26</b><i>sections</i></span>
+          <span class="stat"><b>0</b><i>frameworks</i></span>
+        </div>
+
+        <div class="hero-jump">
+          <button class="chip" data-jump="undo">Undo a mistake</button>
+          <button class="chip" data-jump="merge">Fix a conflict</button>
+          <button class="chip" data-jump="rebase">Rebase safely</button>
+          <button class="chip" data-jump="fixes">Common errors</button>
+        </div>
+      </div>
+
+      <figure class="hero-graph" aria-label="An illustration of a Git commit graph: a feature branch splitting from the main line and merging back before a tagged release.">
+        <svg viewBox="0 0 300 260" class="dag" xmlns="http://www.w3.org/2000/svg">
+          <g class="dag-lines" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+            <path class="draw" d="M60 240 L60 20"/>
+            <path class="draw" d="M60 190 C60 160, 210 165, 210 135 L210 95"/>
+            <path class="draw" d="M210 95 C210 65, 60 70, 60 40"/>
+          </g>
+          <g class="dag-nodes">
+            <circle class="node" cx="60" cy="240" r="7"/>
+            <circle class="node" cx="60" cy="190" r="7"/>
+            <circle class="node" cx="210" cy="135" r="7"/>
+            <circle class="node" cx="210" cy="95" r="7"/>
+            <circle class="node" cx="60" cy="120" r="7"/>
+            <circle class="node node-head" cx="60" cy="40" r="8"/>
+          </g>
+          <g class="dag-labels">
+            <text x="82" y="245">init</text>
+            <text x="82" y="195">main</text>
+            <text x="232" y="140">feat/login</text>
+            <text x="232" y="100">tests</text>
+            <text x="82" y="125">docs</text>
+            <text x="82" y="45" class="dag-tag">merge &rarr; v1.0.0</text>
+          </g>
+        </svg>
+      </figure>
+    </div>
+
+    <div class="hero-rule" aria-hidden="true"><span></span><b>Scroll</b><span></span></div>
+  </section>
+
+  <div class="layout" id="atlas">
+
+    <aside class="rail" id="rail" aria-label="Sections">
+      <div class="rail-scroll">
+        <p class="rail-title">Sections</p>
+        <nav id="railNav" class="rail-nav"></nav>
+      </div>
+    </aside>
+    <div class="rail-scrim" id="railScrim" hidden></div>
+
+    <div class="content">
+      <div class="filter-note" id="filterNote" hidden></div>
+      <div id="sections"></div>
+
+      <div class="empty" id="empty" hidden>
+        <p class="empty-head">No command matches that.</p>
+        <p class="empty-body">Try a shorter word — most commands are filed under what they do, like <b>undo</b>, <b>branch</b>, <b>secret</b> or <b>tag</b>.</p>
+        <button class="btn" id="emptyReset" type="button">Clear the search</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div>
+        <p class="footer-brand">Git<em>Atlas</em></p>
+        <p class="footer-line">Built with plain HTML, CSS and JavaScript. No build step, no dependencies.</p>
+      </div>
+      <div class="footer-links">
+        <a href="https://git-scm.com/docs" target="_blank" rel="noopener">Official Git docs</a>
+        <a href="https://cli.github.com/manual/" target="_blank" rel="noopener">GitHub CLI manual</a>
+        <a href="https://arman-portfolio.online" target="_blank" rel="noopener">Portfolio</a>
+      </div>
+    </div>
+    <p class="footer-fine">Commands are quoted for reference. Anything that rewrites history is marked — read the note before you run it.</p>
+  </footer>
+</main>
+
+<button class="to-top" id="toTop" type="button" aria-label="Back to top" hidden>
+  <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 16V5M5 10l5-5 5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</button>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
