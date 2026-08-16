@@ -913,6 +913,10 @@
      Reads the public aggregate and counts up to it. If the API is not
      configured yet, or the number is still tiny, the stat stays hidden. */
 
+  /* Raise MIN_COPIES once the site has real traffic — a counter reading "3"
+     undersells it. Set to 1 while demoing. */
+  var MIN_COPIES = 1;
+
   function liveCounter() {
     var wrap = el("statCopies"), out = el("copyCount");
     if (!wrap || !out || !window.fetch) return;
@@ -920,7 +924,7 @@
     fetch("/api/stats", { headers: { Accept: "application/json" } })
       .then(function (r) { return r.ok ? r.json() : null; })
       .then(function (data) {
-        if (!data || !data.configured || !data.copies || data.copies < 25) return;
+        if (!data || !data.configured || !data.copies || data.copies < MIN_COPIES) return;
         wrap.hidden = false;
         countUp(out, data.copies);
         wrap.title = data.copies.toLocaleString() + " commands copied by " +
