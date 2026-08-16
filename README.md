@@ -3,7 +3,7 @@
 <img src="https://capsule-render.vercel.app/api?type=waving&color=0:0d1117,100:2f81f7&height=220&section=header&text=GitAtlas&fontSize=70&fontColor=ffffff&fontAlignY=38&desc=A%20searchable%20field%20guide%20to%20Git%20%26%20GitHub&descAlignY=58&descSize=18&animation=fadeIn" width="100%"/>
 
 <a href="https://gitatlas.vercel.app">
-  <img src="https://readme-typing-svg.demolab.com?font=IBM+Plex+Mono&weight=700&size=24&duration=2500&pause=800&color=2F81F7&center=true&vCenter=true&width=600&lines=381+commands.+26+sections.+One+tap+copy.;Stop+googling+%22how+to+git+revert%22.;Built+for+devs%2C+by+a+dev+who+got+tired+of+tabs." alt="Typing SVG" />
+  <img src="https://readme-typing-svg.demolab.com?font=IBM+Plex+Mono&weight=700&size=24&duration=2500&pause=800&color=2F81F7&center=true&vCenter=true&width=650&lines=381+commands.+26+sections.+One+tap+copy.;Now+it+knows+what+you're+searching+for.;Built+for+devs%2C+by+a+dev+who+got+tired+of+tabs." alt="Typing SVG" />
 </a>
 
 <br/>
@@ -12,6 +12,7 @@
 [![GitHub Repo stars](https://img.shields.io/github/stars/arman080325/GitAtlas-Project?style=for-the-badge&logo=github&color=0d1117&labelColor=2F81F7)](https://github.com/arman080325/GitAtlas-Project/stargazers)
 [![Made by](https://img.shields.io/badge/Made%20by-Arman%20Ahemad%20Khan-0d1117?style=for-the-badge&logo=vercel&logoColor=2F81F7)](https://arman-portfolio.online)
 [![License](https://img.shields.io/badge/License-MIT-blueviolet?style=for-the-badge)](#license)
+[![Privacy first](https://img.shields.io/badge/Analytics-No%20cookies%2C%20no%20IPs-2F81F7?style=for-the-badge&logo=upstash&logoColor=white)](#-analytics)
 
 <img src="https://profile-counter.glitch.me/gitatlas-project/count.svg" alt="visitor badge" />
 
@@ -27,17 +28,18 @@
 
 ## 💡 Why this repo matters
 
-Every developer has been mid-merge, mid-rebase, or mid-panic and typed **"how do I undo a git commit"** into a search engine for the hundredth time. GitAtlas exists to end that loop.
+Every developer has been mid-merge, mid-rebase, or mid-panic and typed **"how do I undo a git commit"** into a search engine for the hundredth time. GitAtlas exists to end that loop — and now it actually **learns from the gaps it finds**.
 
-> It's not another cheat sheet. It's the command you needed, with the *plain-English reason* you needed it, sitting one tap away from your clipboard.
+> It's not another cheat sheet. It's the command you needed, with the *plain-English reason* you needed it, one tap away from your clipboard — and if it doesn't have your command yet, it quietly logs that it should.
 
 **GitAtlas is genuinely useful to the developer community because it:**
 
 - 🧠 **Removes the "which flag was it again?" tax** — every one of the 381 commands ships with a real description and a real use case, not just syntax.
 - ⚡ **Saves keystrokes that matter under pressure** — one-tap copy means no retyping a rebase command with shaky hands at 2 AM.
-- 🎓 **Teaches while you use it** — juniors learn *why* a command exists, not just *that* it exists, because every entry explains the situation you'd reach for it in.
+- 🎓 **Teaches while you use it** — a looping hero demo types out a full real-world workflow — branch, commits, push, PR, squash merge, tag — so newcomers see the *shape* of a Git session, not just isolated commands.
 - 🛡️ **Warns before you self-destruct** — destructive and history-rewriting commands are flagged automatically, so `git push --force` doesn't ruin someone's afternoon.
-- 🔍 **Is fast to search** — everything is indexed: command, description, use case, example, and section — find it in seconds, not scrolls.
+- 🔍 **Is fast to search, and gets smarter from it** — every search that comes up empty becomes a content backlog item, written by the people using the tool.
+- 🔒 **Respects the audience it's built for** — developers run ad blockers and care about tracking, so analytics are same-origin, cookie-free, and fully optional to even look at.
 - 🌐 **Works everywhere, instantly** — no build step, no install, no account. Open `index.html` and you're done.
 
 <br/>
@@ -90,14 +92,34 @@ Every developer has been mid-merge, mid-rebase, or mid-panic and typed **"how do
 <tr>
 <td width="50%" valign="top">
 
-### 🎬 Motion Design
-- Wordmark in **Syne ExtraBold** with a letter-by-letter rise + wave + blinking caret
+### 🎬 Hero Demo & Motion
+- Wordmark rises letter by letter, then a slow wave crosses it, then a caret blinks
+- Looping **terminal demo**: branch → two commits → push → PR → squash merge → tag, with the commit graph drawing one step behind
 - Hero description fades in word by word
 - 16 hand-mapped **SVG scenes** act out what each section's commands actually do
-- Commit graph in the hero **resolves into the GitHub logo**
-- Copy buttons pop green with a lighting card edge
-- Everything respects `prefers-reduced-motion`
-- Section animation is scroll-gated — nothing runs off-screen
+- Footer icons pick up their real brand colour on hover and lift, label underlines
+- Everything freezes to a finished state under `prefers-reduced-motion`
+
+</td>
+<td width="50%" valign="top">
+
+### 📊 Analytics (privacy-first, optional)
+- Own Redis counters via **Upstash** — same-origin, so ad blockers don't stop it
+- Tracks copies, searches, **empty searches**, section views, example opens, theme changes
+- Public read-only stats endpoint feeds the hero counter
+- No cookies, no accounts, no IP storage — honours DNT / GPC, one-line opt-out
+- Optional **PostHog** layer and **Vercel Web Analytics** — both inert until configured
+
+</td>
+</tr>
+<tr>
+<td width="50%" valign="top">
+
+### ⚙️ Scroll Performance
+- Active section comes from `IntersectionObserver`, not per-frame measuring
+- Progress bar animates `transform: scaleX()` only — never triggers layout
+- Eased anchor jumps (`easeInOutCubic`, 420–1150ms) cancel the instant you scroll manually
+- Hero demo parallax runs on `translate3d` only
 
 </td>
 <td width="50%" valign="top">
@@ -105,8 +127,7 @@ Every developer has been mid-merge, mid-rebase, or mid-panic and typed **"how do
 ### 🖋️ Typography System
 | Role | Typeface |
 |---|---|
-| Wordmark | Syne 800 |
-| Headings | IBM Plex Sans Condensed 700 |
+| Wordmark & headings | Manrope 700 / 800 |
 | Body | IBM Plex Sans |
 | Commands / data | IBM Plex Mono |
 
@@ -132,6 +153,13 @@ gitatlas/
 ├── styles.css     blueprint theme, both colour modes, responsive rules
 ├── data.js        the command database (edit this to add commands)
 ├── app.js         rendering, search, copy, navigation, theme
+├── analytics.js   anonymous event tracking (client)
+├── api/
+│   ├── track.js   POST endpoint — turns events into Redis counters
+│   ├── stats.js   GET endpoint  — public aggregate, feeds the hero counter
+│   └── _lib/      Upstash client + generated command allowlist
+├── tools/
+│   └── build-allowlist.js   regenerates the allowlist from data.js
 ├── vercel.json    static hosting config
 └── README.md
 ```
@@ -140,7 +168,7 @@ gitatlas/
 
 ## 🚀 Quick start
 
-**No build. No install. No config.** Just open it.
+**No build. No install. No config required.** Just open it.
 
 ```bash
 git clone https://github.com/arman080325/GitAtlas-Project.git
@@ -200,6 +228,56 @@ Every push to `main` redeploys automatically. 🔁
 </td>
 </tr>
 </table>
+
+<br/>
+
+## 📊 Analytics
+
+Two layers, because they answer different questions.
+
+**Your own counters** (`/api/track` → Upstash Redis) are the source of truth. The request is same-origin, so ad blockers — which a developer audience runs heavily — do not stop it.
+
+**PostHog** is optional and handles exploration: funnels, retention, session behaviour. Leave `posthogKey` empty in `index.html` and everything else still works.
+
+**Vercel Web Analytics** covers visitors and page views. Enable it in the Vercel dashboard (Project → Analytics); the script tag is already in `index.html` and is inert until you do.
+
+### Setup
+
+1. In Vercel, add the **Upstash** integration from the Marketplace and create a Redis database, then connect it to the project with **all three environments ticked** and the custom prefix left empty.
+
+   The integration provisions `KV_REST_API_URL` and `KV_REST_API_TOKEN`; a database created directly on upstash.com gives you `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` instead. `api/_lib/redis.js` reads either pair, so there is nothing to rename.
+2. Optionally add `TRACK_SALT` — any random string. It salts the hash used for rate limiting, so raw IPs never exist even in memory beyond the request.
+3. Optionally paste a PostHog project key into `window.GITATLAS_ANALYTICS.posthogKey`.
+4. Redeploy. Nothing else to configure — with no environment variables set, the endpoints return cleanly and the hero counter stays hidden.
+
+### What gets recorded
+
+| Event | Why it earns its place |
+|---|---|
+| `command_copied` | The core metric. Which command, which section, risk level, and whether it came from a search |
+| `search_no_results` | **The most useful counter on the site.** Every entry is a command someone expected and the atlas does not have. This is your content backlog, written by your users |
+| `search_performed` | The words people actually use. If they search "delete branch" and your entry says "remove", that is a wording bug |
+| `section_viewed` | Which of the 26 sections earn their place. Once per section per visit |
+| `example_opened` / `example_copied` | Whether the worked examples are worth writing |
+| `theme_changed` | How many people override the system default |
+
+Read them back any time:
+
+```bash
+curl https://your-site.vercel.app/api/stats            # totals only
+curl https://your-site.vercel.app/api/stats?detail=1   # + top commands and missed searches
+```
+
+### Privacy and abuse
+
+- No cookies, no accounts, no IP storage. The only identifier is a random string in `sessionStorage` that dies with the tab.
+- `Do Not Track` and Global Privacy Control are honoured — those visitors send nothing.
+- Anyone can opt out permanently from the footer link, or from the console with `GitAtlasAnalytics.optOut()`.
+- `/api/track` **rejects any command string not in the generated allowlist**, so a public write endpoint cannot be used to pollute the leaderboard with junk keys. Search terms are stripped to `[a-z0-9 ._:/-]` and capped at 40 characters before they can become a Redis key.
+- Rate limited to 120 requests per minute per hashed IP, 25 events per request, 300 events per browser tab.
+- Every failure is silent. A blocked or offline request never affects the page.
+
+> After adding or editing commands in `data.js`, run `node tools/build-allowlist.js` so the API will count the new ones.
 
 <br/>
 
@@ -276,6 +354,8 @@ Want it on a subdomain? In **Vercel → Project → Settings → Domains**, add 
 ![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)
 ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
 ![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)
+![Upstash Redis](https://img.shields.io/badge/Upstash%20Redis-00E9A3?style=for-the-badge&logo=redis&logoColor=black)
+![PostHog](https://img.shields.io/badge/PostHog%20(optional)-000000?style=for-the-badge&logo=posthog&logoColor=white)
 ![Google Fonts](https://img.shields.io/badge/Google%20Fonts-4285F4?style=for-the-badge&logo=googlefonts&logoColor=white)
 
 </div>
@@ -288,7 +368,8 @@ Found a command that's missing, wrong, or explained badly? Pull requests are ver
 
 1. Fork the repo
 2. Add/edit an entry in `data.js`
-3. Open a PR with a short note on what changed and why
+3. Run `node tools/build-allowlist.js` if you touched `data.js`
+4. Open a PR with a short note on what changed and why
 
 <br/>
 
