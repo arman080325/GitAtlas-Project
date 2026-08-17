@@ -113,7 +113,8 @@
         </div>
 
         <div class="hero-jump">
-          <button class="chip chip-lead" data-jump="builders">Interactive Studio</button>
+          <button class="chip chip-lead" data-jump="visualizer">Branch Visualizer</button>
+          <button class="chip" data-jump="builders">Interactive Studio</button>
           <button class="chip" data-jump="wizard">Recovery Wizard</button>
           <button class="chip" data-jump="fixes">Fix an Error</button>
           <button class="chip" data-jump="undo">Undo a mistake</button>
@@ -169,6 +170,117 @@
     </div>
 
     <div class="hero-rule" aria-hidden="true"><span></span><b>Scroll</b><span></span></div>
+  </section>
+
+  <!-- Interactive Git Graph & Branch Visualizer Section -->
+  <section class="visualizer" id="visualizer" aria-labelledby="visualizerTitle">
+    <div class="visualizer-inner">
+      <header class="visualizer-head">
+        <div class="visualizer-head-copy">
+          <p class="eyebrow">Visual Sandbox &amp; DAG Simulator</p>
+          <h2 id="visualizerTitle">Interactive Git Graph &amp; Branch Visualizer</h2>
+          <p>Watch how branches, commit hashes, <code>HEAD</code> pointers, and merge commits move before you run commands in your terminal. Choose a guided scenario or test freely in sandbox mode.</p>
+        </div>
+
+        <!-- Scenario Selector Pills -->
+        <div class="viz-scenario-bar">
+          <div class="viz-scenario-pills" id="vizScenarioPills"></div>
+        </div>
+      </header>
+
+      <!-- Main Visualizer Stage -->
+      <div class="viz-stage">
+        <div class="viz-stage-main">
+          <!-- Canvas Top Bar -->
+          <div class="viz-canvas-bar">
+            <div class="viz-scenario-meta">
+              <h3 class="viz-scenario-heading" id="vizScenarioTitle">git merge (3-Way Merge)</h3>
+              <p class="viz-scenario-desc" id="vizScenarioSub">Joining divergent branches by creating a merge commit with two parents.</p>
+            </div>
+
+            <!-- Stepper Controller -->
+            <div class="viz-stepper-ctrls">
+              <button type="button" class="viz-ctrl-btn" id="vizPrevBtn" aria-label="Previous step" title="Previous step">
+                <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3 5 8l5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span>Prev</span>
+              </button>
+              <div class="viz-stepper-dots" id="vizStepperDots"></div>
+              <button type="button" class="viz-ctrl-btn" id="vizNextBtn" aria-label="Next step" title="Next step">
+                <span>Next</span>
+                <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+              <button type="button" class="viz-ctrl-btn viz-play-btn" id="vizPlayBtn" aria-label="Auto play step-by-step">
+                <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2.5v11l9-5.5z" fill="currentColor"/></svg>
+                <span>Auto Play</span>
+              </button>
+              <button type="button" class="viz-ctrl-btn" id="vizResetBtn" aria-label="Reset scenario" title="Reset scenario">
+                <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8a5 5 0 0 1 8.5-3.5L14 7M14 2v5H9M13 8a5 5 0 0 1-8.5 3.5L2 9M2 14V9h5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- SVG Visualizer Canvas -->
+          <div class="viz-canvas-wrap">
+            <svg id="visualizerSvg" class="viz-svg" preserveAspectRatio="xMidYMid meet" aria-label="Interactive Git commit graph"></svg>
+            <div class="viz-inspector" id="vizInspector" hidden></div>
+          </div>
+
+          <!-- Sandbox Action Toolbar -->
+          <div class="viz-sandbox-toolbar" id="vizSandboxToolbar">
+            <span class="viz-sb-tag">Sandbox Actions:</span>
+            <button type="button" class="viz-sb-btn" id="sbCommitBtn">+ git commit</button>
+            <button type="button" class="viz-sb-btn" id="sbBranchBtn">+ git branch &lt;name&gt;</button>
+            <button type="button" class="viz-sb-btn" id="sbSwitchBtn">git checkout &lt;branch&gt;</button>
+            <button type="button" class="viz-sb-btn" id="sbResetBtn">git reset --soft HEAD~1</button>
+            <button type="button" class="viz-sb-btn viz-sb-reset" id="sbClearBtn">Reset Sandbox</button>
+          </div>
+        </div>
+
+        <!-- Sidebar: Command & Explanation -->
+        <aside class="viz-stage-sidebar">
+          <div class="viz-step-card">
+            <div class="viz-step-header">
+              <span class="viz-step-badge" id="vizStepNum">Step 1 of 3</span>
+              <h4 class="viz-step-title" id="vizStepTitle">Initial State: Divergent Branches</h4>
+            </div>
+
+            <div class="viz-terminal-box">
+              <div class="viz-terminal-head">
+                <span class="viz-term-label">Terminal Command</span>
+                <button type="button" class="copy-btn" id="vizCopyCmdBtn" aria-label="Copy terminal command">
+                  <svg class="sheet" viewBox="0 0 16 16" aria-hidden="true"><rect x="5.5" y="1.5" width="9" height="11" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M10.5 14.5h-8a1 1 0 0 1-1-1v-9" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                  <svg class="tick" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 8.5 6 12l7.5-8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  <span>Copy</span>
+                </button>
+              </div>
+              <div class="viz-terminal-body">
+                <span class="viz-term-prompt">$</span>
+                <code id="vizCmdCode">git checkout main</code>
+              </div>
+            </div>
+
+            <div class="viz-expl-box">
+              <p class="viz-expl-label">Under the Hood</p>
+              <p class="viz-expl-text" id="vizStepWhy">You are on the "main" branch. Both "main" and "feat/login" have new commits that branched off commit C2.</p>
+            </div>
+
+            <div class="viz-tip-box">
+              <span class="viz-tip-icon">💡</span>
+              <p class="viz-tip-text" id="vizStepTip">Notice C3 and C4 on "feat/login", and C5 on "main". Both have progressed independently.</p>
+            </div>
+          </div>
+
+          <!-- Legend -->
+          <div class="viz-legend">
+            <span class="viz-legend-item"><i style="background: #58a6ff;"></i> main</span>
+            <span class="viz-legend-item"><i style="background: #bc8cff;"></i> feature</span>
+            <span class="viz-legend-item"><i style="background: #3fb950;"></i> rebased</span>
+            <span class="viz-legend-item"><i style="background: #d29922;"></i> cherry-picked</span>
+            <span class="viz-legend-item"><i style="background: #8b949e;"></i> orphan / undone</span>
+          </div>
+        </aside>
+      </div>
+    </div>
   </section>
 
   <section class="studio" id="builders" aria-labelledby="studioTitle">
@@ -811,6 +923,7 @@ window.GITATLAS_ANALYTICS = {
 <script src="flows.js"></script>
 <script src="tools.js"></script>
 <script src="toolkit.js"></script>
+<script src="visualizer.js"></script>
 <script src="app.js"></script>
 </body>
 </html>
