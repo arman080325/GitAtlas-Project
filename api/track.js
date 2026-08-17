@@ -7,7 +7,7 @@
    Body: { sid: "abc123", events: [{ n: "command_copied", p: { ... } }] } */
 
 const { pipeline, configured } = require("./_lib/redis.js");
-const { COMMANDS, SECTIONS } = require("./_lib/commands.js");
+const { COMMANDS, SECTIONS, PLAYBOOKS } = require("./_lib/commands.js");
 const crypto = require("crypto");
 
 const MAX_EVENTS = 25;
@@ -22,7 +22,10 @@ const EVENTS = new Set([
   "search_performed",
   "search_no_results",
   "section_viewed",
-  "theme_changed"
+  "theme_changed",
+  "wizard_answer",
+  "playbook_opened",
+  "playbook_copied"
 ]);
 
 function today() {
@@ -104,6 +107,23 @@ function commandsFor(event, sid) {
     case "section_viewed":
       if (!SECTIONS.has(p.section)) return [];
       return [["HINCRBY", "views:by_section", p.section, 1]];
+
+    /* Which recovery paths people actually need is the whole point of
+       the wizard — count the destination, never the free-text input. */
+    case "wizard_answer":
+      return [["INCR", "wizard:answers"]];
+
+    case "playbook_opened":
+      if (!PLAYBOOKS.has(p.playbook)) return [];
+      return [
+        ["INCR", "playbooks:total"],
+        ["HINCRBY", "playbooks:opened", p.playbook, 1],
+        ["HINCRBY", "playbooks:via", p.via === "wizard" ? "wizard" : "direct", 1]
+      ];
+
+    case "playbook_copied":
+      if (!PLAYBOOKS.has(p.playbook)) return [];
+      return [["HINCRBY", "playbooks:copied", p.playbook, 1]];
 
     case "theme_changed":
       if (["system", "light", "dark"].indexOf(p.mode) === -1) return [];

@@ -109,6 +109,7 @@
         </div>
 
         <div class="hero-jump">
+          <button class="chip chip-lead" data-jump="wizard">Something went wrong?</button>
           <button class="chip" data-jump="undo">Undo a mistake</button>
           <button class="chip" data-jump="merge">Fix a conflict</button>
           <button class="chip" data-jump="rebase">Rebase safely</button>
@@ -163,6 +164,23 @@
     </div>
 
     <div class="hero-rule" aria-hidden="true"><span></span><b>Scroll</b><span></span></div>
+  </section>
+
+  <section class="wizard" id="wizard" aria-labelledby="wizardTitle">
+    <div class="wizard-inner">
+      <header class="wizard-head">
+        <p class="eyebrow">Guided recovery</p>
+        <h2 id="wizardTitle">Not sure what to run next?</h2>
+        <p>Answer two questions and GitAtlas hands you an ordered playbook &mdash; with the read-only check to run before every risky step, and what each one cannot be undone from.</p>
+      </header>
+
+      <div class="wizard-stage" id="wizardStage" aria-live="polite"></div>
+
+      <div class="wizard-browse">
+        <p class="wizard-browse-label">Or open a playbook directly</p>
+        <div class="pb-chips" id="playbookChips"></div>
+      </div>
+    </div>
   </section>
 
   <section class="fix-assistant" id="fix-assistant" aria-labelledby="fixAssistantTitle">
@@ -283,6 +301,7 @@ window.GITATLAS_ANALYTICS = {
 <script defer src="/_vercel/insights/script.js"></script>
 <script src="analytics.js"></script>
 <script src="data.js"></script>
+<script src="flows.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

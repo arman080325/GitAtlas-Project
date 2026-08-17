@@ -5,4 +5,6 @@ const COMMANDS = new Set(["git --version","git config --global user.name \"Your 
 
 const SECTIONS = new Set(["setup","aliases","start","staging","commit","ignore","history","inspect","branch","merge","rebase","remotes","sync","fork","stash","undo","cherry","tags","advanced","hooks","maintenance","security","ghcli","actions","workflows","fixes"]);
 
-module.exports = { COMMANDS, SECTIONS };
+const PLAYBOOKS = new Set(["feature-pr","update-fork","resolve-conflict","move-work","release-tag","tidy-history","lost-commit","hard-reset-oops","lost-uncommitted","wrong-branch","wrong-message","bad-merge","conflict-abort","push-rejected","detached-head","pushed-secret","big-file"]);
+
+module.exports = { COMMANDS, SECTIONS, PLAYBOOKS };
