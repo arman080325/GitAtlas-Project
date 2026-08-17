@@ -113,7 +113,8 @@
         </div>
 
         <div class="hero-jump">
-          <button class="chip chip-lead" data-jump="security">Security &amp; Secret Shield</button>
+          <button class="chip chip-lead" data-jump="cli">Terminal CLI</button>
+          <button class="chip" data-jump="security">Security &amp; Secret Shield</button>
           <button class="chip" data-jump="visualizer">Branch Visualizer</button>
           <button class="chip" data-jump="builders">Interactive Studio</button>
           <button class="chip" data-jump="wizard">Recovery Wizard</button>
@@ -480,6 +481,101 @@
             <span class="viz-legend-item"><i style="background: #8b949e;"></i> orphan / undone</span>
           </div>
         </aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- Terminal & CLI Companion Section -->
+  <section class="cli-hub" id="cli" aria-labelledby="cliTitle">
+    <div class="cli-inner">
+      <header class="cli-head">
+        <div class="cli-head-copy">
+          <p class="eyebrow">Terminal &amp; Command Line Companion</p>
+          <h2 id="cliTitle">GitAtlas in Your Terminal</h2>
+          <p>Search 381+ commands, diagnose errors, and scan for secrets directly from your command line with zero installation required.</p>
+        </div>
+      </header>
+
+      <div class="cli-grid">
+        <!-- Setup Methods -->
+        <div class="cli-methods">
+          <!-- Method 1: Zero-Install NPX -->
+          <div class="cli-method-card">
+            <div class="cli-method-head">
+              <span class="cli-method-tag">Zero Install</span>
+              <h3>Run Instantly with NPX</h3>
+            </div>
+            <p>Execute queries on the fly without installing anything globally:</p>
+            <div class="cli-code-snippet">
+              <code>npx gitatlas &lt;search query&gt;</code>
+              <button type="button" class="mini-copy" data-cli-copy="npx gitatlas undo commit">Copy Example</button>
+            </div>
+          </div>
+
+          <!-- Method 2: Git Subcommand Alias -->
+          <div class="cli-method-card">
+            <div class="cli-method-head">
+              <span class="cli-method-tag">Native Git</span>
+              <h3>Native Git Alias (<code>git atlas</code>)</h3>
+            </div>
+            <p>Add a 1-line alias so you can type <code>git atlas &lt;query&gt;</code> natively in Git:</p>
+            <div class="cli-code-snippet">
+              <code>git config --global alias.atlas "!npx gitatlas"</code>
+              <button type="button" class="mini-copy" data-cli-copy="git config --global alias.atlas &quot;!npx gitatlas&quot;">Copy</button>
+            </div>
+          </div>
+
+          <!-- Method 3: Shell Function / Profile -->
+          <div class="cli-method-card">
+            <div class="cli-method-head">
+              <span class="cli-method-tag">Shell Function</span>
+              <h3>Bash / Zsh / PowerShell Shortcut</h3>
+            </div>
+            <p>Drop this snippet into your <code>~/.zshrc</code>, <code>~/.bashrc</code>, or <code>$PROFILE</code>:</p>
+            <div class="cli-code-snippet">
+              <code>gitatlas() { npx -y gitatlas "$@"; }</code>
+              <button type="button" class="mini-copy" data-cli-copy="gitatlas() { npx -y gitatlas &quot;$@&quot;; }">Copy</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Interactive Terminal Simulator -->
+        <div class="cli-simulator">
+          <div class="cli-term-window">
+            <div class="cli-term-header">
+              <div class="cli-term-dots">
+                <span class="term-dot dot-red"></span>
+                <span class="term-dot dot-yellow"></span>
+                <span class="term-dot dot-green"></span>
+              </div>
+              <span class="cli-term-title">terminal ~ (gitatlas-companion)</span>
+            </div>
+            <div class="cli-term-body">
+              <div class="cli-term-line"><span class="term-prompt">$</span> <span class="term-cmd">npx gitatlas undo commit</span></div>
+              <div class="cli-term-output">
+                <p class="term-brand">◆ GitAtlas CLI — The Field Guide to Git</p>
+                <div class="term-entry">
+                  <span class="term-entry-cmd">➔ git reset --soft HEAD~1</span>
+                  <span class="term-entry-desc">Removes the last commit but leaves all its changes staged.</span>
+                  <span class="term-entry-risk">Risk: <span class="risk-safe">Safe (Local only)</span></span>
+                </div>
+                <div class="term-entry">
+                  <span class="term-entry-cmd">➔ git revert HEAD</span>
+                  <span class="term-entry-desc">Creates a brand-new commit that undoes the changes of a previous one.</span>
+                  <span class="term-entry-risk">Risk: <span class="risk-safe">Safe (Preserves history)</span></span>
+                </div>
+              </div>
+              <div class="cli-term-line" style="margin-top: 14px;"><span class="term-prompt">$</span> <span class="term-cmd">git atlas --fix "rejected"</span></div>
+              <div class="cli-term-output">
+                <div class="term-entry">
+                  <span class="term-entry-cmd" style="color: #f85149;">🚨 Error: Updates were rejected because the remote contains work</span>
+                  <span class="term-entry-desc">Safe Fix: Pull first with rebase, then push — never force push on shared branches.</span>
+                  <span class="term-entry-code">$ git pull --rebase origin main &amp;&amp; git push</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </section>

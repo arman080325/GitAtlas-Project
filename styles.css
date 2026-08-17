@@ -3723,15 +3723,240 @@ mark {
   line-height: 1.45;
 }
 
+/* =========================================================
+   Terminal & CLI Companion Styles
+   ========================================================= */
+
+.cli-hub {
+  padding: 56px 24px;
+  background: var(--bg-2);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  position: relative;
+}
+
+.cli-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.cli-head {
+  margin-bottom: 28px;
+}
+
+.cli-head-copy h2 {
+  font-family: var(--font-display);
+  font-size: clamp(24px, 3.2vw, 34px);
+  margin: 4px 0 8px;
+  letter-spacing: -.02em;
+}
+
+.cli-head-copy p {
+  color: var(--text-dim);
+  font-size: 15px;
+  line-height: 1.55;
+  max-width: 68ch;
+  margin: 0;
+}
+
+.cli-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.15fr;
+  gap: 24px;
+  align-items: start;
+}
+
+.cli-methods {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.cli-method-card {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 16px 18px;
+  box-shadow: var(--shadow);
+  transition: border-color .15s ease;
+}
+
+.cli-method-card:hover {
+  border-color: var(--accent);
+}
+
+.cli-method-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.cli-method-tag {
+  padding: 2px 7px;
+  background: color-mix(in srgb, var(--accent) 15%, transparent);
+  color: var(--accent);
+  border-radius: 4px;
+  font: 700 10.5px "IBM Plex Mono", monospace;
+  text-transform: uppercase;
+}
+
+.cli-method-head h3 {
+  margin: 0;
+  font-size: 14.5px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: var(--text);
+}
+
+.cli-method-card p {
+  margin: 0 0 10px;
+  font-size: 12.5px;
+  color: var(--text-dim);
+  line-height: 1.4;
+}
+
+.cli-code-snippet {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 9px 12px;
+  background: #0d1117;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+}
+
+.cli-code-snippet code {
+  color: #58a6ff;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 12px;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+/* Terminal Simulator Window */
+.cli-simulator {
+  background: #0d1117;
+  border: 1px solid #30363d;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+
+.cli-term-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 16px;
+  background: #161b22;
+  border-bottom: 1px solid #30363d;
+}
+
+.cli-term-dots {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.term-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 99px;
+  display: inline-block;
+}
+
+.dot-red { background: #ff5f56; }
+.dot-yellow { background: #ffbd2e; }
+.dot-green { background: #27c93f; }
+
+.cli-term-title {
+  font: 500 11.5px "IBM Plex Mono", monospace;
+  color: #8b949e;
+}
+
+.cli-term-body {
+  padding: 20px;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: #e6edf3;
+  overflow-x: auto;
+}
+
+.cli-term-line {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.term-prompt {
+  color: #58a6ff;
+  font-weight: 700;
+}
+
+.term-cmd {
+  color: #fff;
+  font-weight: 600;
+}
+
+.cli-term-output {
+  padding-left: 14px;
+  border-left: 2px solid #30363d;
+  margin-left: 2px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.term-brand {
+  margin: 0;
+  font-size: 11.5px;
+  color: #8b949e;
+  font-weight: 600;
+}
+
+.term-entry {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.term-entry-cmd {
+  color: #3fb950;
+  font-weight: 600;
+}
+
+.term-entry-desc {
+  color: #c9d1d9;
+  font-size: 12px;
+}
+
+.term-entry-risk {
+  font-size: 11px;
+  color: #8b949e;
+}
+
+.term-entry-code {
+  color: #58a6ff;
+  font-size: 12px;
+}
+
+.risk-safe {
+  color: #3fb950;
+  font-weight: 600;
+}
+
 /* Responsiveness */
 @media (max-width: 960px) {
-  .sec-scanner-layout, .sec-purge-layout, .sec-hooks-layout {
+  .sec-scanner-layout, .sec-purge-layout, .sec-hooks-layout, .cli-grid {
     grid-template-columns: 1fr;
   }
 }
 
 @media (max-width: 720px) {
-  .security {
+  .security, .cli-hub {
     padding: 40px 16px;
   }
   .sec-tab-btn {
