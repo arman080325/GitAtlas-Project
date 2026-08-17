@@ -95,6 +95,15 @@ Every developer has been mid-merge, mid-rebase, or mid-panic and typed **"how do
 <tr>
 <td width="50%" valign="top">
 
+### 🔒 Git Security & Secret Shield
+- **100% In-Browser Secret Scanner** — Offline regex detection for AWS keys, Stripe secrets, GitHub PATs, OpenAI/Claude tokens, SSH keys, and DB connection strings
+- **Emergency Purge Playbooks** — Guided step-by-step resolution for unpushed commits, deep history scrubbing via `git-filter-repo`, and cached untracking
+- **Pre-Commit Hook Generator** — 1-click generator & download for `.git/hooks/pre-commit` and Husky to automatically block secret commits
+- **Remediation Checklist** — 7-step interactive incident checklist with persistent `localStorage` progress tracking
+
+</td>
+<td width="50%" valign="top">
+
 ### 🌳 Interactive Git Graph & Branch Visualizer
 - **Interactive SVG DAG Engine** — Dynamic commit nodes, parent links, branch badges, and glowing `HEAD` marker
 - **Step-by-Step Guided Scenarios** — `git merge` (3-way merge), `git rebase` (linear history), `git merge --squash`, `git cherry-pick`, `detached HEAD` & reflog rescue, and `git reset` (`--soft` / `--mixed` / `--hard`)
@@ -102,6 +111,8 @@ Every developer has been mid-merge, mid-rebase, or mid-panic and typed **"how do
 - **Live Sandbox Mode** — Free playground to dynamically run `+ git commit`, `+ git branch`, `git checkout`, and `git reset` on an interactive canvas
 
 </td>
+</tr>
+<tr>
 <td width="50%" valign="top">
 
 ### 🛠️ Interactive Command Studio
@@ -111,8 +122,6 @@ Every developer has been mid-merge, mid-rebase, or mid-panic and typed **"how do
 - **Conventional Commit & PR Composer** — Standardized commit message generator (`git commit -m`) and GitHub CLI PR composer (`gh pr create`)
 
 </td>
-</tr>
-<tr>
 <td width="50%" valign="top">
 
 ### 🧰 Personal Toolkit & Local Vault
@@ -122,6 +131,7 @@ Every developer has been mid-merge, mid-rebase, or mid-panic and typed **"how do
 - **⚙️ `.gitconfig` Exporter** — Interactive shortcut generator (`git lg`, `git uncommit`, `git discard`, `git standup`)
 
 </td>
+</tr>
 <tr>
 <td width="50%" valign="top">
 
