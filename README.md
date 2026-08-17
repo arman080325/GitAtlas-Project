@@ -104,6 +104,17 @@ Every developer has been mid-merge, mid-rebase, or mid-panic and typed **"how do
 </td>
 <td width="50%" valign="top">
 
+### 🧰 Personal Toolkit & Local Vault
+- **⭐ Star & Pin Favorites** — Pin go-to commands with persistent `localStorage` shelf and topbar counter
+- **📦 Custom Snippet Vault** — Save team scripts and personal Git aliases with 1-click JSON export/import
+- **🕒 Copy History Tray** — Real-time session tracker of recent copied commands with 1-tap re-copy
+- **⚙️ `.gitconfig` Exporter** — Interactive shortcut generator (`git lg`, `git uncommit`, `git discard`, `git standup`)
+
+</td>
+</tr>
+<tr>
+<td width="50%" valign="top">
+
 ### 🎨 Theming
 - Follows your **system theme** by default
 - Header button cycles **System → Light → Dark → System**
@@ -112,7 +123,6 @@ Every developer has been mid-merge, mid-rebase, or mid-panic and typed **"how do
 - Zero flash-of-wrong-theme — resolved pre-paint in `<head>`
 
 </td>
-</tr>
 <tr>
 <td width="50%" valign="top">
 

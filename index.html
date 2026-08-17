@@ -72,6 +72,10 @@
     </div>
 
     <div class="topbar-actions">
+      <button class="icon-btn toolkit-btn" id="toolkitBtn" type="button" aria-label="My Toolkit &amp; Favorites" title="My Toolkit &amp; Favorites (Alt+T)">
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.75.75 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25z" fill="currentColor"/></svg>
+        <span class="toolkit-badge" id="toolkitBadge" hidden>0</span>
+      </button>
       <a class="icon-btn gh-link" href="https://github.com/arman080325" target="_blank" rel="noopener" aria-label="GitHub profile">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path class="gh-mark" d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
       </a>
@@ -609,6 +613,7 @@
     <div class="rail-scrim" id="railScrim" hidden></div>
 
     <div class="content">
+      <div class="pinned-section" id="pinnedSection" hidden></div>
       <div class="filter-note" id="filterNote" hidden></div>
       <div id="sections"></div>
 
@@ -672,6 +677,118 @@
   </footer>
 </main>
 
+<!-- Toolkit Slide-Over Drawer -->
+<div class="toolkit-scrim" id="toolkitScrim" hidden></div>
+<aside class="toolkit-drawer" id="toolkitDrawer" aria-label="Developer Personal Toolkit" aria-hidden="true">
+  <div class="toolkit-drawer-inner">
+    <header class="toolkit-drawer-head">
+      <div class="toolkit-drawer-title-group">
+        <span class="toolkit-drawer-icon">⭐</span>
+        <div>
+          <h2 class="toolkit-drawer-title">My Toolkit</h2>
+          <p class="toolkit-drawer-subtitle">Saved favorites, custom team snippets &amp; history</p>
+        </div>
+      </div>
+      <button type="button" class="toolkit-close-btn" id="toolkitCloseBtn" aria-label="Close toolkit">&times;</button>
+    </header>
+
+    <nav class="toolkit-tabs" id="toolkitTabsGroup" role="tablist" aria-label="Toolkit Sections">
+      <button type="button" class="toolkit-tab-btn active" role="tab" aria-selected="true" data-toolkit-tab="favorites">
+        <span>⭐ Favorites</span>
+      </button>
+      <button type="button" class="toolkit-tab-btn" role="tab" aria-selected="false" data-toolkit-tab="vault">
+        <span>📦 Custom Vault <span class="toolkit-tab-badge" id="vaultCountBadge">0</span></span>
+      </button>
+      <button type="button" class="toolkit-tab-btn" role="tab" aria-selected="false" data-toolkit-tab="history">
+        <span>🕒 Copy History <span class="toolkit-tab-badge" id="historyCountBadge">0</span></span>
+      </button>
+      <button type="button" class="toolkit-tab-btn" role="tab" aria-selected="false" data-toolkit-tab="gitconfig">
+        <span>⚙️ .gitconfig</span>
+      </button>
+    </nav>
+
+    <!-- Tab 1: Favorites -->
+    <div class="toolkit-tab-panel active" id="toolkit-tab-favorites" role="tabpanel">
+      <div class="toolkit-panel-head">
+        <p class="toolkit-panel-desc">Quick-access list of commands you have starred across GitAtlas.</p>
+      </div>
+      <div class="toolkit-items-list" id="drawerFavoritesList"></div>
+    </div>
+
+    <!-- Tab 2: Custom Vault -->
+    <div class="toolkit-tab-panel" id="toolkit-tab-vault" role="tabpanel" hidden>
+      <div class="toolkit-panel-head">
+        <p class="toolkit-panel-desc">Save team-specific commands or custom multi-step scripts in your browser.</p>
+        <div class="toolkit-vault-actions">
+          <button type="button" class="text-btn" id="vaultExportBtn">Export JSON</button>
+          <button type="button" class="text-btn" id="vaultImportBtn">Import JSON</button>
+          <input type="file" id="vaultImportFile" accept=".json" hidden>
+        </div>
+      </div>
+
+      <!-- Add/Edit Custom Snippet Form -->
+      <div class="toolkit-vault-form-wrap" id="vaultFormWrap">
+        <h4 class="toolkit-form-title" id="vaultFormTitle">Add Custom Snippet</h4>
+        <form id="vaultForm" class="toolkit-form">
+          <input type="hidden" id="vaultEditingIdx" value="">
+          <div class="studio-field">
+            <label class="studio-label" for="vaultTitleIn">Title / Alias Name</label>
+            <input type="text" id="vaultTitleIn" class="studio-input" placeholder="e.g. git prune-merged or Deploy to Staging" required spellcheck="false">
+          </div>
+          <div class="studio-field" style="margin-top: 10px;">
+            <label class="studio-label" for="vaultCmdIn">Command or Script</label>
+            <textarea id="vaultCmdIn" class="studio-textarea" rows="2" placeholder="e.g. git fetch -p && git branch -vv | grep ': gone]' | awk '{print $1}' | xargs git branch -D" required spellcheck="false"></textarea>
+          </div>
+          <div class="studio-field" style="margin-top: 10px;">
+            <label class="studio-label" for="vaultDescIn">Description / Notes (optional)</label>
+            <input type="text" id="vaultDescIn" class="studio-input" placeholder="e.g. Cleans up local branches that were merged on GitHub" spellcheck="false">
+          </div>
+          <div class="toolkit-form-foot" style="margin-top: 12px; display: flex; gap: 10px; align-items: center;">
+            <button type="submit" class="btn btn-small" id="vaultSubmitBtn">Save to Vault</button>
+            <button type="button" class="text-btn" id="vaultCancelEditBtn" hidden>Cancel</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="toolkit-items-list" id="vaultList" style="margin-top: 18px;"></div>
+    </div>
+
+    <!-- Tab 3: Copy History -->
+    <div class="toolkit-tab-panel" id="toolkit-tab-history" role="tabpanel" hidden>
+      <div class="toolkit-panel-head">
+        <p class="toolkit-panel-desc">Last 15 commands copied during your session.</p>
+        <button type="button" class="text-btn" id="clearHistoryBtn">Clear History</button>
+      </div>
+      <div class="toolkit-items-list" id="historyList"></div>
+    </div>
+
+    <!-- Tab 4: .gitconfig Exporter -->
+    <div class="toolkit-tab-panel" id="toolkit-tab-gitconfig" role="tabpanel" hidden>
+      <div class="toolkit-panel-head">
+        <p class="toolkit-panel-desc">Curated developer aliases. Select the ones you want, then copy or download to <code>~/.gitconfig</code>.</p>
+      </div>
+      <div class="toolkit-alias-grid" id="gitconfigCheckboxes"></div>
+      <div class="studio-card" style="margin-top: 16px;">
+        <div class="studio-card-head">
+          <span class="studio-card-tag">~/.gitconfig Preview</span>
+          <div class="studio-card-actions">
+            <button type="button" class="btn btn-small" id="downloadGitconfigBtn">Download</button>
+            <button type="button" class="copy-btn" id="copyGitconfigBtn" aria-label="Copy gitconfig snippet">
+              <svg class="sheet" viewBox="0 0 16 16" aria-hidden="true"><rect x="5.5" y="1.5" width="9" height="11" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M10.5 14.5h-8a1 1 0 0 1-1-1v-9" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              <svg class="tick" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 8.5 6 12l7.5-8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span>Copy</span>
+            </button>
+          </div>
+        </div>
+        <div class="studio-code-box studio-code-tall">
+          <pre><code id="gitconfigPreviewCode"></code></pre>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</aside>
+
 <button class="to-top" id="toTop" type="button" aria-label="Back to top" hidden>
   <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 16V5M5 10l5-5 5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
 </button>
@@ -693,6 +810,7 @@ window.GITATLAS_ANALYTICS = {
 <script src="data.js"></script>
 <script src="flows.js"></script>
 <script src="tools.js"></script>
+<script src="toolkit.js"></script>
 <script src="app.js"></script>
 </body>
 </html>
