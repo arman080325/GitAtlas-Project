@@ -113,7 +113,8 @@
         </div>
 
         <div class="hero-jump">
-          <button class="chip chip-lead" data-jump="visualizer">Branch Visualizer</button>
+          <button class="chip chip-lead" data-jump="security">Security &amp; Secret Shield</button>
+          <button class="chip" data-jump="visualizer">Branch Visualizer</button>
           <button class="chip" data-jump="builders">Interactive Studio</button>
           <button class="chip" data-jump="wizard">Recovery Wizard</button>
           <button class="chip" data-jump="fixes">Fix an Error</button>
@@ -170,6 +171,206 @@
     </div>
 
     <div class="hero-rule" aria-hidden="true"><span></span><b>Scroll</b><span></span></div>
+  </section>
+
+  <!-- Git Security & Secret Leak Emergency Response Suite -->
+  <section class="security" id="security" aria-labelledby="securityTitle">
+    <div class="security-inner">
+      <header class="security-head">
+        <div class="security-head-copy">
+          <p class="eyebrow">Emergency Response &amp; Hardening</p>
+          <h2 id="securityTitle">Git Security &amp; Secret Shield</h2>
+          <p>Scan diffs for leaked API keys, purge credentials from Git history safely without corrupting repositories, generate pre-commit shields, and follow an incident recovery checklist.</p>
+        </div>
+
+        <nav class="sec-nav-tabs" role="tablist" aria-label="Security Tools">
+          <button type="button" class="sec-tab-btn active" role="tab" aria-selected="true" data-sec-tab="scanner">
+            <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M11.5 7a4.499 4.499 0 1 1-8.998 0A4.499 4.499 0 0 1 11.5 7zm-.82 4.74 3.68 3.68a.75.75 0 1 0 1.06-1.06l-3.68-3.68a5.998 5.998 0 1 0-1.06 1.06z" fill="currentColor"/></svg>
+            <span>Secret Scanner</span>
+          </button>
+          <button type="button" class="sec-tab-btn" role="tab" aria-selected="false" data-sec-tab="purge">
+            <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M11 1.75V3h2.25a.75.75 0 0 1 0 1.5H2.75a.75.75 0 0 1 0-1.5H5V1.75C5 .784 5.784 0 6.75 0h2.5C10.216 0 11 .784 11 1.75zM4.496 6.675l.66 6.6a2.25 2.25 0 0 0 2.24 2.025h1.208a2.25 2.25 0 0 0 2.24-2.025l.66-6.6a.75.75 0 0 0-1.492-.15l-.66 6.6a.75.75 0 0 1-.748.675H7.396a.75.75 0 0 1-.748-.675l-.66-6.6a.75.75 0 0 0-1.492.15z" fill="currentColor"/></svg>
+            <span>Purge Playbooks</span>
+          </button>
+          <button type="button" class="sec-tab-btn" role="tab" aria-selected="false" data-sec-tab="hooks">
+            <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M7.462.173a1.75 1.75 0 0 1 1.076 0l5.5 1.688A1.75 1.75 0 0 1 15.25 3.5v4.618c0 4.102-2.738 7.785-6.73 9.014a1.75 1.75 0 0 1-1.04 0C3.488 15.903.75 12.22.75 8.118V3.5a1.75 1.75 0 0 1 1.212-1.639z" fill="currentColor"/></svg>
+            <span>Pre-Commit Shield</span>
+          </button>
+          <button type="button" class="sec-tab-btn" role="tab" aria-selected="false" data-sec-tab="checklist">
+            <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 1.75a.75.75 0 0 1 .75-.75h9.5a.75.75 0 0 1 .75.75v12.5a.75.75 0 0 1-.75.75h-9.5a.75.75 0 0 1-.75-.75zm1.5.75v11h8V2.5zm2 2.5a.75.75 0 0 1 .75-.75h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1-.75-.75zm0 3a.75.75 0 0 1 .75-.75h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1-.75-.75zm0 3a.75.75 0 0 1 .75-.75h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1-.75-.75z" fill="currentColor"/></svg>
+            <span>Incident Checklist</span>
+          </button>
+        </nav>
+      </header>
+
+      <!-- TAB 1: Secret Scanner -->
+      <div class="sec-panel active" id="sec-panel-scanner" role="tabpanel">
+        <div class="sec-scanner-layout">
+          <div class="sec-input-card">
+            <div class="sec-input-head">
+              <label for="secScannerInput" class="sec-input-label">Paste Commit Diff, Code Snippet, or <code>.env</code></label>
+              <button type="button" class="text-btn" id="secScanClear">Clear</button>
+            </div>
+            <textarea id="secScannerInput" class="sec-textarea" rows="6" placeholder="Paste text here to scan locally for AWS keys, Stripe tokens, OpenAI/Claude keys, GitHub PATs, private SSH keys, and database passwords..." spellcheck="false"></textarea>
+
+            <div class="sec-samples-bar">
+              <span class="sec-samples-label">Test Sample Leaks:</span>
+              <button type="button" class="sec-sample-btn" data-sec-sample="aws">AWS IAM</button>
+              <button type="button" class="sec-sample-btn" data-sec-sample="github">GitHub PAT</button>
+              <button type="button" class="sec-sample-btn" data-sec-sample="stripe">Stripe Secret</button>
+              <button type="button" class="sec-sample-btn" data-sec-sample="openai">OpenAI / LLM</button>
+              <button type="button" class="sec-sample-btn" data-sec-sample="ssh">Private SSH Key</button>
+              <button type="button" class="sec-sample-btn" data-sec-sample="database">Postgres URI</button>
+            </div>
+
+            <p class="sec-privacy-note">
+              <svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><path d="M8 1.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13zM0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm9-3a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm-.25 3.75a.75.75 0 0 0-1.5 0v3.5a.75.75 0 0 0 1.5 0z" fill="currentColor"/></svg>
+              <b>100% Privacy-Preserving:</b> All regular expression evaluations happen entirely inside your browser JavaScript runtime. Nothing is transmitted over any network.
+            </p>
+          </div>
+
+          <div class="sec-results-card">
+            <div class="sec-results-head">
+              <span class="sec-results-title">Scan Results</span>
+              <span class="sec-badge sec-badge-clean" id="secScanBadge" hidden>0 Leaks Found</span>
+            </div>
+            <div class="sec-results-body" id="secScanResults">
+              <div class="sec-empty-state">
+                <p>Paste a commit diff, code snippet, or <code>.env</code> file on the left to scan for leaked secrets.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 2: Purge Playbooks -->
+      <div class="sec-panel" id="sec-panel-purge" role="tabpanel" hidden>
+        <div class="sec-purge-layout">
+          <div class="sec-purge-selector">
+            <button type="button" class="sec-purge-tab-btn active" data-sec-purge="unpushed">
+              <strong>1. Committed Locally (Unpushed)</strong>
+              <span>Soft-reset &amp; unstage without rewriting remote history</span>
+            </button>
+            <button type="button" class="sec-purge-tab-btn" data-sec-purge="pushed">
+              <strong>2. Pushed to Remote (Public/Shared)</strong>
+              <span>Deep scrub entire history using <code>git-filter-repo</code></span>
+            </button>
+            <button type="button" class="sec-purge-tab-btn" data-sec-purge="untrack">
+              <strong>3. Stop Tracking Active File</strong>
+              <span>Remove from Git index while preserving file on local disk</span>
+            </button>
+          </div>
+
+          <div id="secPurgeContainer" class="sec-purge-stage"></div>
+        </div>
+      </div>
+
+      <!-- TAB 3: Pre-Commit Hook Shield -->
+      <div class="sec-panel" id="sec-panel-hooks" role="tabpanel" hidden>
+        <div class="sec-hooks-layout">
+          <div class="sec-hook-meta">
+            <h3>Pre-Commit Secret Shield Hook</h3>
+            <p>A lightweight bash script that executes automatically before every <code>git commit</code>. It inspects all staged files and aborts the commit if an <code>.env</code> file, cryptographic key, or token pattern is detected.</p>
+            <div class="studio-field" style="margin-top: 14px;">
+              <label class="studio-label" for="secHookType">Hook Implementation Format</label>
+              <select id="secHookType" class="studio-select">
+                <option value="native">Native Git Hook (.git/hooks/pre-commit)</option>
+                <option value="husky">Husky / npm lint-staged (.husky/pre-commit)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="studio-card">
+            <div class="studio-card-head">
+              <span class="studio-card-tag">Hook Script Preview</span>
+              <div class="studio-card-actions">
+                <button type="button" class="btn btn-small" id="secHookDownloadBtn">Download Hook</button>
+                <button type="button" class="copy-btn" id="secHookCopyBtn" aria-label="Copy hook script">
+                  <svg class="sheet" viewBox="0 0 16 16" aria-hidden="true"><rect x="5.5" y="1.5" width="9" height="11" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M10.5 14.5h-8a1 1 0 0 1-1-1v-9" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                  <svg class="tick" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 8.5 6 12l7.5-8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  <span>Copy</span>
+                </button>
+              </div>
+            </div>
+            <div class="studio-code-box studio-code-tall">
+              <pre><code id="secHookPreviewCode"></code></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 4: Incident Checklist -->
+      <div class="sec-panel" id="sec-panel-checklist" role="tabpanel" hidden>
+        <div class="sec-checklist-card">
+          <div class="sec-checklist-head">
+            <div>
+              <h3 class="sec-checklist-title">Leaked Secret Incident Remediation Checklist</h3>
+              <p class="sec-checklist-desc">Follow these 7 critical steps in order if credentials were pushed to GitHub or a shared remote. Checkboxes persist across page reloads.</p>
+            </div>
+            <button type="button" class="text-btn" id="secResetChecklistBtn">Reset Checklist</button>
+          </div>
+
+          <div class="sec-checklist-items">
+            <label class="sec-check-item">
+              <input type="checkbox" data-check-id="chk_revoke">
+              <div class="sec-check-text">
+                <strong>1. Invalidate &amp; Revoke the Exposed Credential Immediately</strong>
+                <p>Go to your cloud dashboard (AWS IAM, Stripe, OpenAI, GitHub PATs) and delete/roll the key. Once a secret is pushed, treat it as compromised forever.</p>
+              </div>
+            </label>
+
+            <label class="sec-check-item">
+              <input type="checkbox" data-check-id="chk_audit">
+              <div class="sec-check-text">
+                <strong>2. Audit Activity &amp; Billing Logs</strong>
+                <p>Review AWS CloudTrail, Stripe Event Logs, or database query logs for suspicious API requests or unexpected infrastructure spikes made during the exposure window.</p>
+              </div>
+            </label>
+
+            <label class="sec-check-item">
+              <input type="checkbox" data-check-id="chk_purge">
+              <div class="sec-check-text">
+                <strong>3. Scrub History using <code>git-filter-repo</code></strong>
+                <p>Run <code>git filter-repo --invert-paths --path &lt;secret-file&gt;</code> to purge all historical commit references, trees, and blobs across all branches.</p>
+              </div>
+            </label>
+
+            <label class="sec-check-item">
+              <input type="checkbox" data-check-id="chk_forcepush">
+              <div class="sec-check-text">
+                <strong>4. Force-Push Cleaned History with Lease</strong>
+                <p>Execute <code>git push origin --force-with-lease --all</code> and <code>git push origin --force-with-lease --tags</code> to update remote refs safely.</p>
+              </div>
+            </label>
+
+            <label class="sec-check-item">
+              <input type="checkbox" data-check-id="chk_githubcache">
+              <div class="sec-check-text">
+                <strong>5. Clear GitHub Commit Cache &amp; Orphan Pull Request Refs</strong>
+                <p>If the repository is public, contact GitHub Support to purge unreachable cached commit SHAs, or delete associated PR heads if feasible.</p>
+              </div>
+            </label>
+
+            <label class="sec-check-item">
+              <input type="checkbox" data-check-id="chk_gitignore">
+              <div class="sec-check-text">
+                <strong>6. Add Pattern to <code>.gitignore</code> and Install Pre-Commit Hook</strong>
+                <p>Ensure <code>.env</code>, <code>*.pem</code>, and <code>*.key</code> rules are committed to <code>.gitignore</code>, and install the GitAtlas Pre-Commit Shield.</p>
+              </div>
+            </label>
+
+            <label class="sec-check-item">
+              <input type="checkbox" data-check-id="chk_team">
+              <div class="sec-check-text">
+                <strong>7. Coordinate with Team Members</strong>
+                <p>Instruct collaborators to re-clone the sanitized repository or run <code>git fetch origin &amp;&amp; git reset --hard origin/main</code> to avoid re-pushing dirty history.</p>
+              </div>
+            </label>
+          </div>
+        </div>
+      </div>
+
+    </div>
   </section>
 
   <!-- Interactive Git Graph & Branch Visualizer Section -->
@@ -924,6 +1125,7 @@ window.GITATLAS_ANALYTICS = {
 <script src="tools.js"></script>
 <script src="toolkit.js"></script>
 <script src="visualizer.js"></script>
+<script src="security.js"></script>
 <script src="app.js"></script>
 </body>
 </html>
