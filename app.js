@@ -1001,6 +1001,189 @@
     }
   }
 
+  /* ---------- guided playbooks + recovery wizard ----------
+     Two ways into the same content: answer two questions, or open a
+     playbook directly. Every risky step carries the read-only check
+     you should run before it. */
+
+  var wizPath = [];
+
+  function pbById(id) {
+    for (var i = 0; i < PLAYBOOKS.length; i++) if (PLAYBOOKS[i].id === id) return PLAYBOOKS[i];
+    return null;
+  }
+
+  function wizNode() {
+    var node = WIZARD;
+    for (var i = 0; i < wizPath.length; i++) node = node.options[wizPath[i]].next;
+    return node;
+  }
+
+  function crumbsHTML() {
+    var html = '<button type="button" class="crumb" data-wiz-to="0">Start</button>';
+    var node = WIZARD;
+    for (var i = 0; i < wizPath.length; i++) {
+      var opt = node.options[wizPath[i]];
+      html += '<span class="crumb-sep">/</span><button type="button" class="crumb" data-wiz-to="' +
+              (i + 1) + '">' + esc(opt.label) + "</button>";
+      node = opt.next;
+    }
+    return '<nav class="wiz-crumbs" aria-label="Your answers">' + html + "</nav>";
+  }
+
+  function questionHTML(node) {
+    var opts = node.options.map(function (o, i) {
+      return '<button type="button" class="wiz-option" data-wiz="' + i + '">' +
+               "<b>" + esc(o.label) + "</b>" +
+               (o.hint ? "<span>" + esc(o.hint) + "</span>" : "") +
+               '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5 2l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+             "</button>";
+    }).join("");
+    return (wizPath.length ? crumbsHTML() : "") +
+           '<p class="wiz-q">' + esc(node.q) + "</p>" +
+           '<div class="wiz-options">' + opts + "</div>";
+  }
+
+  function stepHTML(step, pbId, index) {
+    var html = '<li class="pb-step"><span class="pb-num">' + (index + 1) + "</span><div class=\"pb-body\">" +
+               '<p class="pb-do">' + esc(step.do) + "</p>";
+
+    if (step.check) {
+      html += '<div class="pb-check">' +
+                '<p class="pb-check-head">Check first</p>' +
+                '<div class="pb-mini"><code>' + esc(step.check.cmd) + "</code>" +
+                  '<button type="button" class="mini-copy" data-pb-copy="' + pbId + ":" + index + ':check">Copy</button></div>' +
+                "<p>" + esc(step.check.why) + "</p>" +
+              "</div>";
+    }
+
+    html += '<div class="pb-cmd"><pre>' + esc(step.cmd) + "</pre>" +
+              '<button type="button" class="mini-copy" data-pb-copy="' + pbId + ":" + index + ':cmd">Copy</button></div>';
+
+    if (step.warn) html += '<p class="pb-warn">' + esc(step.warn) + "</p>";
+    return html + "</div></li>";
+  }
+
+  function playbookHTML(pb, fromWizard) {
+    var steps = pb.steps.map(function (step, i) { return stepHTML(step, pb.id, i); }).join("");
+    var related = pb.related.map(function (id) {
+      var cat = null;
+      ATLAS.forEach(function (c) { if (c.id === id) cat = c; });
+      return cat ? '<button type="button" class="text-btn" data-jump="' + id + '">' + esc(cat.label) + "</button>" : "";
+    }).join("");
+
+    return (fromWizard ? crumbsHTML() : "") +
+      '<article class="playbook">' +
+        '<header class="pb-head">' +
+          '<p class="pb-kind ' + pb.kind + '">' + (pb.kind === "rescue" ? "Recovery" : "Workflow") + "</p>" +
+          "<h3>" + esc(pb.title) + "</h3>" +
+          '<p class="pb-goal">' + esc(pb.goal) + "</p>" +
+          '<p class="pb-when"><b>When</b> ' + esc(pb.when) + "</p>" +
+          '<div class="pb-actions">' +
+            '<button type="button" class="btn btn-small" data-pb-all="' + pb.id + '">Copy all commands</button>' +
+            '<button type="button" class="text-btn" data-wiz-to="0">Start over</button>' +
+          "</div>" +
+        "</header>" +
+        '<ol class="pb-steps">' + steps + "</ol>" +
+        '<footer class="pb-after"><p>' + esc(pb.after) + "</p>" +
+          (related ? '<div class="pb-related"><span>Related commands</span>' + related + "</div>" : "") +
+        "</footer>" +
+      "</article>";
+  }
+
+  function renderWizard() {
+    var stage = el("wizardStage");
+    if (!stage) return;
+    stage.innerHTML = questionHTML(wizNode());
+  }
+
+  function openPlaybook(id, fromWizard) {
+    var pb = pbById(id), stage = el("wizardStage");
+    if (!pb || !stage) return;
+    stage.innerHTML = playbookHTML(pb, fromWizard);
+    track("playbook_opened", { playbook: id, via: fromWizard ? "wizard" : "direct" });
+    try { history.replaceState(null, "", "#play-" + id); } catch (e) { /* ignore */ }
+  }
+
+  function buildPlaybookChips() {
+    var wrap = el("playbookChips");
+    if (!wrap) return;
+    wrap.innerHTML = PLAYBOOKS.map(function (pb) {
+      return '<button type="button" class="pb-chip ' + pb.kind + '" data-play="' + pb.id + '">' +
+             esc(pb.title) + "</button>";
+    }).join("");
+  }
+
+  /* All wizard interaction, delegated from the section itself. */
+  function initWizard() {
+    var section = el("wizard");
+    if (!section || typeof PLAYBOOKS === "undefined") return;
+
+    buildPlaybookChips();
+    renderWizard();
+
+    section.addEventListener("click", function (ev) {
+      var choice = ev.target.closest("[data-wiz]");
+      if (choice) {
+        var i = +choice.getAttribute("data-wiz");
+        var opt = wizNode().options[i];
+        track("wizard_answer", { depth: wizPath.length });
+
+        if (opt.play) { wizPath.push(i); openPlaybook(opt.play, true); return; }
+        if (opt.jump) { scrollToId(opt.jump); return; }
+        wizPath.push(i);
+        renderWizard();
+        return;
+      }
+
+      var crumb = ev.target.closest("[data-wiz-to]");
+      if (crumb) {
+        wizPath = wizPath.slice(0, +crumb.getAttribute("data-wiz-to"));
+        renderWizard();
+        try { history.replaceState(null, "", "#wizard"); } catch (e) { /* ignore */ }
+        return;
+      }
+
+      var chip = ev.target.closest("[data-play]");
+      if (chip) {
+        wizPath = [];
+        openPlaybook(chip.getAttribute("data-play"), false);
+        return;
+      }
+
+      var stepCopy = ev.target.closest("[data-pb-copy]");
+      if (stepCopy) {
+        var parts = stepCopy.getAttribute("data-pb-copy").split(":");
+        var pb = pbById(parts[0]);
+        if (!pb) return;
+        var step = pb.steps[+parts[1]];
+        var text = parts[2] === "check" ? step.check.cmd : step.cmd;
+        copyText(text).then(function () {
+          flash(stepCopy);
+          toast(parts[2] === "check" ? "Copied the check" : "Copied step " + (+parts[1] + 1));
+          track("playbook_copied", { playbook: pb.id });
+        }).catch(function () { toast("Could not copy \u2014 select the text instead"); });
+        return;
+      }
+
+      var all = ev.target.closest("[data-pb-all]");
+      if (all) {
+        var book = pbById(all.getAttribute("data-pb-all"));
+        if (!book) return;
+        var script = "# " + book.title + "\n# " + book.goal + "\n\n" +
+          book.steps.map(function (st, n) {
+            return "# " + (n + 1) + ". " + st.do +
+                   (st.check ? "\n" + st.check.cmd : "") + "\n" + st.cmd;
+          }).join("\n\n") + "\n";
+        copyText(script).then(function () {
+          flash(all);
+          toast("Copied all " + book.steps.length + " steps");
+          track("playbook_copied", { playbook: book.id });
+        }).catch(function () { toast("Could not copy \u2014 select the text instead"); });
+      }
+    });
+  }
+
   /* ---------- go ---------- */
 
   /* The wordmark is built letter by letter so each one can arrive on its own. */
@@ -1034,10 +1217,20 @@
   render(INDEX, []);
   frame();
   runDemo();
+  initWizard();
   if (window.requestIdleCallback) requestIdleCallback(liveCounter, { timeout: 3000 });
   else setTimeout(liveCounter, 1200);
 
-  if (location.hash) {
+  if (location.hash.indexOf("#play-") === 0) {
+    var wanted = location.hash.slice(6);
+    if (pbById(wanted)) {
+      openPlaybook(wanted, false);
+      setTimeout(function () {
+        var sec = el("wizard");
+        if (sec) sec.scrollIntoView({ block: "start" });
+      }, 60);
+    }
+  } else if (location.hash) {
     var hashTarget = document.getElementById(location.hash.slice(1));
     if (hashTarget) setTimeout(function () { hashTarget.scrollIntoView(); }, 60);
   }

@@ -50,7 +50,9 @@ module.exports = async function handler(req, res) {
         ["HGETALL", "copies:by_command"],
         ["HGETALL", "copies:by_section"],
         ["HGETALL", "search:misses"],
-        ["HGETALL", "search:queries"]
+        ["HGETALL", "search:queries"],
+        ["HGETALL", "playbooks:opened"],
+        ["HGETALL", "playbooks:copied"]
       );
     }
 
@@ -69,6 +71,8 @@ module.exports = async function handler(req, res) {
       body.topSections = topFromHash(out[5], 26);
       body.missedSearches = topFromHash(out[6], 25);
       body.topSearches = topFromHash(out[7], 25);
+      body.topPlaybooks = topFromHash(out[8], 20);
+      body.copiedPlaybooks = topFromHash(out[9], 20);
     }
 
     /* Served from the edge cache for a minute; the counter does not need to

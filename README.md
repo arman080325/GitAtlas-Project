@@ -60,6 +60,19 @@ Every developer has been mid-merge, mid-rebase, or mid-panic and typed **"how do
 </td>
 <td width="50%" valign="top">
 
+### 🧭 Guided Playbooks & Recovery Wizard
+- **17 ordered playbooks** — 11 recovery, 6 everyday workflows
+- Answer **two questions** and land on the right one
+- Every risky step carries a **read-only check to run first**
+- Destructive steps say what they **cannot be undone from**
+- "Copy all commands" exports the whole playbook as a commented script
+- Each playbook is shareable via `#play-<id>`
+
+</td>
+</tr>
+<tr>
+<td width="50%" valign="top">
+
 ### 🔎 Search & Navigation
 - Instant search across command, description, use case, example, and section name
 - Multi-term AND matching with live highlighting
@@ -161,6 +174,7 @@ GitAtlas/
 ├── index.html     page shell — header, hero, layout, footer
 ├── styles.css     GitHub Primer palette, both colour modes, motion, responsive rules
 ├── data.js        the command database (edit this to add commands)
+├── flows.js       playbooks + the wizard decision tree
 ├── app.js         rendering, search, copy, navigation, theme, hero demo
 ├── analytics.js   anonymous event tracking (client)
 ├── og.png         1200×630 social preview card
@@ -292,6 +306,9 @@ With none of them set, both endpoints return cleanly, the counter stays hidden, 
 | `search_performed` | The words people actually use. If they search "delete branch" and your entry says "remove", that is a wording bug |
 | `section_viewed` | Which of the 26 sections earn their place. Once per section per visit |
 | `example_opened` / `example_copied` | Whether the worked examples are worth writing |
+| `playbook_opened` | Which recovery paths people actually need, and whether they arrived via the wizard or a direct chip |
+| `playbook_copied` | Which playbooks are trusted enough to run |
+| `wizard_answer` | How far people get through the wizard. A counter only — no answer text is sent |
 | `theme_changed` | How many people override the system default |
 
 Read them back any time:
@@ -346,6 +363,40 @@ The app handles the rest automatically:
 - Group names for `tag` live in `GROUPS` at the top of `app.js`.
 
 <br/>
+
+## 🧭 Adding a playbook
+
+Playbooks live in `flows.js` and drive both the wizard and the direct-access chips.
+
+```js
+{
+  id: "lost-commit",              // also the deep link: #play-lost-commit
+  kind: "rescue",                 // "rescue" or "workflow" — sets the badge colour
+  title: "Recover a lost commit or deleted branch",
+  goal: "One line on what this achieves.",
+  when: "When someone should reach for it.",
+  steps: [
+    {
+      do: "What this step achieves, in plain English.",
+      cmd: "git reflog",                                  // may be multi-line
+      check: { cmd: "git status", why: "Why to run this first." },   // optional
+      warn: "What this cannot be undone from."                       // optional
+    }
+  ],
+  after: "What to do once the playbook is finished.",
+  related: ["undo", "branch"]     // section ids from data.js
+}
+```
+
+To make it reachable from the wizard, add a leaf to the `WIZARD` tree in the same file:
+
+```js
+{ label: "I ran reset --hard", play: "hard-reset-oops" }
+```
+
+A leaf can also carry `jump: "fix-assistant"` to hand off to another section instead of opening a playbook.
+
+> Run `node tools/build-allowlist.js` after adding a playbook, or the API will drop its analytics events.
 
 ## ⌨️ Keyboard shortcuts
 
