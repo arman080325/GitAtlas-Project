@@ -92,6 +92,16 @@ Every developer has been mid-merge, mid-rebase, or mid-panic and typed **"how do
 - Risk dot **pulses** so it can't be missed
 
 </td>
+<tr>
+<td width="50%" valign="top">
+
+### 🛠️ Interactive Command Studio
+- **`git log` Visual Builder** — Graph, compact, stat, patch, author, date range, and path filters with live flag breakdown
+- **Undo Decision Matrix** — 2-step decision engine mapping intent to `restore` vs `reset` vs `revert` with risk tags and checks
+- **Visual `.gitignore` & Attributes Maker** — Checkboxes for OS, IDEs, Node, Python, Rust, Go, secrets + 1-click download
+- **Conventional Commit & PR Composer** — Standardized commit message generator (`git commit -m`) and GitHub CLI PR composer (`gh pr create`)
+
+</td>
 <td width="50%" valign="top">
 
 ### 🎨 Theming

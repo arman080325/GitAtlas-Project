@@ -1239,6 +1239,694 @@ mark {
 
 .chip-lead { color: var(--accent); border-color: var(--accent); }
 
+/* =========================================================
+   Interactive Studio Section Styles
+   ========================================================= */
+
+.studio {
+  padding: 64px 24px;
+  border-bottom: 1px solid var(--line);
+  background: linear-gradient(180deg, var(--bg-2) 0%, var(--bg) 100%);
+}
+
+.studio-inner {
+  max-width: 1172px;
+  margin: 0 auto;
+}
+
+.studio-head {
+  margin-bottom: 32px;
+}
+
+.studio-head-copy {
+  max-width: 72ch;
+  margin-bottom: 24px;
+}
+
+.studio-head-copy h2 {
+  font-size: clamp(25px, 3vw, 35px);
+  line-height: 1.15;
+  margin: 6px 0 12px;
+}
+
+.studio-head-copy > p:last-child {
+  margin: 0;
+  color: var(--text-dim);
+  font-size: 15.5px;
+}
+
+/* Main Studio Tabs Navigation */
+.studio-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 4px;
+}
+
+.studio-tab-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 10px 18px;
+  background: var(--bg);
+  color: var(--text-dim);
+  border: 1px solid var(--line);
+  border-bottom: none;
+  border-radius: 8px 8px 0 0;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .2s ease;
+  position: relative;
+  top: 1px;
+}
+
+.studio-tab-btn svg {
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+}
+
+.studio-tab-btn code {
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.studio-tab-btn:hover {
+  color: var(--text);
+  background: var(--bg-hover);
+}
+
+.studio-tab-btn.active {
+  color: var(--accent);
+  background: var(--bg-2);
+  border-color: var(--line-strong) var(--line-strong) var(--bg-2) var(--line-strong);
+  box-shadow: 0 -2px 0 0 var(--accent);
+}
+
+/* Studio Panels & Grid */
+.studio-panel {
+  display: none;
+  animation: studioFadeIn .25s ease-out;
+}
+
+.studio-panel.active {
+  display: block;
+}
+
+@keyframes studioFadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+
+.studio-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  gap: 32px;
+  align-items: start;
+  margin-top: 24px;
+}
+
+.studio-controls {
+  padding: 24px;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+}
+
+.studio-control-group {
+  margin-bottom: 20px;
+}
+.studio-control-group:last-child {
+  margin-bottom: 0;
+}
+
+.studio-label {
+  display: block;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 11px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.studio-split-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.studio-split-label .studio-label {
+  margin-bottom: 0;
+}
+
+.studio-quick-links {
+  display: flex;
+  gap: 10px;
+}
+
+/* Pills & Multi-Option Buttons */
+.studio-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.studio-pill {
+  padding: 6px 12px;
+  background: var(--bg);
+  color: var(--text-dim);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all .15s ease;
+}
+
+.studio-pill:hover {
+  color: var(--text);
+  border-color: var(--line-strong);
+  background: var(--bg-hover);
+}
+
+.studio-pill.active {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, var(--bg));
+  font-weight: 600;
+}
+
+/* Form Fields & Grid */
+.studio-fields-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.studio-field {
+  min-width: 0;
+}
+
+.studio-input, .studio-select, .studio-textarea {
+  width: 100%;
+  padding: 8px 12px;
+  background: var(--bg-3);
+  color: var(--text);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 13px;
+  line-height: 1.5;
+  transition: border-color .2s ease, box-shadow .2s ease;
+}
+
+.studio-input-inline {
+  margin-top: 8px;
+  max-width: 140px;
+}
+
+.studio-input-sm {
+  padding: 6px 10px;
+  font-size: 12px;
+}
+
+.studio-input:focus, .studio-select:focus, .studio-textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--glow);
+}
+
+.studio-select {
+  cursor: pointer;
+  appearance: auto;
+}
+
+.studio-textarea {
+  resize: vertical;
+}
+
+/* Checkbox Labels & Cards */
+.studio-check-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 8px 14px;
+}
+
+.studio-check-grid-vertical {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.studio-checkbox-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13.5px;
+  color: var(--text);
+  cursor: pointer;
+  user-select: none;
+}
+
+.studio-checkbox-label input[type="checkbox"] {
+  width: 15px;
+  height: 15px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+.studio-checkbox-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 14px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: border-color .15s ease, background-color .15s ease;
+}
+
+.studio-checkbox-card:hover {
+  border-color: var(--accent);
+  background: var(--bg-hover);
+}
+
+.studio-checkbox-card input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--accent);
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.studio-checkbox-card b {
+  display: block;
+  font-size: 13.5px;
+  color: var(--text);
+}
+
+.studio-checkbox-card p {
+  margin: 3px 0 0;
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+.studio-ignore-group {
+  margin-bottom: 18px;
+}
+
+.studio-ignore-cat-title {
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .02em;
+  color: var(--text);
+  margin: 0 0 8px;
+}
+
+/* Sub-tabs within tools */
+.studio-subtabs {
+  display: flex;
+  gap: 8px;
+  margin-top: 18px;
+}
+
+.studio-subtab-btn {
+  padding: 7px 15px;
+  background: var(--bg);
+  color: var(--text-dim);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .15s ease;
+}
+
+.studio-subtab-btn:hover {
+  color: var(--text);
+  border-color: var(--line-strong);
+}
+
+.studio-subtab-btn.active {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 10%, var(--bg));
+}
+
+/* Studio Output & Code Cards */
+.studio-output {
+  position: sticky;
+  top: 80px;
+}
+
+.studio-card {
+  padding: 20px;
+  background: var(--bg-2);
+  border: 1px solid var(--line-strong);
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+}
+
+.studio-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.studio-card-tag {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 11px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  font-weight: 600;
+}
+
+.studio-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.studio-code-box {
+  margin: 0;
+  padding: 14px 16px;
+  background: var(--bg-3);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  overflow-x: auto;
+}
+
+.studio-code-box pre {
+  margin: 0;
+}
+
+.studio-code-box code {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--text);
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.studio-code-tall {
+  max-height: 420px;
+  overflow-y: auto;
+}
+
+.studio-code-tall code {
+  white-space: pre;
+  word-break: normal;
+}
+
+/* Flag Explanations */
+.studio-expl-wrap {
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+}
+
+.studio-expl-head {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 10.5px;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  margin: 0 0 10px;
+  font-weight: 600;
+}
+
+.studio-expl-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.studio-expl-item {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.studio-expl-flag {
+  flex-shrink: 0;
+  padding: 1px 6px;
+  background: var(--bg-3);
+  color: var(--accent);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 11.5px;
+}
+
+.studio-expl-text {
+  color: var(--text-dim);
+}
+
+.studio-raw-box {
+  padding: 12px;
+  background: var(--bg-3);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  max-height: 180px;
+  overflow-y: auto;
+}
+
+.studio-raw-box pre {
+  margin: 0;
+}
+
+.studio-raw-box code {
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text-dim);
+  white-space: pre-wrap;
+}
+
+/* Tool 2: Undo Matrix Specific Styles */
+.studio-undo-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  margin-top: 24px;
+}
+
+.studio-undo-step {
+  padding: 20px;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+}
+
+.studio-step-num {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 10px;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin: 0 0 4px;
+  font-weight: 600;
+}
+
+.studio-step-title {
+  font-size: 18px;
+  margin: 0 0 14px;
+}
+
+.studio-step-desc {
+  margin: 10px 0 0;
+  font-size: 13.5px;
+  color: var(--text-dim);
+}
+
+.studio-pills-wrap {
+  gap: 8px;
+}
+
+.studio-goals-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 10px;
+}
+
+.studio-goal-card {
+  padding: 14px 15px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  text-align: left;
+  cursor: pointer;
+  transition: all .2s ease;
+  font-family: inherit;
+}
+
+.studio-goal-card:hover {
+  border-color: var(--accent);
+  background: var(--bg-hover);
+  transform: translateY(-1px);
+}
+
+.studio-goal-card.active {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 10%, var(--bg));
+  box-shadow: 0 0 0 1px var(--accent);
+}
+
+.studio-goal-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.studio-goal-head b {
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.35;
+}
+
+.studio-goal-risk {
+  flex-shrink: 0;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 9.5px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  padding: 2px 6px;
+  border-radius: 3px;
+  border: 1px solid currentColor;
+}
+
+.studio-goal-risk.safe { color: var(--good); }
+.studio-goal-risk.warn { color: var(--warn); }
+.studio-goal-risk.danger { color: var(--danger); }
+
+.studio-goal-hint {
+  margin: 0;
+  font-size: 12.5px;
+  color: var(--text-dim);
+  line-height: 1.45;
+}
+
+.studio-card-result {
+  border-left: 3px solid var(--accent);
+}
+
+.studio-result-badges {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.studio-param-field {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  font-size: 13px;
+  color: var(--text-dim);
+}
+
+.studio-param-field label {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 11.5px;
+  flex-shrink: 0;
+}
+
+.studio-check-banner {
+  margin-top: 14px;
+  padding: 12px 14px;
+  background: var(--bg-3);
+  border: 1px dashed var(--line-strong);
+  border-radius: 6px;
+}
+
+.studio-check-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 10.5px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--good);
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.studio-check-code code {
+  font-size: 12.5px;
+  color: var(--text);
+}
+
+.studio-check-why {
+  margin: 6px 0 0;
+  font-size: 12.5px;
+  color: var(--text-dim);
+}
+
+.studio-why-box {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+
+.studio-why-head {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 10.5px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  margin: 0 0 6px;
+  font-weight: 600;
+}
+
+.studio-why-text {
+  margin: 0;
+  font-size: 13.5px;
+  color: var(--text-dim);
+  line-height: 1.55;
+}
+
+/* Responsiveness */
+@media (max-width: 960px) {
+  .studio-grid {
+    grid-template-columns: 1fr;
+  }
+  .studio-output {
+    position: static;
+  }
+  .studio-fields-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .studio { padding: 44px 16px; }
+  .studio-controls, .studio-card, .studio-undo-step { padding: 18px 14px; }
+  .studio-tab-btn { padding: 8px 12px; font-size: 13px; }
+  .studio-goals-grid { grid-template-columns: 1fr; }
+  .studio-check-grid { grid-template-columns: 1fr; }
+}
+
 @media (max-width: 720px) {
   .wizard { padding: 44px 16px; }
   .wizard-stage { padding: 18px 15px; }
@@ -1248,5 +1936,5 @@ mark {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .wiz-option, .wiz-option > svg, .pb-chip { transition: none; }
-}
+  .wiz-option, .wiz-option > svg, .pb-chip, .studio-pill, .studio-goal-card, .studio-tab-btn { transition: none; }
+}

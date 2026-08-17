@@ -1230,6 +1230,11 @@
         if (sec) sec.scrollIntoView({ block: "start" });
       }, 60);
     }
+  } else if (location.hash.indexOf("#tool-") === 0) {
+    setTimeout(function () {
+      var sec = el("builders");
+      if (sec) sec.scrollIntoView({ block: "start" });
+    }, 60);
   } else if (location.hash) {
     var hashTarget = document.getElementById(location.hash.slice(1));
     if (hashTarget) setTimeout(function () { hashTarget.scrollIntoView(); }, 60);

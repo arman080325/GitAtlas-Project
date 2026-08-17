@@ -109,11 +109,12 @@
         </div>
 
         <div class="hero-jump">
-          <button class="chip chip-lead" data-jump="wizard">Something went wrong?</button>
+          <button class="chip chip-lead" data-jump="builders">Interactive Studio</button>
+          <button class="chip" data-jump="wizard">Recovery Wizard</button>
+          <button class="chip" data-jump="fixes">Fix an Error</button>
           <button class="chip" data-jump="undo">Undo a mistake</button>
           <button class="chip" data-jump="merge">Fix a conflict</button>
           <button class="chip" data-jump="rebase">Rebase safely</button>
-          <button class="chip" data-jump="fixes">Common errors</button>
         </div>
       </div>
 
@@ -164,6 +165,395 @@
     </div>
 
     <div class="hero-rule" aria-hidden="true"><span></span><b>Scroll</b><span></span></div>
+  </section>
+
+  <section class="studio" id="builders" aria-labelledby="studioTitle">
+    <div class="studio-inner">
+      <header class="studio-head">
+        <div class="studio-head-copy">
+          <p class="eyebrow">Interactive Studio</p>
+          <h2 id="studioTitle">Build, simulate &amp; compose.</h2>
+          <p>Visually configure complex multi-flag commands, simulate safe recovery paths, generate tailored <code>.gitignore</code> rules, and draft conventional commits with instant one-tap copy.</p>
+        </div>
+        <nav class="studio-tabs" id="studioTabsBar" role="tablist" aria-label="Interactive Studio Tools">
+          <button type="button" class="studio-tab-btn active" role="tab" aria-selected="true" data-tool-tab="log">
+            <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M1 3h14M1 8h14M1 13h9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            <span><code>git log</code> Builder</span>
+          </button>
+          <button type="button" class="studio-tab-btn" role="tab" aria-selected="false" data-tool-tab="undo">
+            <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8a5 5 0 0 1 8.5-3.5L14 7M14 2v5H9M13 8a5 5 0 0 1-8.5 3.5L2 9M2 14V9h5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>Undo Matrix</span>
+          </button>
+          <button type="button" class="studio-tab-btn" role="tab" aria-selected="false" data-tool-tab="ignore">
+            <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 2h7l4 4v8a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M10 2v4h4M5 10l6-6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+            <span><code>.gitignore</code> &amp; Attributes</span>
+          </button>
+          <button type="button" class="studio-tab-btn" role="tab" aria-selected="false" data-tool-tab="commit">
+            <svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M1 8h4M11 8h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            <span>Commit &amp; PR Composer</span>
+          </button>
+        </nav>
+      </header>
+
+      <!-- TAB 1: git log Builder -->
+      <div class="studio-panel active" id="tool-log" role="tabpanel" aria-labelledby="studioTitle">
+        <div class="studio-grid">
+          <div class="studio-controls">
+            <!-- Presets -->
+            <div class="studio-control-group">
+              <label class="studio-label">Display &amp; Formatting Preset</label>
+              <div class="studio-pills">
+                <button type="button" class="studio-pill active" data-log-preset="graph">Graph Tree</button>
+                <button type="button" class="studio-pill" data-log-preset="compact">Compact (Oneline)</button>
+                <button type="button" class="studio-pill" data-log-preset="stat">Summary (Stat)</button>
+                <button type="button" class="studio-pill" data-log-preset="patch">Diff Patch (-p)</button>
+                <button type="button" class="studio-pill" data-log-preset="custom">Custom Format</button>
+              </div>
+            </div>
+
+            <!-- Custom Format Input (hidden unless custom selected) -->
+            <div class="studio-control-group" id="logCustomFormatWrap" hidden>
+              <label class="studio-label" for="logCustomFormat">Custom Format String (<code>%h</code> SHA, <code>%an</code> Author, <code>%ar</code> Rel Date, <code>%s</code> Subject)</label>
+              <input type="text" id="logCustomFormat" class="studio-input" value="%h - %an, %ar : %s" spellcheck="false">
+            </div>
+
+            <!-- Scope -->
+            <div class="studio-control-group">
+              <label class="studio-label">Branch Scope</label>
+              <div class="studio-pills">
+                <button type="button" class="studio-pill active" data-log-scope="all">All Branches (--all)</button>
+                <button type="button" class="studio-pill" data-log-scope="head">Current Branch (HEAD)</button>
+                <button type="button" class="studio-pill" data-log-scope="first-parent">Mainline Only (--first-parent)</button>
+                <button type="button" class="studio-pill" data-log-scope="remotes">Remote Only (--remotes)</button>
+              </div>
+            </div>
+
+            <!-- Commit Count -->
+            <div class="studio-control-group">
+              <label class="studio-label">Commit Limit</label>
+              <div class="studio-pills">
+                <button type="button" class="studio-pill active" data-log-count="10">Latest 10</button>
+                <button type="button" class="studio-pill" data-log-count="5">Latest 5</button>
+                <button type="button" class="studio-pill" data-log-count="25">Latest 25</button>
+                <button type="button" class="studio-pill" data-log-count="50">Latest 50</button>
+                <button type="button" class="studio-pill" data-log-count="all">No Limit</button>
+                <button type="button" class="studio-pill" data-log-count="custom">Custom</button>
+              </div>
+              <input type="number" id="logCustomCount" class="studio-input studio-input-inline" placeholder="Count" min="1" max="1000" hidden>
+            </div>
+
+            <!-- Filters Grid -->
+            <div class="studio-fields-grid">
+              <div class="studio-field">
+                <label class="studio-label" for="logAuthor">Author Filter</label>
+                <input type="text" id="logAuthor" class="studio-input" placeholder="e.g. Linus or arman" spellcheck="false">
+              </div>
+
+              <div class="studio-field">
+                <label class="studio-label" for="logSince">Date Range</label>
+                <select id="logSince" class="studio-select">
+                  <option value="">All Time</option>
+                  <option value="24h">Past 24 hours</option>
+                  <option value="7d">Past 7 days</option>
+                  <option value="2w">Past 2 weeks</option>
+                  <option value="1m">Past 1 month</option>
+                  <option value="custom">Custom date range...</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="studio-fields-grid" id="logCustomDates" hidden>
+              <div class="studio-field">
+                <label class="studio-label" for="logSinceCustom">Since (e.g. 2026-01-01 or "2 weeks ago")</label>
+                <input type="text" id="logSinceCustom" class="studio-input" placeholder="2026-01-01" spellcheck="false">
+              </div>
+              <div class="studio-field">
+                <label class="studio-label" for="logUntilCustom">Until (e.g. 2026-03-01 or "yesterday")</label>
+                <input type="text" id="logUntilCustom" class="studio-input" placeholder="yesterday" spellcheck="false">
+              </div>
+            </div>
+
+            <div class="studio-fields-grid">
+              <div class="studio-field">
+                <label class="studio-label" for="logPath">File or Directory Path</label>
+                <input type="text" id="logPath" class="studio-input" placeholder="e.g. src/ or package.json" spellcheck="false">
+              </div>
+
+              <div class="studio-field">
+                <label class="studio-label" for="logGrep">Search Commit Message (--grep)</label>
+                <input type="text" id="logGrep" class="studio-input" placeholder="e.g. fix or CVE-2026" spellcheck="false">
+              </div>
+            </div>
+
+            <!-- Merges Filter -->
+            <div class="studio-control-group">
+              <label class="studio-label">Merge Commits</label>
+              <div class="studio-pills">
+                <button type="button" class="studio-pill active" data-log-merges="all">Include Merges</button>
+                <button type="button" class="studio-pill" data-log-merges="no-merges">Hide Merges (--no-merges)</button>
+                <button type="button" class="studio-pill" data-log-merges="merges-only">Only Merges (--merges)</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Live Output Panel -->
+          <div class="studio-output">
+            <div class="studio-card">
+              <div class="studio-card-head">
+                <span class="studio-card-tag">Generated Command</span>
+                <button type="button" class="copy-btn" id="logCopyBtn" aria-label="Copy command">
+                  <svg class="sheet" viewBox="0 0 16 16" aria-hidden="true"><rect x="5.5" y="1.5" width="9" height="11" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M10.5 14.5h-8a1 1 0 0 1-1-1v-9" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                  <svg class="tick" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 8.5 6 12l7.5-8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  <span>Copy</span>
+                </button>
+              </div>
+              <div class="studio-code-box">
+                <pre><code id="logOutputCode">git log --graph --oneline --decorate --all -n 10</code></pre>
+              </div>
+
+              <div class="studio-expl-wrap">
+                <p class="studio-expl-head">Flag Breakdown</p>
+                <ul class="studio-expl-list" id="logExplList"></ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 2: Undo Matrix (reset vs restore vs revert) -->
+      <div class="studio-panel" id="tool-undo" role="tabpanel" aria-labelledby="studioTitle" hidden>
+        <div class="studio-undo-layout">
+          <div class="studio-undo-step">
+            <p class="studio-step-num">Step 1</p>
+            <h3 class="studio-step-title">Where are the changes right now?</h3>
+            <div class="studio-pills studio-pills-wrap" id="undoStatesWrap"></div>
+            <p class="studio-step-desc" id="undoStateDesc"></p>
+          </div>
+
+          <div class="studio-undo-step">
+            <p class="studio-step-num">Step 2</p>
+            <h3 class="studio-step-title">What is your goal?</h3>
+            <div class="studio-goals-grid" id="undoGoalsWrap"></div>
+          </div>
+
+          <div class="studio-undo-result">
+            <div class="studio-card studio-card-result">
+              <div class="studio-card-head">
+                <div class="studio-result-badges">
+                  <span class="studio-card-tag">Recommended Command</span>
+                  <span id="undoRiskBadge" class="risk good">Safe</span>
+                </div>
+                <button type="button" class="copy-btn" id="undoCopyBtn" aria-label="Copy recovery command">
+                  <svg class="sheet" viewBox="0 0 16 16" aria-hidden="true"><rect x="5.5" y="1.5" width="9" height="11" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M10.5 14.5h-8a1 1 0 0 1-1-1v-9" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                  <svg class="tick" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 8.5 6 12l7.5-8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  <span>Copy</span>
+                </button>
+              </div>
+
+              <!-- Parameter Input if needed -->
+              <div class="studio-param-field" id="undoParamWrap" hidden>
+                <label for="undoParamInput">Target parameter:</label>
+                <input type="text" id="undoParamInput" class="studio-input studio-input-sm" spellcheck="false">
+              </div>
+
+              <div class="studio-code-box">
+                <pre><code id="undoOutputCode">git restore path/to/file.js</code></pre>
+              </div>
+
+              <!-- Safety Pre-flight Check -->
+              <div class="studio-check-banner">
+                <div class="studio-check-head">
+                  <span>Check First (Read-Only)</span>
+                  <button type="button" class="mini-copy" id="undoCheckCopyBtn">Copy</button>
+                </div>
+                <div class="studio-check-code"><code id="undoCheckCmd">git diff path/to/file.js</code></div>
+                <p id="undoCheckWhy" class="studio-check-why"></p>
+              </div>
+
+              <div class="studio-why-box">
+                <p class="studio-why-head">Why this command?</p>
+                <p id="undoWhyText" class="studio-why-text"></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 3: Visual .gitignore & .gitattributes Generator -->
+      <div class="studio-panel" id="tool-ignore" role="tabpanel" aria-labelledby="studioTitle" hidden>
+        <div class="studio-subtabs">
+          <button type="button" class="studio-subtab-btn active" data-ignore-subtab="gitignore">.gitignore Generator</button>
+          <button type="button" class="studio-subtab-btn" data-ignore-subtab="gitattributes">.gitattributes Presets</button>
+        </div>
+
+        <div class="studio-grid">
+          <div class="studio-controls">
+            <!-- gitignore controls -->
+            <div id="gitignoreControls">
+              <div class="studio-control-group">
+                <div class="studio-split-label">
+                  <label class="studio-label">Quick Presets</label>
+                  <div class="studio-quick-links">
+                    <button type="button" class="text-btn" data-ignore-preset="web">Standard Web</button>
+                    <button type="button" class="text-btn" data-ignore-preset="python">Python Stack</button>
+                    <button type="button" class="text-btn" data-ignore-preset="all-common">Select All</button>
+                    <button type="button" class="text-btn" data-ignore-preset="clear">Clear</button>
+                  </div>
+                </div>
+              </div>
+
+              <div id="ignoreCheckboxesWrap"></div>
+
+              <div class="studio-control-group" style="margin-top: 18px;">
+                <label class="studio-label" for="ignoreCustomRules">Custom Rules (Appended at bottom)</label>
+                <textarea id="ignoreCustomRules" class="studio-textarea" rows="3" placeholder="# Add project-specific ignores here&#10;*.tmp&#10;private_key.json" spellcheck="false"></textarea>
+              </div>
+            </div>
+
+            <!-- gitattributes controls -->
+            <div id="gitattributesControls" hidden>
+              <div id="attributesCheckboxesWrap"></div>
+            </div>
+          </div>
+
+          <!-- Preview & Action Box -->
+          <div class="studio-output">
+            <div class="studio-card">
+              <div class="studio-card-head">
+                <span class="studio-card-tag">File Preview</span>
+                <div class="studio-card-actions">
+                  <button type="button" class="btn btn-small" id="ignoreDownloadBtn">Download .gitignore</button>
+                  <button type="button" class="copy-btn" id="ignoreCopyBtn" aria-label="Copy file content">
+                    <svg class="sheet" viewBox="0 0 16 16" aria-hidden="true"><rect x="5.5" y="1.5" width="9" height="11" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M10.5 14.5h-8a1 1 0 0 1-1-1v-9" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                    <svg class="tick" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 8.5 6 12l7.5-8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <span>Copy</span>
+                  </button>
+                </div>
+              </div>
+              <div class="studio-code-box studio-code-tall">
+                <pre><code id="ignorePreviewCode"></code></pre>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 4: Conventional Commit & PR Composer -->
+      <div class="studio-panel" id="tool-commit" role="tabpanel" aria-labelledby="studioTitle" hidden>
+        <div class="studio-subtabs">
+          <button type="button" class="studio-subtab-btn active" data-composer-subtab="commit">Conventional Commit</button>
+          <button type="button" class="studio-subtab-btn" data-composer-subtab="pr">GitHub Pull Request (gh pr create)</button>
+        </div>
+
+        <div class="studio-grid">
+          <div class="studio-controls">
+            <!-- Commit Form -->
+            <div id="commitFormWrap">
+              <div class="studio-fields-grid">
+                <div class="studio-field">
+                  <label class="studio-label" for="commitTypeSelect">Type</label>
+                  <select id="commitTypeSelect" class="studio-select"></select>
+                </div>
+                <div class="studio-field">
+                  <label class="studio-label" for="commitScope">Scope (optional)</label>
+                  <input type="text" id="commitScope" class="studio-input" placeholder="e.g. auth, api, ui" spellcheck="false">
+                </div>
+              </div>
+
+              <div class="studio-field" style="margin-top: 14px;">
+                <label class="studio-label" for="commitDesc">Short Description (imperative mood)</label>
+                <input type="text" id="commitDesc" class="studio-input" value="add user avatar upload endpoint" placeholder="e.g. add user avatar upload endpoint" spellcheck="false">
+              </div>
+
+              <div class="studio-field" style="margin-top: 14px;">
+                <label class="studio-checkbox-label">
+                  <input type="checkbox" id="commitBreaking">
+                  <span>💥 <b>Breaking Change!</b> (Appends <code>!</code> to header)</span>
+                </label>
+              </div>
+
+              <div class="studio-field" id="commitBreakingWrap" style="margin-top: 12px;" hidden>
+                <label class="studio-label" for="commitBreakingBody">Breaking Change Note</label>
+                <input type="text" id="commitBreakingBody" class="studio-input" placeholder="e.g. migration required for user table" spellcheck="false">
+              </div>
+
+              <div class="studio-field" style="margin-top: 14px;">
+                <label class="studio-label" for="commitBody">Extended Body (optional)</label>
+                <textarea id="commitBody" class="studio-textarea" rows="3" placeholder="Provide background motivation and contrast with previous behavior..." spellcheck="false"></textarea>
+              </div>
+
+              <div class="studio-field" style="margin-top: 14px;">
+                <label class="studio-label" for="commitIssue">Issue Footer (optional)</label>
+                <input type="text" id="commitIssue" class="studio-input" value="Closes #42" placeholder="e.g. Closes #42, Fixes #108" spellcheck="false">
+              </div>
+            </div>
+
+            <!-- PR Form -->
+            <div id="prFormWrap" hidden>
+              <div class="studio-field">
+                <label class="studio-label" for="prTitleInput">PR Title</label>
+                <input type="text" id="prTitleInput" class="studio-input" placeholder="Leave blank to use conventional commit header" spellcheck="false">
+              </div>
+
+              <div class="studio-field" style="margin-top: 14px;">
+                <label class="studio-label" for="prSummaryInput">Summary of Changes</label>
+                <textarea id="prSummaryInput" class="studio-textarea" rows="2" placeholder="What does this PR change?" spellcheck="false">Adds profile avatar uploads with S3 storage and image resizing.</textarea>
+              </div>
+
+              <div class="studio-field" style="margin-top: 14px;">
+                <label class="studio-label" for="prMotivationInput">Motivation &amp; Context</label>
+                <textarea id="prMotivationInput" class="studio-textarea" rows="2" placeholder="Why is this change necessary?" spellcheck="false">Users currently cannot personalize their profile pictures.</textarea>
+              </div>
+
+              <div class="studio-control-group" style="margin-top: 14px;">
+                <label class="studio-label">Type of Change</label>
+                <div class="studio-check-grid">
+                  <label class="studio-checkbox-label">
+                    <input type="checkbox" id="prBugFixCheck"> <span>🐛 Bug fix</span>
+                  </label>
+                  <label class="studio-checkbox-label">
+                    <input type="checkbox" id="prNewFeatCheck" checked> <span>✨ New feature</span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="studio-field" style="margin-top: 14px;">
+                <label class="studio-label" for="prTestsInput">How Has This Been Tested?</label>
+                <input type="text" id="prTestsInput" class="studio-input" value="Unit tests added for upload service; manual verification on staging." spellcheck="false">
+              </div>
+            </div>
+          </div>
+
+          <!-- Live Output Panel -->
+          <div class="studio-output">
+            <div class="studio-card">
+              <div class="studio-card-head">
+                <span class="studio-card-tag">Runnable Command</span>
+                <button type="button" class="copy-btn" id="commitCopyCmdBtn" aria-label="Copy shell command">
+                  <svg class="sheet" viewBox="0 0 16 16" aria-hidden="true"><rect x="5.5" y="1.5" width="9" height="11" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M10.5 14.5h-8a1 1 0 0 1-1-1v-9" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                  <svg class="tick" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 8.5 6 12l7.5-8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  <span>Copy Command</span>
+                </button>
+              </div>
+              <div class="studio-code-box">
+                <pre><code id="commitOutputCode">git commit -m "feat: add user avatar upload endpoint" -m "Closes #42"</code></pre>
+              </div>
+
+              <div class="studio-expl-wrap">
+                <div class="studio-split-label">
+                  <p class="studio-expl-head">Message Preview</p>
+                  <button type="button" class="text-btn" id="commitCopyRawBtn">Copy Text</button>
+                </div>
+                <div class="studio-raw-box">
+                  <pre><code id="commitRawMessage"></code></pre>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
   </section>
 
   <section class="wizard" id="wizard" aria-labelledby="wizardTitle">
@@ -302,6 +692,7 @@ window.GITATLAS_ANALYTICS = {
 <script src="analytics.js"></script>
 <script src="data.js"></script>
 <script src="flows.js"></script>
+<script src="tools.js"></script>
 <script src="app.js"></script>
 </body>
 </html>
