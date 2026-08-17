@@ -95,6 +95,15 @@ Every developer has been mid-merge, mid-rebase, or mid-panic and typed **"how do
 <tr>
 <td width="50%" valign="top">
 
+### 🌳 Interactive Git Graph & Branch Visualizer
+- **Interactive SVG DAG Engine** — Dynamic commit nodes, parent links, branch badges, and glowing `HEAD` marker
+- **Step-by-Step Guided Scenarios** — `git merge` (3-way merge), `git rebase` (linear history), `git merge --squash`, `git cherry-pick`, `detached HEAD` & reflog rescue, and `git reset` (`--soft` / `--mixed` / `--hard`)
+- **Auto-Play & Stepper Controls** — Interactive step dots, auto-play with pause, and instant terminal command copy
+- **Live Sandbox Mode** — Free playground to dynamically run `+ git commit`, `+ git branch`, `git checkout`, and `git reset` on an interactive canvas
+
+</td>
+<td width="50%" valign="top">
+
 ### 🛠️ Interactive Command Studio
 - **`git log` Visual Builder** — Graph, compact, stat, patch, author, date range, and path filters with live flag breakdown
 - **Undo Decision Matrix** — 2-step decision engine mapping intent to `restore` vs `reset` vs `revert` with risk tags and checks
@@ -102,6 +111,8 @@ Every developer has been mid-merge, mid-rebase, or mid-panic and typed **"how do
 - **Conventional Commit & PR Composer** — Standardized commit message generator (`git commit -m`) and GitHub CLI PR composer (`gh pr create`)
 
 </td>
+</tr>
+<tr>
 <td width="50%" valign="top">
 
 ### 🧰 Personal Toolkit & Local Vault
@@ -111,7 +122,6 @@ Every developer has been mid-merge, mid-rebase, or mid-panic and typed **"how do
 - **⚙️ `.gitconfig` Exporter** — Interactive shortcut generator (`git lg`, `git uncommit`, `git discard`, `git standup`)
 
 </td>
-</tr>
 <tr>
 <td width="50%" valign="top">
 
