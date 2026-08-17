@@ -307,12 +307,22 @@
 
     var head;
     if (runnable) {
+      var isFav = window.GitAtlasToolkit && window.GitAtlasToolkit.isStarred(ref);
+      var starSvg = isFav ?
+        '<svg class="star-icon star-filled" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.75.75 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25z" fill="currentColor"/></svg>' :
+        '<svg class="star-icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.75.75 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25zm0 2.245L6.687 5.163a.75.75 0 0 1-.564.41l-3.328.483 2.408 2.347a.75.75 0 0 1 .216.664l-.568 3.313 2.977-1.564a.75.75 0 0 1 .698 0l2.978 1.564-.569-3.314a.75.75 0 0 1 .216-.664l2.409-2.347-3.328-.484a.75.75 0 0 1-.564-.41L8 2.495z" fill="currentColor"/></svg>';
+
       head = '<div class="cmd-row">' +
           '<span class="prompt" aria-hidden="true">$</span>' +
           '<code class="cmd">' + (terms.length ? mark(c.c, terms) : tint(c.c)) + '</code>' +
-          '<button class="copy-btn" type="button" data-copy="' + ref + '" aria-label="Copy this command">' +
-            ICONS.sheet + ICONS.tick + '<span>Copy</span>' +
-          '</button>' +
+          '<div class="cmd-actions">' +
+            '<button class="star-btn' + (isFav ? ' starred' : '') + '" type="button" data-star="' + ref + '" aria-label="' + (isFav ? 'Remove from favorites' : 'Save to favorites') + '" title="' + (isFav ? 'Remove from favorites' : 'Save to favorites') + '">' +
+              starSvg +
+            '</button>' +
+            '<button class="copy-btn" type="button" data-copy="' + ref + '" aria-label="Copy this command">' +
+              ICONS.sheet + ICONS.tick + '<span>Copy</span>' +
+            '</button>' +
+          '</div>' +
         '</div>';
       if (risk) {
         head += '<p class="risk ' + risk.k + '">' + risk.t + '</p>';
@@ -372,6 +382,9 @@
     observeCards();
     observeSpy();
     updateRailCounts(byCat);
+    if (window.GitAtlasToolkit && typeof window.GitAtlasToolkit.updateStarUI === "function") {
+      window.GitAtlasToolkit.updateStarUI();
+    }
   }
 
   /* ---------- rail ---------- */
@@ -570,13 +583,22 @@
     var sample = ev.target.closest("[data-error-sample]");
     if (sample) { el("errorInput").value = sample.getAttribute("data-error-sample"); el("fixClear").hidden = false; showFix(el("errorInput").value); return; }
     var fixCopy = ev.target.closest("[data-fix-copy]");
-    if (fixCopy) { copyText(fixCopy.getAttribute("data-fix-copy")).then(function () { flash(fixCopy); toast("Copied the diagnostic command"); }).catch(function () { toast("Could not copy — select the text instead"); }); return; }
+    if (fixCopy) {
+      var fixText = fixCopy.getAttribute("data-fix-copy");
+      copyText(fixText).then(function () {
+        flash(fixCopy);
+        toast("Copied the diagnostic command");
+        if (window.GitAtlasToolkit) window.GitAtlasToolkit.recordCopy(fixText, "Error Fix");
+      }).catch(function () { toast("Could not copy — select the text instead"); });
+      return;
+    }
     var copyBtn = ev.target.closest("[data-copy]");
     if (copyBtn) {
       var cmd = lookup(copyBtn.getAttribute("data-copy"));
       copyText(cmd.c).then(function () {
         flash(copyBtn);
         toast("Copied  " + shorten(cmd.c));
+        if (window.GitAtlasToolkit) window.GitAtlasToolkit.recordCopy(cmd.c, cmd.c);
         var risk = riskOf(cmd.c);
         track("command_copied", {
           command: cmd.c,
@@ -595,6 +617,7 @@
         exBtn.classList.add("done");
         setTimeout(function () { exBtn.classList.remove("done"); }, 1500);
         toast("Copied the example");
+        if (window.GitAtlasToolkit) window.GitAtlasToolkit.recordCopy(ex.x, ex.c);
         track("example_copied", { command: ex.c, section: sectionOf(exBtn.getAttribute("data-copyex")) });
       }).catch(function () { toast("Could not copy \u2014 select the text instead"); });
       return;
@@ -1161,8 +1184,9 @@
         copyText(text).then(function () {
           flash(stepCopy);
           toast(parts[2] === "check" ? "Copied the check" : "Copied step " + (+parts[1] + 1));
+          if (window.GitAtlasToolkit) window.GitAtlasToolkit.recordCopy(text, pb.title);
           track("playbook_copied", { playbook: pb.id });
-        }).catch(function () { toast("Could not copy \u2014 select the text instead"); });
+        }).catch(function () { toast("Could not copy — select the text instead"); });
         return;
       }
 
@@ -1178,8 +1202,9 @@
         copyText(script).then(function () {
           flash(all);
           toast("Copied all " + book.steps.length + " steps");
+          if (window.GitAtlasToolkit) window.GitAtlasToolkit.recordCopy(script, book.title);
           track("playbook_copied", { playbook: book.id });
-        }).catch(function () { toast("Could not copy \u2014 select the text instead"); });
+        }).catch(function () { toast("Could not copy — select the text instead"); });
       }
     });
   }
