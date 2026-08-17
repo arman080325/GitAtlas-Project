@@ -165,6 +165,31 @@
     <div class="hero-rule" aria-hidden="true"><span></span><b>Scroll</b><span></span></div>
   </section>
 
+  <section class="fix-assistant" id="fix-assistant" aria-labelledby="fixAssistantTitle">
+    <div class="fix-assistant-inner">
+      <div class="fix-assistant-copy">
+        <p class="eyebrow">Troubleshoot safely</p>
+        <h2 id="fixAssistantTitle">Paste the Git error you hit.</h2>
+        <p>GitAtlas matches common errors locally, then gives you a plain-English cause, safe checks, and the next command to run. Nothing you paste leaves this page.</p>
+      </div>
+      <form class="fix-form" id="fixForm">
+        <label for="errorInput">Git or GitHub error message</label>
+        <textarea id="errorInput" rows="4" spellcheck="false" placeholder="Example: Updates were rejected because the remote contains work that you do not have locally."></textarea>
+        <div class="fix-form-foot">
+          <button class="btn" type="submit">Find a safe fix</button>
+          <button class="text-btn" id="fixClear" type="button" hidden>Clear</button>
+        </div>
+        <div class="fix-samples" aria-label="Try an example error">
+          <span>Try:</span>
+          <button type="button" data-error-sample="fatal: not a git repository">not a Git repository</button>
+          <button type="button" data-error-sample="Updates were rejected because the remote contains work">push rejected</button>
+          <button type="button" data-error-sample="CONFLICT (content): Merge conflict in file.js">merge conflict</button>
+        </div>
+      </form>
+    </div>
+    <div class="fix-result" id="fixResult" aria-live="polite" hidden></div>
+  </section>
+
   <div class="layout" id="atlas">
 
     <aside class="rail" id="rail" aria-label="Sections">

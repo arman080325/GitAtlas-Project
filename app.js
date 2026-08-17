@@ -228,6 +228,39 @@
 
   function el(id) { return document.getElementById(id); }
 
+  /* ---------- error-to-fix assistant ----------
+     Matches familiar Git failures in the browser only. The user-provided
+     error is never rendered or sent to analytics. */
+  var FIXES = [
+    { match: /(?:the term|command not found|not recognized).*(?:gitt|gittt|gti)\b|\b(gitt|gittt|gti)\s+(?:push|pull|status|commit|add|log|branch|switch)\b/, title: "That looks like a typo in the Git command", cause: "PowerShell cannot find a program called gitt. The Git command is spelled git with one t.", checks: ["git --version", "Get-Command git"], steps: ["Re-run the command with git, not gitt.", "If git itself is not recognised, install Git for Windows and open a new terminal."], command: "git push", jump: "sync" },
+    { match: /not a git repository/, title: "This folder is not a Git repository", cause: "Git cannot find a .git folder from where you ran the command.", checks: ["pwd", "git rev-parse --show-toplevel"], steps: ["Move into the project folder, then run git status.", "If this is a new project, initialise it first with git init."], command: "git status", jump: "start" },
+    { match: /remote contains work|failed to push some refs|updates were rejected/, title: "The remote has commits you do not have", cause: "Someone (or GitHub's README/license setup) added commits to the remote branch first. Git will not overwrite them with a normal push.", checks: ["git status", "git fetch origin", "git log --oneline HEAD..origin/main"], steps: ["Save or commit your local work first.", "Pull the remote commits, resolve any conflict, then push again."], command: "git pull --rebase origin main", jump: "sync" },
+    { match: /unrelated histories/, title: "Git sees two separate project histories", cause: "The local and remote repositories were created independently, so they have no shared first commit.", checks: ["git log --oneline --all -5", "git remote -v"], steps: ["Confirm both histories truly belong together before combining them.", "Merge with the explicit allow-unrelated-histories option, then resolve any conflict."], command: "git pull origin main --allow-unrelated-histories", jump: "merge" },
+    { match: /local changes.*overwritten|would be overwritten by (checkout|switch)/, title: "Switching branches would overwrite your edits", cause: "Your working tree has changes that conflict with files on the branch you want to switch to.", checks: ["git status", "git diff"], steps: ["Commit the work, stash it, or discard only the changes you no longer need.", "After the working tree is clean, switch branches again."], command: "git stash push -m \"work before switching branches\"", jump: "stash" },
+    { match: /no tracking information|has no upstream branch/, title: "This branch is not linked to a remote branch", cause: "Git does not know which remote branch a bare pull or push should use.", checks: ["git branch -vv", "git remote -v"], steps: ["For a new branch, publish it and set the upstream in one command.", "For an existing remote branch, set the upstream to its matching origin branch."], command: "git push -u origin HEAD", jump: "remotes" },
+    { match: /detached head/, title: "You are viewing a commit, not working on a branch", cause: "HEAD points directly at a commit or tag. New commits can become hard to find once you switch away.", checks: ["git status", "git log --oneline -3"], steps: ["If you want to keep working from here, create a branch before committing.", "If you were only inspecting history, switch back to your normal branch."], command: "git switch -c fix/from-detached-head", jump: "branch" },
+    { match: /permission denied \(publickey\)|authentication failed|could not read username/, title: "GitHub could not authenticate this connection", cause: "Your remote URL and available SSH key or HTTPS credentials do not match an account with access.", checks: ["git remote -v", "ssh -T git@github.com"], steps: ["Check whether origin uses SSH or HTTPS.", "For SSH, add the correct public key to GitHub; for HTTPS, authenticate with a token or GitHub CLI."], command: "gh auth status", jump: "security" },
+    { match: /conflict \(content\)|merge conflict|could not apply/, title: "Git needs help combining two edits", cause: "Both sides changed overlapping lines, and Git cannot safely choose one automatically.", checks: ["git status", "git diff --name-only --diff-filter=U"], steps: ["Open each file Git marks as unmerged and choose the final content.", "Stage every resolved file, then continue the merge, rebase, or cherry-pick."], command: "git status", jump: "merge" },
+    { match: /author identity unknown|please tell me who you are/, title: "Git does not know who should author the commit", cause: "A user name or email is missing from this repository and your global configuration.", checks: ["git config --show-origin --get user.name", "git config --show-origin --get user.email"], steps: ["Set your name and email globally, or set a work email only in this repository.", "Retry the commit after checking the values."], command: "git config --global user.name \"Your Name\"", jump: "setup" },
+    { match: /src refspec .* does not match any/, title: "There is no local commit or branch to push", cause: "This often happens when a new repository has no first commit yet, or the branch name in the push command is wrong.", checks: ["git status", "git branch --show-current", "git log -1 --oneline"], steps: ["Make and commit at least one change if the repository is empty.", "Then push the branch Git reports as current."], command: "git add . && git commit -m \"Initial commit\"", jump: "commit" }
+  ];
+
+  function fixHTML(fix) {
+    var checks = fix.checks.map(function (cmd) { return '<li><code>' + esc(cmd) + '</code><button type="button" class="mini-copy" data-fix-copy="' + esc(cmd) + '">Copy</button></li>'; }).join("");
+    var steps = fix.steps.map(function (step) { return "<li>" + esc(step) + "</li>"; }).join("");
+    return '<div class="fix-result-head"><p class="eyebrow">Likely match</p><h3>' + esc(fix.title) + '</h3><p>' + esc(fix.cause) + '</p></div><div class="fix-columns"><div><h4>Check first</h4><ul class="fix-commands">' + checks + '</ul></div><div><h4>Safe path</h4><ol class="fix-steps">' + steps + '</ol></div></div><div class="fix-next"><span>Then run</span><code>' + esc(fix.command) + '</code><button type="button" class="mini-copy" data-fix-copy="' + esc(fix.command) + '">Copy</button><button type="button" class="text-btn" data-jump="' + fix.jump + '">See related commands</button></div>';
+  }
+
+  function showFix(raw) {
+    var result = el("fixResult"), query = raw.toLowerCase().replace(/\s+/g, " ").trim();
+    var fix = FIXES.filter(function (item) { return item.match.test(query); })[0];
+    if (!query) { result.hidden = true; return; }
+    if (!fix) result.innerHTML = '<div class="fix-result-head"><p class="eyebrow">No exact match yet</p><h3>Start with a safe snapshot.</h3><p>GitAtlas did not recognise that error. These checks reveal your branch, changed files, and recent history without changing anything.</p></div><div class="fix-next"><code>git status</code><button type="button" class="mini-copy" data-fix-copy="git status">Copy</button><code>git log --oneline -5</code><button type="button" class="mini-copy" data-fix-copy="git log --oneline -5">Copy</button><button type="button" class="text-btn" data-jump="fixes">Browse common errors</button></div>';
+    else result.innerHTML = fixHTML(fix);
+    result.hidden = false;
+    result.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "nearest" });
+  }
+
   var reduceMotion = window.matchMedia
     ? window.matchMedia("(prefers-reduced-motion: reduce)").matches : false;
 
@@ -527,10 +560,17 @@
   }
   el("searchClear").addEventListener("click", clearSearch);
   el("emptyReset").addEventListener("click", clearSearch);
+  el("fixForm").addEventListener("submit", function (ev) { ev.preventDefault(); showFix(el("errorInput").value); });
+  el("fixClear").addEventListener("click", function () { el("errorInput").value = ""; el("fixResult").hidden = true; el("fixClear").hidden = true; el("errorInput").focus(); });
+  el("errorInput").addEventListener("input", function () { el("fixClear").hidden = !this.value; });
 
   /* ---------- interaction: one delegated click handler ---------- */
 
   document.addEventListener("click", function (ev) {
+    var sample = ev.target.closest("[data-error-sample]");
+    if (sample) { el("errorInput").value = sample.getAttribute("data-error-sample"); el("fixClear").hidden = false; showFix(el("errorInput").value); return; }
+    var fixCopy = ev.target.closest("[data-fix-copy]");
+    if (fixCopy) { copyText(fixCopy.getAttribute("data-fix-copy")).then(function () { flash(fixCopy); toast("Copied the diagnostic command"); }).catch(function () { toast("Could not copy — select the text instead"); }); return; }
     var copyBtn = ev.target.closest("[data-copy]");
     if (copyBtn) {
       var cmd = lookup(copyBtn.getAttribute("data-copy"));
