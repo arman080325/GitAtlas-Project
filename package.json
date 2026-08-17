@@ -1,0 +1,28 @@
+{
+  "name": "gitatlas",
+  "version": "1.0.0",
+  "description": "Zero-dependency terminal CLI companion for GitAtlas — search 381+ Git commands, troubleshoot errors, and scan for secret leaks directly from your shell.",
+  "main": "bin/gitatlas.js",
+  "bin": {
+    "gitatlas": "./bin/gitatlas.js"
+  },
+  "keywords": [
+    "git",
+    "git-cli",
+    "cheat-sheet",
+    "git-commands",
+    "git-helper",
+    "git-troubleshooting",
+    "secret-scanner"
+  ],
+  "author": "Arman & GitAtlas Contributors",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/arman080325/GitAtlas-Project.git"
+  },
+  "bugs": {
+    "url": "https://github.com/arman080325/GitAtlas-Project/issues"
+  },
+  "homepage": "https://github.com/arman080325/GitAtlas-Project#readme"
+}

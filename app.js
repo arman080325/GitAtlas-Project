@@ -582,6 +582,16 @@
   document.addEventListener("click", function (ev) {
     var sample = ev.target.closest("[data-error-sample]");
     if (sample) { el("errorInput").value = sample.getAttribute("data-error-sample"); el("fixClear").hidden = false; showFix(el("errorInput").value); return; }
+    var cliCopy = ev.target.closest("[data-cli-copy]");
+    if (cliCopy) {
+      var cliText = cliCopy.getAttribute("data-cli-copy");
+      copyText(cliText).then(function () {
+        flash(cliCopy);
+        toast("Copied CLI command");
+        if (window.GitAtlasToolkit) window.GitAtlasToolkit.recordCopy(cliText, "CLI Companion");
+      }).catch(function () { toast("Could not copy — select the text instead"); });
+      return;
+    }
     var fixCopy = ev.target.closest("[data-fix-copy]");
     if (fixCopy) {
       var fixText = fixCopy.getAttribute("data-fix-copy");

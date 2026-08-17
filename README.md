@@ -95,6 +95,15 @@ Every developer has been mid-merge, mid-rebase, or mid-panic and typed **"how do
 <tr>
 <td width="50%" valign="top">
 
+### 💻 Terminal & CLI Companion (`npx gitatlas`)
+- **Zero-Install CLI** — Run queries directly in your terminal via `npx gitatlas <query>` or `git atlas <query>`
+- **Error Troubleshooting in CLI** — Diagnose failures right in shell (`gitatlas --fix "<error>"`)
+- **Terminal Secret Scanner** — Scan local `.env` and files for leaked tokens (`gitatlas --scan .env`)
+- **Git Alias Integration** — 1-command alias setup (`git config --global alias.atlas "!npx gitatlas"`)
+
+</td>
+<td width="50%" valign="top">
+
 ### 🔒 Git Security & Secret Shield
 - **100% In-Browser Secret Scanner** — Offline regex detection for AWS keys, Stripe secrets, GitHub PATs, OpenAI/Claude tokens, SSH keys, and DB connection strings
 - **Emergency Purge Playbooks** — Guided step-by-step resolution for unpushed commits, deep history scrubbing via `git-filter-repo`, and cached untracking
@@ -102,6 +111,8 @@ Every developer has been mid-merge, mid-rebase, or mid-panic and typed **"how do
 - **Remediation Checklist** — 7-step interactive incident checklist with persistent `localStorage` progress tracking
 
 </td>
+</tr>
+<tr>
 <td width="50%" valign="top">
 
 ### 🌳 Interactive Git Graph & Branch Visualizer
@@ -111,8 +122,6 @@ Every developer has been mid-merge, mid-rebase, or mid-panic and typed **"how do
 - **Live Sandbox Mode** — Free playground to dynamically run `+ git commit`, `+ git branch`, `git checkout`, and `git reset` on an interactive canvas
 
 </td>
-</tr>
-<tr>
 <td width="50%" valign="top">
 
 ### 🛠️ Interactive Command Studio
@@ -122,6 +131,8 @@ Every developer has been mid-merge, mid-rebase, or mid-panic and typed **"how do
 - **Conventional Commit & PR Composer** — Standardized commit message generator (`git commit -m`) and GitHub CLI PR composer (`gh pr create`)
 
 </td>
+</tr>
+<tr>
 <td width="50%" valign="top">
 
 ### 🧰 Personal Toolkit & Local Vault
@@ -131,7 +142,6 @@ Every developer has been mid-merge, mid-rebase, or mid-panic and typed **"how do
 - **⚙️ `.gitconfig` Exporter** — Interactive shortcut generator (`git lg`, `git uncommit`, `git discard`, `git standup`)
 
 </td>
-</tr>
 <tr>
 <td width="50%" valign="top">
 
