@@ -856,8 +856,13 @@
 
   function scrollToId(id) {
     var target = document.getElementById(id);
+    if (!target && id === "fixes") {
+      target = document.getElementById("fix-assistant");
+    }
     if (!target) return;
-    var top = target.getBoundingClientRect().top + window.scrollY - 92;
+    var topbarEl = document.getElementById("topbar");
+    var topbarH = topbarEl ? topbarEl.offsetHeight + 16 : (window.innerWidth <= 720 ? 128 : 92);
+    var top = target.getBoundingClientRect().top + window.scrollY - topbarH;
     smoothTo(Math.max(0, top));
   }
 

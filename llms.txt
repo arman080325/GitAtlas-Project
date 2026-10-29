@@ -1,0 +1,108 @@
+# GitAtlas — The Field Guide to Git & GitHub
+
+> GitAtlas is a comprehensive, interactive, open-source developer field guide and terminal CLI companion that indexes 381+ Git and GitHub commands across 26 categories with real-world scenarios, safe pre-flight checks, an interactive DAG commit graph visualizer, a privacy-preserving secret leak scanner, and one-tap copy functionality.
+
+- **Website**: https://git-atlas-project.vercel.app/
+- **CLI Companion**: `npx gitatlas <query>` or `git config --global alias.atlas "!npx gitatlas"`
+- **Author**: Arman Ahemad Khan (https://github.com/arman080325)
+- **License**: MIT
+- **Privacy Guarantee**: 100% Client-side. No code, diffs, API keys, or queries ever leave the user's browser runtime.
+
+---
+
+## Core Capabilities & Features
+
+### 1. Git Security & Secret Leak Shield (`#security`)
+- **Browser-Native Secret Scanner**: Scans diffs, `.env` files, and code locally using high-precision regexes for 15+ credential formats: AWS IAM keys, GitHub PATs/Fine-grained tokens, Stripe secret keys, OpenAI / Anthropic / AI API keys, Private SSH keys, PostgreSQL/MySQL database connection strings, Slack Webhooks, Google Cloud API keys, and JWT secrets.
+- **Permanent Purge Playbooks**:
+  - *Committed Locally (Unpushed)*: `git reset --soft HEAD~1 && git restore --staged <secret-file>`
+  - *Pushed to Remote (Public/Shared)*: `git filter-repo --invert-paths --path <secret-file> && git push origin --force-with-lease --all && git push origin --force-with-lease --tags`
+  - *Stop Tracking Active File (Keep Local)*: `git rm --cached <secret-file>`
+- **Pre-Commit Secret Shield**: Downloadable and copy-pasteable pre-commit hook bash scripts for native `.git/hooks/pre-commit` and Husky / npm `lint-staged`.
+- **7-Step Incident Remediation Checklist**: Key revocation, CloudTrail / audit logging, history scrub, lease-based force push, GitHub commit cache clearance, `.gitignore` update, and team re-sync.
+
+### 2. Interactive Git Graph & Branch Visualizer (`#visualizer`)
+- **Visual DAG Simulator**: Visualizes commits, parent pointers, branch refs, detached HEAD, merge commits, rebase replays, cherry-picks, and soft resets before running them in a terminal.
+- **Guided Scenarios**:
+  - 3-Way Merge (`git merge`)
+  - Rebase Replay (`git rebase main`)
+  - Cherry-Pick (`git cherry-pick <SHA>`)
+  - Soft Reset (`git reset --soft HEAD~1`)
+  - Hard Reset (`git reset --hard HEAD~1`)
+  - Safe Revert (`git revert <SHA>`)
+  - Git Stash (`git stash push / pop`)
+  - Freeform Sandbox with live commit, branch, switch, and reset controls.
+
+### 3. Terminal & Shell CLI Companion (`#cli`)
+- Zero-installation access via `npx gitatlas <query>`.
+- Troubleshoot error strings in your shell: `npx gitatlas --fix "<error message>"`.
+- Scan local files or diffs for secrets: `npx gitatlas --scan [file]`.
+- Interactive playbook walkthroughs in CLI: `npx gitatlas --flow <name>`.
+
+### 4. Interactive Studio & Builders (`#builders`)
+- **`git log` Visual Builder**: Generates tailored history queries with graph flags (`--graph --oneline --decorate --all`), author filters, date ranges, path restrictions, and flag breakdowns.
+- **Undo Matrix**: Maps exact change states (Working Directory, Staging Area, Committed Locally, Pushed to Remote) to safe recovery commands with risk ratings.
+- **`.gitignore` & `.gitattributes` Generator**: Generates customized ignore and normalization rules for Node, Python, macOS, Windows, JetBrains, VS Code, and binary diffs.
+- **Conventional Commit & PR Composer**: Generates formatted conventional commit messages (`feat:`, `fix:`, `docs:`, `refactor:`, `perf:`, `test:`, `chore:`) with breaking change markers (`!`), bodies, issue closes, and GitHub CLI PR commands (`gh pr create`).
+
+### 5. Recovery Wizard & Playbooks (`#wizard`)
+Ordered multi-step playbooks with mandatory read-only pre-flight checks:
+- Rescue commits from a detached HEAD: `git switch -c rescue/work`
+- Undo a merge conflict or bad merge: `git merge --abort`
+- Change the commit message of the last commit: `git commit --amend -m "new message"`
+- Recover deleted commits or lost stashes: `git reflog`
+- Rebase a diverged branch onto main safely.
+
+### 6. Error Fix Assistant (`#fix-assistant`)
+Instant diagnosis and remediation for common Git errors:
+- "Updates were rejected because the remote contains work": `git pull --rebase origin main && git push`
+- "fatal: not a git repository": `git status` after moving into the repository root, or `git init`.
+- "CONFLICT (content): Merge conflict in <file>": Open unmerged files, resolve markers, `git add <file>`, then `git merge --continue`.
+- "error: Your local changes to the following files would be overwritten by checkout": `git stash push -m "work before switch"`.
+- "fatal: refusing to merge unrelated histories": `git pull origin main --allow-unrelated-histories`.
+
+### 7. 381+ Commands Across 26 Sections (`#atlas`)
+1. Setup & identity (`#setup`)
+2. Aliases & shortcuts (`#aliases`)
+3. Starting a repository (`#start`)
+4. Staging changes (`#staging`)
+5. Committing (`#commit`)
+6. Ignoring & attributes (`#ignore`)
+7. Reading history (`#history`)
+8. Inspecting & searching (`#inspect`)
+9. Branching (`#branch`)
+10. Merging & conflicts (`#merge`)
+11. Rebasing (`#rebase`)
+12. Remotes (`#remotes`)
+13. Push, pull & fetch (`#sync`)
+14. Forks & contributing (`#fork`)
+15. Stashing (`#stash`)
+16. Undoing things (`#undo`)
+17. Cherry-pick & patches (`#cherry`)
+18. Tags & releases (`#tags`)
+19. Worktrees, submodules & LFS (`#advanced`)
+20. Hooks & automation (`#hooks`)
+21. Performance & maintenance (`#maintenance`)
+22. Security & secrets (`#security`)
+23. GitHub CLI (`#ghcli`)
+24. GitHub Actions (`#actions`)
+25. Team workflows (`#workflows`)
+26. Common errors, fixed (`#fixes`)
+
+---
+
+## Quick Reference / Emergency Cheatsheet
+
+| Goal | Safe Command | Risk Level |
+|---|---|---|
+| Undo last commit, keep changes staged | `git reset --soft HEAD~1` | Safe (local only) |
+| Undo last commit, keep changes unstaged | `git reset HEAD~1` | Safe (local only) |
+| Discard all uncommitted changes in working tree | `git restore .` | Destructive (cannot undo) |
+| Discard single modified file | `git restore <file>` | Destructive (cannot undo) |
+| Unstage a staged file | `git restore --staged <file>` | Safe |
+| Change message of last commit | `git commit --amend -m "new message"` | Safe (unpushed) / Rewrites history |
+| Undo pushed commit cleanly | `git revert <commit-sha>` | Safe (creates undo commit) |
+| Safely push rebased branch | `git push origin --force-with-lease` | Safe force push |
+| Purge file completely from all git history | `git filter-repo --invert-paths --path <file>` | Rewrites history |
+| View commit reflog of lost commits | `git reflog` | Read-only |
+| Stash uncommitted changes including untracked | `git stash push -u -m "wip"` | Safe |

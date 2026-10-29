@@ -1,0 +1,25 @@
+{
+  "name": "GitAtlas — The Field Guide to Git & GitHub",
+  "short_name": "GitAtlas",
+  "description": "381+ Git and GitHub commands in plain English with interactive branch visualizer, secret shield, and terminal companion.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0d1117",
+  "theme_color": "#2f81f7",
+  "categories": [
+    "developer tools",
+    "utilities",
+    "education",
+    "productivity"
+  ],
+  "icons": [
+    {
+      "src": "/og.png",
+      "sizes": "1200x630",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

@@ -512,20 +512,56 @@
     var branches = graphData.branches || [];
     var head = graphData.head || { type: 'branch', target: 'main' };
 
-    // Calculate bounding box width dynamically to perfectly fit viewBox
-    var minX = 9999, maxX = -9999;
-    nodes.forEach(function (n) {
-      if (n.x < minX) minX = n.x;
-      if (n.x > maxX) maxX = n.x;
-    });
-
-    var paddingX = 75;
-    var viewBoxX = Math.max(0, minX - paddingX);
-    var viewBoxWidth = Math.max((maxX - minX) + (paddingX * 2), 580);
-    svg.setAttribute('viewBox', viewBoxX + ' 15 ' + viewBoxWidth + ' 250');
-
     var nodeMap = {};
     nodes.forEach(function (n) { nodeMap[n.id] = n; });
+
+    // Calculate bounding box dynamically so no nodes, branch badges or SHA labels are ever cropped
+    var minX = 9999, maxX = -9999, minY = 9999, maxY = -9999;
+    nodes.forEach(function (n) {
+      if (n.x - 25 < minX) minX = n.x - 25;
+      if (n.x + 25 > maxX) maxX = n.x + 25;
+      if (n.y - 25 < minY) minY = n.y - 25;
+      if (n.y + 42 > maxY) maxY = n.y + 42; // SHA label at node.y + 26
+    });
+
+    // Account for branch badges
+    var branchesByTarget = {};
+    branches.forEach(function (b) {
+      (branchesByTarget[b.target] = branchesByTarget[b.target] || []).push(b);
+    });
+
+    Object.keys(branchesByTarget).forEach(function (targetId) {
+      var targetNode = nodeMap[targetId];
+      if (!targetNode) return;
+      var bList = branchesByTarget[targetId];
+      bList.forEach(function (b, idx) {
+        var isHeadBranch = (head.type === 'branch' && head.target === b.name);
+        var labelY = targetNode.y - 32 - (idx * 28);
+        var charWidth = 7.5;
+        var boxWidth = Math.max((b.name ? b.name.length : 4) * charWidth + 20, 58) + (isHeadBranch ? 58 : 0);
+        var boxX = targetNode.x - (boxWidth / 2);
+        if (boxX < minX) minX = boxX;
+        if (boxX + boxWidth > maxX) maxX = boxX + boxWidth;
+        if (labelY < minY) minY = labelY;
+      });
+    });
+
+    // Account for detached HEAD
+    if (head.type === 'commit' && nodeMap[head.target]) {
+      var headNode = nodeMap[head.target];
+      var dLabelY = headNode.y - 32;
+      if (headNode.x - 72 < minX) minX = headNode.x - 72;
+      if (headNode.x + 72 > maxX) maxX = headNode.x + 72;
+      if (dLabelY < minY) minY = dLabelY;
+    }
+
+    var padX = 35;
+    var padY = 20;
+    var viewBoxX = Math.round(minX - padX);
+    var viewBoxY = Math.round(minY - padY);
+    var viewBoxWidth = Math.max(Math.round((maxX - minX) + (padX * 2)), 580);
+    var viewBoxHeight = Math.max(Math.round((maxY - minY) + (padY * 2)), 230);
+    svg.setAttribute('viewBox', viewBoxX + ' ' + viewBoxY + ' ' + viewBoxWidth + ' ' + viewBoxHeight);
 
     var html = '';
 
