@@ -1,0 +1,41 @@
+# GitAtlas — Robots.txt
+# Welcome search engines and generative AI agents
+
+User-agent: *
+Allow: /
+Disallow: /api/track
+Disallow: /_vercel/
+
+# Explicit permissions for Generative Search Engines (GEO)
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: Bytespider
+Allow: /
+
+User-agent: cohere-ai
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+Host: https://git-atlas-project.vercel.app
+Sitemap: https://git-atlas-project.vercel.app/sitemap.xml

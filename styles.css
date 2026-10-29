@@ -77,10 +77,16 @@
   background: transparent;
 }
 
-html { scroll-padding-top: 92px; }
+html {
+  scroll-padding-top: 92px;
+  overflow-x: clip;
+  max-width: 100vw;
+}
 
 body {
   margin: 0;
+  overflow-x: clip;
+  max-width: 100vw;
   background: var(--bg);
   color: var(--text);
   font-family: "IBM Plex Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -248,9 +254,11 @@ a { color: inherit; }
 .hero-title {
   font-family: var(--font-display);
   font-weight: 800;
-  font-size: clamp(40px, 5vw, 60px);
-  line-height: 1.02; letter-spacing: -.035em;
-  margin-bottom: 20px; white-space: nowrap;
+  font-size: clamp(34px, 5vw, 60px);
+  line-height: 1.05; letter-spacing: -.035em;
+  margin-bottom: 20px;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 .hero-title em { font-style: normal; color: var(--accent); }
 
@@ -1583,6 +1591,7 @@ mark {
 /* Sub-tabs within tools */
 .studio-subtabs {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
   margin-top: 18px;
 }
@@ -1672,6 +1681,7 @@ mark {
 .studio-code-tall {
   max-height: 420px;
   overflow-y: auto;
+  overflow-x: auto;
 }
 
 .studio-code-tall code {
@@ -3588,12 +3598,15 @@ mark {
   background: #0d1117;
   border: 1px solid #30363d;
   border-radius: 6px;
+  min-width: 0;
 }
 
 .sec-code-box pre {
   margin: 0;
   overflow-x: auto;
   font-size: 12.5px;
+  flex: 1;
+  min-width: 0;
 }
 
 .sec-code-box code {
@@ -3825,6 +3838,7 @@ mark {
   background: #0d1117;
   border: 1px solid #30363d;
   border-radius: 6px;
+  min-width: 0;
 }
 
 .cli-code-snippet code {
@@ -3833,6 +3847,8 @@ mark {
   font-size: 12px;
   overflow-x: auto;
   white-space: nowrap;
+  flex: 1;
+  min-width: 0;
 }
 
 /* Terminal Simulator Window */
@@ -3969,3 +3985,240 @@ mark {
 }
 
 
+
+/* =========================================================
+   Mobile Optimization & Responsiveness Enhancements
+   ========================================================= */
+
+@media (max-width: 768px) {
+  input[type="text"],
+  input[type="search"],
+  input[type="number"],
+  textarea,
+  select {
+    font-size: 16px !important; /* Prevents iOS auto-zoom from displacing page */
+  }
+}
+
+@media (max-width: 1000px) {
+  .hero-inner {
+    grid-template-columns: 1fr;
+    padding-top: 48px;
+    gap: 32px;
+  }
+  .demo {
+    order: 2; /* Keep headline & value proposition visible first on mobile */
+  }
+}
+
+@media (max-width: 720px) {
+  .topbar-inner {
+    flex-wrap: wrap;
+    padding: 10px 14px;
+    gap: 10px;
+  }
+  .brand {
+    order: 1;
+  }
+  .topbar-actions {
+    order: 2;
+    margin-left: auto;
+    gap: 6px;
+  }
+  .search-shell {
+    order: 3;
+    max-width: none;
+    width: 100%;
+  }
+  html {
+    scroll-padding-top: 126px;
+  }
+  .section {
+    scroll-margin-top: 126px;
+  }
+  .filter-note {
+    top: 114px;
+  }
+
+  .hero-inner {
+    padding: 32px 14px 26px;
+  }
+  .hero-title {
+    font-size: clamp(32px, 10vw, 48px);
+    line-height: 1.08;
+  }
+  .hero-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(85px, 1fr));
+    gap: 14px 18px;
+  }
+  .hero-jump {
+    gap: 8px;
+  }
+  .chip {
+    padding: 8px 13px;
+    min-height: 38px;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  /* Security Tabs: Smooth horizontal swipe */
+  .sec-nav-tabs {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding: 2px 2px 6px;
+    gap: 8px;
+  }
+  .sec-nav-tabs::-webkit-scrollbar {
+    display: none;
+  }
+  .sec-tab-btn {
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+
+  /* Visualizer Scenario Pills: Smooth horizontal swipe */
+  .viz-scenario-pills {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding: 2px 2px 6px;
+    gap: 8px;
+  }
+  .viz-scenario-pills::-webkit-scrollbar {
+    display: none;
+  }
+  .viz-scenario-pill {
+    flex: 0 0 auto;
+  }
+
+  /* Visualizer Canvas & Stepper */
+  .viz-canvas-bar {
+    padding: 14px 16px;
+    gap: 12px;
+  }
+  .viz-stepper-ctrls {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+  }
+  .viz-ctrl-btn {
+    padding: 6px 11px;
+    font-size: 12px;
+  }
+  .viz-canvas-wrap {
+    padding: 16px 12px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .viz-svg {
+    min-width: 520px;
+  }
+
+  /* Studio Tabs: Smooth horizontal swipe */
+  .studio-tabs {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: 2px;
+  }
+  .studio-tabs::-webkit-scrollbar {
+    display: none;
+  }
+  .studio-tab-btn {
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+  .studio-card-head {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .studio-card-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  /* Section Header layout on mobile: Title first, then animation */
+  .section-head {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+  }
+  .sec-anim {
+    width: 130px;
+    height: 38px;
+  }
+
+  /* Command cards touch targets */
+  .card {
+    padding: 14px 12px;
+  }
+  .star-btn, .copy-btn {
+    min-height: 34px;
+    min-width: 34px;
+  }
+}
+
+/* Extra small devices (<= 380px) */
+@media (max-width: 380px) {
+  .topbar-inner {
+    padding: 8px 10px;
+    gap: 8px;
+  }
+  .brand-word {
+    font-size: 16px;
+  }
+  .brand-mark {
+    width: 22px;
+    height: 22px;
+  }
+  .icon-btn {
+    width: 34px;
+    height: 34px;
+  }
+  .icon-btn svg {
+    width: 16px;
+    height: 16px;
+  }
+  .topbar-actions {
+    gap: 5px;
+  }
+  .hero-inner {
+    padding: 24px 10px 20px;
+  }
+  .hero-stats {
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+}
+
+/* Toolkit Drawer Mobile Full-Width Slide-Over */
+@media (max-width: 540px) {
+  .toolkit-drawer {
+    width: 100vw;
+    max-width: 100vw;
+  }
+  .toolkit-tab-panel {
+    padding: 16px 14px;
+  }
+  .toolkit-tabs {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .toolkit-tabs::-webkit-scrollbar {
+    display: none;
+  }
+  .toolkit-tab-btn {
+    flex: 0 0 auto;
+    padding: 12px 14px;
+  }
+}

@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>GitAtlas — the field guide to Git &amp; GitHub</title>
-<meta name="description" content="381 Git and GitHub commands explained in plain English, with a real use case for each and one-tap copy. A fast, searchable field guide for developers.">
+<title>GitAtlas — The Ultimate Git &amp; GitHub Field Guide, CLI &amp; Security Shield</title>
+<meta name="description" content="381+ Git and GitHub commands in plain English with real-world scenarios, interactive branch DAG visualizer, secret leak scanner, pre-commit shields, and instant terminal companion.">
 <meta name="author" content="Arman Ahemad Khan">
 <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0d1117" media="(prefers-color-scheme: dark)">
@@ -44,7 +44,202 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+<!-- Canonical & International SEO -->
+<link rel="canonical" href="https://git-atlas-project.vercel.app/">
+<link rel="alternate" hreflang="x-default" href="https://git-atlas-project.vercel.app/">
+<link rel="alternate" hreflang="en" href="https://git-atlas-project.vercel.app/">
+<link rel="manifest" href="/site.webmanifest">
+
+<!-- Search Engine Optimization (SEO) & Robots -->
+<meta name="keywords" content="Git cheat sheet, Git commands, GitHub CLI, Git undo commit, fix git merge conflict, git filter-repo, secret leak scanner, git rebase guide, git cherry-pick, pre-commit hook, developer field guide, version control, interactive git simulator">
+<meta name="publisher" content="GitAtlas">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+<meta name="googlebot" content="index, follow, max-snippet:-1, max-image-preview:large">
+<meta name="bingbot" content="index, follow, max-snippet:-1, max-image-preview:large">
+
+<!-- Geographic & Global Target Audience (GEO) -->
+<meta name="geo.region" content="GLOBAL">
+<meta name="geo.placename" content="Worldwide">
+<meta name="target" content="all">
+<meta name="audience" content="all">
+<meta name="coverage" content="Worldwide">
+<meta name="distribution" content="Global">
+<meta name="rating" content="General">
+
+<!-- Mobile & PWA Configuration -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="GitAtlas">
+<link rel="apple-touch-icon" href="/og.png">
+
+<!-- Open Graph Enhancements -->
+<meta property="og:locale" content="en_US">
+<meta property="og:image:type" content="image/png">
+<meta name="twitter:site" content="@arman080325">
+<meta name="twitter:creator" content="@arman080325">
+
 <link rel="stylesheet" href="styles.css">
+
+<!-- Structured Data: Schema.org JSON-LD (Search Engines & Generative AI Optimization) -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": "https://git-atlas-project.vercel.app/#website",
+      "url": "https://git-atlas-project.vercel.app/",
+      "name": "GitAtlas",
+      "description": "The field guide to Git & GitHub with 381+ commands, interactive branch visualizer, secret scanner, and terminal CLI companion.",
+      "publisher": {
+        "@type": "Person",
+        "name": "Arman Ahemad Khan",
+        "url": "https://arman-portfolio.online"
+      },
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": "https://git-atlas-project.vercel.app/?q={search_term_string}"
+        },
+        "query-input": "required name=search_term_string"
+      },
+      "inLanguage": "en-US"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "@id": "https://git-atlas-project.vercel.app/#app",
+      "name": "GitAtlas",
+      "applicationCategory": "DeveloperApplication",
+      "operatingSystem": "Cross-platform (macOS, Linux, Windows, Web)",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "description": "Zero-dependency terminal CLI companion and interactive web guide for Git commands, troubleshooting, branch simulation, and secret leak prevention.",
+      "url": "https://git-atlas-project.vercel.app/",
+      "softwareVersion": "1.0.0",
+      "author": {
+        "@type": "Person",
+        "name": "Arman Ahemad Khan",
+        "url": "https://arman-portfolio.online"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://git-atlas-project.vercel.app/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How do I undo the last Git commit without losing my work?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Run 'git reset --soft HEAD~1'. This undoes the commit but preserves all your modified files in the staging area ready to be recommitted or edited."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How do I permanently remove an accidentally pushed API key or password from Git history?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "First, revoke the compromised credential immediately. Then scrub your entire repository history using git-filter-repo: 'git filter-repo --invert-paths --path <file>' and safely force push with 'git push origin --force-with-lease --all && git push origin --force-with-lease --tags'."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How do I fix the error: 'Updates were rejected because the remote contains work'?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Pull the remote commits and rebase your local commits on top: 'git pull --rebase origin main'. After resolving any conflicts, push again with 'git push'."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How do I discard all uncommitted changes in my working directory?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "To discard all unstaged changes in tracked files, run 'git restore .'. To also remove newly created untracked files, run 'git clean -fd'."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the difference between git merge and git rebase?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "'git merge' creates a 3-way merge commit that ties two divergent branches together, preserving the complete branching history. 'git rebase' replays your branch's commits one-by-one on top of the target branch, creating a clean linear commit history."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How do I use GitAtlas directly from my shell or terminal?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "You can run 'npx gitatlas <query>' without installing anything, or add an alias with 'git config --global alias.atlas \"!npx gitatlas\"' to query commands with 'git atlas <search>'."
+          }
+        }
+      ]
+    },
+    {
+      "@type": "HowTo",
+      "name": "How to Safely Undo the Last Git Commit",
+      "description": "Step-by-step guide to undoing an unpushed local commit in Git while preserving or discarding changes.",
+      "step": [
+        {
+          "@type": "HowToStep",
+          "name": "Inspect recent commit history",
+          "text": "Run 'git log -1 --stat' to verify the exact commit hash and files you are about to undo."
+        },
+        {
+          "@type": "HowToStep",
+          "name": "Perform a soft reset",
+          "text": "Execute 'git reset --soft HEAD~1' to remove the commit entry while leaving all edits staged."
+        },
+        {
+          "@type": "HowToStep",
+          "name": "Verify working tree status",
+          "text": "Run 'git status' to inspect your staged files and make any necessary adjustments."
+        }
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://git-atlas-project.vercel.app/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Security & Secret Shield",
+          "item": "https://git-atlas-project.vercel.app/#security"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Branch Visualizer",
+          "item": "https://git-atlas-project.vercel.app/#visualizer"
+        },
+        {
+          "@type": "ListItem",
+          "position": 4,
+          "name": "Terminal CLI",
+          "item": "https://git-atlas-project.vercel.app/#cli"
+        },
+        {
+          "@type": "ListItem",
+          "position": 5,
+          "name": "Command Atlas",
+          "item": "https://git-atlas-project.vercel.app/#atlas"
+        }
+      ]
+    }
+  ]
+}
+</script>
 </head>
 <body>
 
