@@ -165,7 +165,7 @@
     branch: "branch", merge: "merge", rebase: "rebase", remotes: "sync",
     sync: "sync", fork: "pr", stash: "stash", undo: "undo", cherry: "cherry",
     tags: "tag", advanced: "clone", hooks: "pipeline", maintenance: "pipeline",
-    security: "shield", ghcli: "github", actions: "pipeline", workflows: "pr",
+    security: "shield", secrets: "shield", ghcli: "github", actions: "pipeline", workflows: "pr",
     fixes: "undo"
   };
 
@@ -366,6 +366,8 @@
     '</section>';
   }
 
+  var currentTopic = "all";
+
   function render(entries, terms) {
     var byCat = {};
     entries.forEach(function (e) {
@@ -374,7 +376,11 @@
 
     var html = "";
     ATLAS.forEach(function (cat, ci) {
-      if (byCat[ci]) html += sectionHTML(cat, byCat[ci], terms);
+      if (byCat[ci]) {
+        if (currentTopic === "all" || cat.tag === currentTopic) {
+          html += sectionHTML(cat, byCat[ci], terms);
+        }
+      }
     });
 
     el("sections").innerHTML = html;
@@ -521,6 +527,12 @@
   function runSearch(raw) {
     var q = raw.trim().toLowerCase();
     var note = el("filterNote");
+    if (q && currentTopic !== "all") {
+      currentTopic = "all";
+      document.querySelectorAll(".atlas-topic-pill").forEach(function (p) {
+        p.classList.toggle("active", p.getAttribute("data-topic") === "all");
+      });
+    }
     el("searchClear").hidden = !q;
 
     if (!q) {
@@ -1272,6 +1284,41 @@
     });
   }
 
+  /* ---------- atlas topic filter pills ---------- */
+  function updateTopicPillCounts() {
+    var counts = { all: 0 };
+    ATLAS.forEach(function (cat) {
+      var n = cat.commands.length;
+      counts[cat.tag] = (counts[cat.tag] || 0) + n;
+      counts.all += n;
+    });
+    var map = {
+      all: "countAll", basics: "countBasics", branching: "countBranching",
+      remote: "countRemote", inspect: "countInspect", rescue: "countRescue",
+      github: "countGithub", automation: "countAutomation", advanced: "countAdvanced",
+      config: "countConfig"
+    };
+    Object.keys(map).forEach(function (k) {
+      var elCount = el(map[k]);
+      if (elCount && counts[k] !== undefined) elCount.textContent = counts[k];
+    });
+  }
+
+  document.addEventListener("click", function (ev) {
+    var pill = ev.target.closest(".atlas-topic-pill");
+    if (pill) {
+      var topic = pill.getAttribute("data-topic");
+      if (topic === currentTopic) return;
+      currentTopic = topic;
+      document.querySelectorAll(".atlas-topic-pill").forEach(function (p) {
+        p.classList.toggle("active", p.getAttribute("data-topic") === topic);
+      });
+      render(INDEX, currentTerms || []);
+      track("topic_filter_selected", { topic: topic });
+      return;
+    }
+  });
+
   /* ---------- go ---------- */
 
   /* The wordmark is built letter by letter so each one can arrive on its own. */
@@ -1299,6 +1346,7 @@
     }).join(" ");
   }
 
+  updateTopicPillCounts();
   animateWordmark();
   animateLede();
   buildRail();

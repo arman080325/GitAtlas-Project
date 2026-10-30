@@ -54,27 +54,53 @@
   scrollbar-color: var(--line-strong) transparent;
 }
 
-/* Custom Sleek Scrollbars (Chrome/Edge/Safari/WebKit) */
+/* Custom Sleek Modern Floating Capsule Scrollbars */
+*, *::before, *::after {
+  box-sizing: border-box;
+  scrollbar-width: thin;
+  scrollbar-color: var(--line-strong) transparent;
+}
+
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 10px;
+  height: 10px;
 }
 
 ::-webkit-scrollbar-track {
-  background: transparent;
+  background: color-mix(in srgb, var(--bg-2) 40%, transparent);
+  border-radius: 999px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--line-strong);
-  border-radius: 99px;
+  background-color: var(--line-strong);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+  min-height: 48px;
+  transition: background-color .2s ease;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--text-dim);
+  background-color: var(--text-dim);
+}
+
+::-webkit-scrollbar-thumb:active {
+  background-color: var(--accent);
 }
 
 ::-webkit-scrollbar-corner {
   background: transparent;
+}
+
+/* Compact scrollbars for nested containers */
+.rail-scroll::-webkit-scrollbar,
+.ex::-webkit-scrollbar,
+.sec-textarea::-webkit-scrollbar,
+.sec-leaks-list::-webkit-scrollbar,
+.toolkit-scroll::-webkit-scrollbar,
+.viz-canvas-wrap::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
 }
 
 html {
@@ -708,6 +734,67 @@ mark {
   max-width: 88vw; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
 .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+
+/* ---------- command atlas topic filter tabs ---------- */
+.atlas-topic-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 4px 2px 18px;
+  margin-bottom: 24px;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  border-bottom: 1px solid var(--line);
+}
+.atlas-topic-nav::-webkit-scrollbar {
+  display: none;
+}
+.atlas-topic-pill {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: var(--bg-2);
+  color: var(--text-dim);
+  border: 1px solid var(--line);
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all .2s cubic-bezier(.16, 1, .3, 1);
+}
+.atlas-topic-pill span {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 11px;
+  color: var(--text-faint);
+  background: var(--bg-3);
+  padding: 1px 6px;
+  border-radius: 99px;
+  border: 1px solid var(--line);
+  transition: all .2s ease;
+}
+.atlas-topic-pill:hover {
+  color: var(--text);
+  border-color: var(--line-strong);
+  background: var(--bg-hover);
+  transform: translateY(-1px);
+}
+.atlas-topic-pill.active {
+  color: var(--accent-ink);
+  background: var(--accent);
+  border-color: var(--accent);
+  box-shadow: 0 2px 12px var(--glow);
+}
+.atlas-topic-pill.active span {
+  color: var(--accent);
+  background: #ffffff;
+  border-color: transparent;
+}
 
 /* ---------- fixed desktop navigation dock (left blank space HUD) ---------- */
 .nav-dock {

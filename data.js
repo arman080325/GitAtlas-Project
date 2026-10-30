@@ -485,7 +485,7 @@ const ATLAS = [
   ]
 },
 {
-  id: "security",
+  id: "secrets",
   label: "Security & secrets",
   tag: "automation",
   blurb: "Signing proves who wrote a commit. Everything else here is about keeping credentials out of history — and getting them out when they slip in.",
