@@ -255,7 +255,7 @@
     var result = el("fixResult"), query = raw.toLowerCase().replace(/\s+/g, " ").trim();
     var fix = FIXES.filter(function (item) { return item.match.test(query); })[0];
     if (!query) { result.hidden = true; return; }
-    if (!fix) result.innerHTML = '<div class="fix-result-head"><p class="eyebrow">No exact match yet</p><h3>Start with a safe snapshot.</h3><p>GitAtlas did not recognise that error. These checks reveal your branch, changed files, and recent history without changing anything.</p></div><div class="fix-next"><code>git status</code><button type="button" class="mini-copy" data-fix-copy="git status">Copy</button><code>git log --oneline -5</code><button type="button" class="mini-copy" data-fix-copy="git log --oneline -5">Copy</button><button type="button" class="text-btn" data-jump="fixes">Browse common errors</button></div>';
+    if (!fix) result.innerHTML = '<div class="fix-result-head"><p class="eyebrow">No exact match yet</p><h3>Start with a safe snapshot.</h3><p>GitAtlas did not recognise that error. These checks reveal your branch, changed files, and recent history without changing anything.</p></div><div class="fix-next"><code>git status</code><button type="button" class="mini-copy" data-fix-copy="git status">Copy</button><code>git log --oneline -5</code><button type="button" class="mini-copy" data-fix-copy="git log --oneline -5">Copy</button><button type="button" class="text-btn" data-jump="common-fixes">Browse common errors</button></div>';
     else result.innerHTML = fixHTML(fix);
     result.hidden = false;
     result.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "nearest" });
@@ -789,7 +789,11 @@
       dockMeter.style.transform = "scaleY(" + (max > 0 ? y / max : 0) + ")";
     }
 
-    if (y < 350) updateDockActive("top");
+    if (y < 350) {
+      updateDockActive("top");
+    } else {
+      syncActiveSectionFromScroll(y);
+    }
 
     var showTop = y > 600;
     if (showTop === toTop.hidden) toTop.hidden = !showTop;
@@ -816,10 +820,30 @@
     dockTopBtn = document.querySelector(".nav-dock-btn[data-jump='top']");
   }
 
+  function syncActiveSectionFromScroll(y) {
+    var topbarEl = document.getElementById("topbar");
+    var topbarH = topbarEl ? topbarEl.offsetHeight + 32 : 100;
+    var threshold = y + topbarH;
+
+    // Major sections descending by expected top offset on page
+    var order = ["atlas", "fix-assistant", "wizard", "builders", "cli", "visualizer", "security"];
+    for (var i = 0; i < order.length; i++) {
+      var sec = document.getElementById(order[i]);
+      if (sec) {
+        var top = sec.getBoundingClientRect().top + y;
+        if (threshold >= top) {
+          updateDockActive(order[i]);
+          return;
+        }
+      }
+    }
+    updateDockActive("top");
+  }
+
   function updateDockActive(id) {
     if (!dockTopBtn) initNavDock();
     var y = window.scrollY || document.documentElement.scrollTop;
-    if (y < 350) {
+    if (y < 350 || id === "top") {
       if (dockTopBtn) dockTopBtn.classList.add("active");
       Object.keys(dockBtns).forEach(function (k) { dockBtns[k].classList.remove("active"); });
       return;
@@ -827,11 +851,20 @@
     if (dockTopBtn) dockTopBtn.classList.remove("active");
 
     var targetKey = null;
-    if (id === "fix-assistant") targetKey = "fixes";
-    else if (dockBtns[id]) targetKey = id;
-    else if (document.getElementById(id) && document.getElementById(id).closest("#atlas")) targetKey = "atlas";
+    if (id === "fix-assistant" || id === "fixes") {
+      targetKey = "fix-assistant";
+    } else if (id === "atlas") {
+      targetKey = "atlas";
+    } else if (dockBtns[id]) {
+      targetKey = id;
+    } else {
+      var targetEl = document.getElementById(id);
+      if (targetEl && targetEl.closest("#atlas")) {
+        targetKey = "atlas";
+      }
+    }
 
-    if (targetKey) {
+    if (targetKey && dockBtns[targetKey]) {
       Object.keys(dockBtns).forEach(function (k) {
         if (k === targetKey) dockBtns[k].classList.add("active");
         else dockBtns[k].classList.remove("active");

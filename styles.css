@@ -799,7 +799,7 @@ mark {
 /* ---------- fixed desktop navigation dock (left blank space HUD) ---------- */
 .nav-dock {
   position: fixed;
-  left: max(16px, calc((100vw - 1220px) / 4 - 23px));
+  left: max(20px, calc(50vw - 610px - 72px));
   top: 50%;
   transform: translateY(-50%);
   z-index: 95;
@@ -808,14 +808,21 @@ mark {
   align-items: center;
   gap: 6px;
   padding: 10px 6px;
-  background: color-mix(in srgb, var(--bg-2) 88%, transparent);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  max-height: calc(100vh - 48px);
+  overflow-y: auto;
+  scrollbar-width: none;
+  background: color-mix(in srgb, var(--bg-2) 90%, transparent);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--line-strong);
   border-radius: 999px;
-  box-shadow: 0 10px 32px rgba(1, 4, 9, .5);
-  transition: opacity .25s ease, transform .25s ease, border-color .2s ease;
+  box-shadow: 0 12px 36px rgba(1, 4, 9, .55);
+  transition: opacity .25s ease, transform .25s ease, border-color .2s ease, left .2s ease;
   user-select: none;
+}
+
+.nav-dock::-webkit-scrollbar {
+  display: none;
 }
 
 .nav-dock-meter {

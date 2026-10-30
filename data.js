@@ -574,7 +574,7 @@ const ATLAS = [
   ]
 },
 {
-  id: "fixes",
+  id: "common-fixes",
   label: "Common errors, fixed",
   tag: "rescue",
   blurb: "The messages that stop you mid-flow, and the exact command that clears each one.",
