@@ -1220,18 +1220,26 @@
       <div class="pinned-section" id="pinnedSection" hidden></div>
       <div class="filter-note" id="filterNote" hidden></div>
 
-      <!-- Command Atlas Topic Filter Bar (Removes 77,000px infinite-scroll fatigue) -->
+      <!-- Command Atlas Topic Filter & Progressive Disclosure Toolbar -->
       <nav class="atlas-topic-nav" id="atlasTopicNav" aria-label="Filter Command Atlas by Topic">
-        <button type="button" class="atlas-topic-pill active" data-topic="all">All Commands <span id="countAll">381</span></button>
-        <button type="button" class="atlas-topic-pill" data-topic="basics">Everyday Git <span id="countBasics">52</span></button>
-        <button type="button" class="atlas-topic-pill" data-topic="branching">Branches &amp; Merging <span id="countBranching">40</span></button>
-        <button type="button" class="atlas-topic-pill" data-topic="remote">Remote &amp; Sync <span id="countRemote">36</span></button>
-        <button type="button" class="atlas-topic-pill" data-topic="inspect">History &amp; Search <span id="countInspect">35</span></button>
-        <button type="button" class="atlas-topic-pill" data-topic="rescue">Undo &amp; Fixes <span id="countRescue">48</span></button>
-        <button type="button" class="atlas-topic-pill" data-topic="github">GitHub CLI &amp; PRs <span id="countGithub">45</span></button>
-        <button type="button" class="atlas-topic-pill" data-topic="automation">Automation &amp; Secrets <span id="countAutomation">48</span></button>
-        <button type="button" class="atlas-topic-pill" data-topic="advanced">Advanced Git <span id="countAdvanced">35</span></button>
-        <button type="button" class="atlas-topic-pill" data-topic="config">Setup &amp; Config <span id="countConfig">42</span></button>
+        <div class="atlas-topic-pills">
+          <button type="button" class="atlas-topic-pill active" data-topic="basics">Everyday Git <span id="countBasics">52</span></button>
+          <button type="button" class="atlas-topic-pill" data-topic="branching">Branches &amp; Merging <span id="countBranching">40</span></button>
+          <button type="button" class="atlas-topic-pill" data-topic="remote">Remote &amp; Sync <span id="countRemote">36</span></button>
+          <button type="button" class="atlas-topic-pill" data-topic="inspect">History &amp; Search <span id="countInspect">35</span></button>
+          <button type="button" class="atlas-topic-pill" data-topic="rescue">Undo &amp; Fixes <span id="countRescue">48</span></button>
+          <button type="button" class="atlas-topic-pill" data-topic="github">GitHub CLI &amp; PRs <span id="countGithub">45</span></button>
+          <button type="button" class="atlas-topic-pill" data-topic="automation">Automation &amp; Secrets <span id="countAutomation">48</span></button>
+          <button type="button" class="atlas-topic-pill" data-topic="advanced">Advanced Git <span id="countAdvanced">35</span></button>
+          <button type="button" class="atlas-topic-pill" data-topic="config">Setup &amp; Config <span id="countConfig">42</span></button>
+          <button type="button" class="atlas-topic-pill" data-topic="all">All Commands <span id="countAll">381</span></button>
+        </div>
+        <div class="atlas-topic-controls">
+          <button type="button" class="atlas-toggle-all-btn" id="atlasToggleAll" aria-label="Expand all command sections">
+            <span class="expand-all-text">Expand all</span>
+            <span class="collapse-all-text">Collapse all</span>
+          </button>
+        </div>
       </nav>
 
       <div id="sections"></div>

@@ -736,19 +736,28 @@ mark {
 .toast.show { opacity: 1; transform: translate(-50%, 0); }
 
 
-/* ---------- command atlas topic filter tabs ---------- */
+/* ---------- command atlas topic filter tabs & progressive disclosure ---------- */
 .atlas-topic-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 4px 2px 18px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid var(--line);
+}
+.atlas-topic-pills {
   display: flex;
   align-items: center;
   gap: 8px;
   overflow-x: auto;
-  padding: 4px 2px 18px;
-  margin-bottom: 24px;
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
-  border-bottom: 1px solid var(--line);
+  padding-bottom: 2px;
+  min-width: 0;
+  flex: 1;
 }
-.atlas-topic-nav::-webkit-scrollbar {
+.atlas-topic-pills::-webkit-scrollbar {
   display: none;
 }
 .atlas-topic-pill {
@@ -794,6 +803,111 @@ mark {
   color: var(--accent);
   background: #ffffff;
   border-color: transparent;
+}
+.atlas-topic-controls {
+  flex: 0 0 auto;
+}
+.atlas-toggle-all-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 6px;
+  background: var(--bg-2);
+  color: var(--text-dim);
+  border: 1px solid var(--line);
+  font-family: var(--font-display);
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all .2s ease;
+}
+.atlas-toggle-all-btn:hover {
+  color: var(--text);
+  background: var(--bg-hover);
+  border-color: var(--line-strong);
+}
+.atlas-toggle-all-btn .collapse-all-text {
+  display: none;
+}
+.atlas-toggle-all-btn.all-expanded .expand-all-text {
+  display: none;
+}
+.atlas-toggle-all-btn.all-expanded .collapse-all-text {
+  display: inline;
+}
+
+/* Progressive category disclosure (Eliminates 128,000px infinite scroll) */
+.cat-extra {
+  display: none;
+  flex-direction: column;
+  gap: 14px;
+}
+.section.is-expanded .cat-extra {
+  display: flex;
+}
+.cat-expand-bar {
+  display: flex;
+  justify-content: center;
+  padding-top: 6px;
+  margin-top: 4px;
+}
+.cat-expand-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 20px;
+  border-radius: 999px;
+  background: var(--bg-2);
+  color: var(--accent);
+  border: 1px solid var(--line-strong);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all .2s ease;
+  box-shadow: 0 2px 8px rgba(1, 4, 9, .2);
+}
+.cat-expand-btn:hover {
+  background: color-mix(in srgb, var(--accent) 12%, var(--bg-2));
+  border-color: var(--accent);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px var(--glow);
+}
+.cat-expand-btn svg {
+  width: 14px;
+  height: 14px;
+  transition: transform .25s ease;
+}
+.cat-expand-btn .collapse-text {
+  display: none;
+}
+.section.is-expanded .cat-expand-btn .expand-text {
+  display: none;
+}
+.section.is-expanded .cat-expand-btn .collapse-text {
+  display: inline;
+}
+.section.is-expanded .cat-expand-btn svg {
+  transform: rotate(180deg);
+}
+
+@media (max-width: 720px) {
+  .atlas-topic-nav {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+  .atlas-topic-controls {
+    display: flex;
+    justify-content: flex-end;
+  }
+  .cat-expand-btn {
+    width: 100%;
+    justify-content: center;
+    padding: 10px 16px;
+  }
 }
 
 /* ---------- fixed desktop navigation dock (left blank space HUD) ---------- */

@@ -348,8 +348,37 @@
     return html + "</article>";
   }
 
+  var currentTopic = "basics";
+  var expandedCategories = {};
+  var allExpanded = false;
+
   function sectionHTML(cat, entries, terms) {
-    return '<section class="section" id="' + cat.id + '">' +
+    var isSearching = terms && terms.length > 0;
+    var isExpanded = allExpanded || !!expandedCategories[cat.id] || isSearching;
+    var hasExtra = entries.length > 4 && !isSearching;
+
+    var cardsHtml = "";
+    if (hasExtra) {
+      var topCards = entries.slice(0, 4).map(function (e) { return cardHTML(e, terms); }).join("");
+      var restCards = entries.slice(4).map(function (e) { return cardHTML(e, terms); }).join("");
+      cardsHtml = topCards + '<div class="cat-extra">' + restCards + '</div>';
+    } else {
+      cardsHtml = entries.map(function (e) { return cardHTML(e, terms); }).join("");
+    }
+
+    var expandBarHtml = "";
+    if (hasExtra) {
+      var remaining = entries.length - 4;
+      expandBarHtml = '<div class="cat-expand-bar">' +
+        '<button type="button" class="cat-expand-btn" data-cat-expand="' + cat.id + '" aria-label="Toggle extra commands in ' + esc(cat.label) + '">' +
+          '<span class="expand-text">+ Show ' + remaining + ' more commands</span>' +
+          '<span class="collapse-text">Show fewer commands</span>' +
+          '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 6l4 4 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>' +
+        '</button>' +
+      '</div>';
+    }
+
+    return '<section class="section' + (isExpanded ? ' is-expanded' : '') + '" id="' + cat.id + '">' +
       '<header class="section-head reveal">' +
         '<div class="section-head-text">' +
           '<p class="section-index"><i>' + esc(GROUPS[cat.tag] || cat.tag) + '</i>' +
@@ -361,12 +390,11 @@
         sceneHTML(cat.id) +
       '</header>' +
       '<div class="cards">' +
-        entries.map(function (e) { return cardHTML(e, terms); }).join("") +
+        cardsHtml +
+        expandBarHtml +
       '</div>' +
     '</section>';
   }
-
-  var currentTopic = "all";
 
   function render(entries, terms) {
     var byCat = {};
@@ -375,9 +403,10 @@
     });
 
     var html = "";
+    var isSearching = terms && terms.length > 0;
     ATLAS.forEach(function (cat, ci) {
       if (byCat[ci]) {
-        if (currentTopic === "all" || cat.tag === currentTopic) {
+        if (isSearching || currentTopic === "all" || cat.tag === currentTopic) {
           html += sectionHTML(cat, byCat[ci], terms);
         }
       }
@@ -523,11 +552,13 @@
   /* ---------- search ---------- */
 
   var currentTerms = [];
+  var preSearchTopic = "basics";
 
   function runSearch(raw) {
     var q = raw.trim().toLowerCase();
     var note = el("filterNote");
     if (q && currentTopic !== "all") {
+      preSearchTopic = currentTopic;
       currentTopic = "all";
       document.querySelectorAll(".atlas-topic-pill").forEach(function (p) {
         p.classList.toggle("active", p.getAttribute("data-topic") === "all");
@@ -538,6 +569,12 @@
     if (!q) {
       currentTerms = [];
       note.hidden = true;
+      if (preSearchTopic && currentTopic === "all") {
+        currentTopic = preSearchTopic;
+        document.querySelectorAll(".atlas-topic-pill").forEach(function (p) {
+          p.classList.toggle("active", p.getAttribute("data-topic") === currentTopic);
+        });
+      }
       render(INDEX, []);
       return;
     }
@@ -890,7 +927,7 @@
     var pane = link.closest(".rail-scroll");
     if (pane) {
       var box = link.getBoundingClientRect(), edge = pane.getBoundingClientRect();
-      if (box.top < edge.top || box.bottom > edge.bottom) link.scrollIntoView({ block: "nearest" });
+      if ((box.top < edge.top || box.bottom > edge.bottom) && window.innerWidth > 1000) link.scrollIntoView({ block: "nearest" });
     }
   }
 
@@ -948,10 +985,24 @@
   }
 
   function scrollToId(id) {
-    var target = document.getElementById(id);
-    if (!target && id === "fixes") {
-      target = document.getElementById("fix-assistant");
+    if (id === "fixes") id = "fix-assistant";
+
+    var catObj = null;
+    ATLAS.forEach(function (c) { if (c.id === id) catObj = c; });
+    if (catObj) {
+      if (currentTopic !== "all" && currentTopic !== catObj.tag) {
+        currentTopic = catObj.tag;
+        document.querySelectorAll(".atlas-topic-pill").forEach(function (p) {
+          p.classList.toggle("active", p.getAttribute("data-topic") === catObj.tag);
+        });
+        render(INDEX, currentTerms || []);
+      }
+      expandedCategories[id] = true;
+      var secEl = document.getElementById(id);
+      if (secEl) secEl.classList.add("is-expanded");
     }
+
+    var target = document.getElementById(id);
     if (!target) return;
     var topbarEl = document.getElementById("topbar");
     var topbarH = topbarEl ? topbarEl.offsetHeight + 16 : (window.innerWidth <= 720 ? 128 : 92);
@@ -1338,6 +1389,30 @@
   }
 
   document.addEventListener("click", function (ev) {
+    var catBtn = ev.target.closest("[data-cat-expand]");
+    if (catBtn) {
+      var catId = catBtn.getAttribute("data-cat-expand");
+      var sec = document.getElementById(catId);
+      if (sec) {
+        var nowExp = sec.classList.toggle("is-expanded");
+        expandedCategories[catId] = nowExp;
+        track("category_expanded", { category: catId, expanded: nowExp });
+      }
+      return;
+    }
+
+    var toggleAll = ev.target.closest("#atlasToggleAll");
+    if (toggleAll) {
+      allExpanded = !allExpanded;
+      toggleAll.classList.toggle("all-expanded", allExpanded);
+      ATLAS.forEach(function (c) { expandedCategories[c.id] = allExpanded; });
+      document.querySelectorAll("#sections .section").forEach(function (s) {
+        s.classList.toggle("is-expanded", allExpanded);
+      });
+      track("all_categories_toggled", { expanded: allExpanded });
+      return;
+    }
+
     var pill = ev.target.closest(".atlas-topic-pill");
     if (pill) {
       var topic = pill.getAttribute("data-topic");
