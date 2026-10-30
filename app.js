@@ -772,6 +772,13 @@
     var max = doc.scrollHeight - window.innerHeight;
     progressBar.style.transform = "scaleX(" + (max > 0 ? y / max : 0) + ")";
 
+    var dockMeter = el("navDockMeter");
+    if (dockMeter) {
+      dockMeter.style.transform = "scaleY(" + (max > 0 ? y / max : 0) + ")";
+    }
+
+    if (y < 350) updateDockActive("top");
+
     var showTop = y > 600;
     if (showTop === toTop.hidden) toTop.hidden = !showTop;
 
@@ -783,6 +790,42 @@
   window.addEventListener("scroll", function () {
     if (!ticking) { ticking = true; requestAnimationFrame(frame); }
   }, { passive: true });
+
+  /* Fixed Desktop Navigation Dock active state synchronization */
+  var dockBtns = {};
+  var dockTopBtn = null;
+
+  function initNavDock() {
+    dockBtns = {};
+    document.querySelectorAll(".nav-dock-btn[data-jump]").forEach(function (b) {
+      var j = b.getAttribute("data-jump");
+      if (!dockBtns[j] && j !== "top") dockBtns[j] = b;
+    });
+    dockTopBtn = document.querySelector(".nav-dock-btn[data-jump='top']");
+  }
+
+  function updateDockActive(id) {
+    if (!dockTopBtn) initNavDock();
+    var y = window.scrollY || document.documentElement.scrollTop;
+    if (y < 350) {
+      if (dockTopBtn) dockTopBtn.classList.add("active");
+      Object.keys(dockBtns).forEach(function (k) { dockBtns[k].classList.remove("active"); });
+      return;
+    }
+    if (dockTopBtn) dockTopBtn.classList.remove("active");
+
+    var targetKey = null;
+    if (id === "fix-assistant") targetKey = "fixes";
+    else if (dockBtns[id]) targetKey = id;
+    else if (document.getElementById(id) && document.getElementById(id).closest("#atlas")) targetKey = "atlas";
+
+    if (targetKey) {
+      Object.keys(dockBtns).forEach(function (k) {
+        if (k === targetKey) dockBtns[k].classList.add("active");
+        else dockBtns[k].classList.remove("active");
+      });
+    }
+  }
 
   /* Which section am I in? Observed, not measured. */
   var railLinks = {};
@@ -796,6 +839,7 @@
     if (activeId && railLinks[activeId]) railLinks[activeId].classList.remove("active");
     activeId = id;
     var link = railLinks[id];
+    updateDockActive(id);
     if (!link) return;
     link.classList.add("active");
     var pane = link.closest(".rail-scroll");
@@ -826,6 +870,10 @@
     if (!spy) return;
     spy.disconnect();
     document.querySelectorAll(".section").forEach(function (sec) { spy.observe(sec); });
+    ["security", "visualizer", "cli", "builders", "wizard", "fix-assistant", "atlas"].forEach(function (secId) {
+      var node = document.getElementById(secId);
+      if (node) spy.observe(node);
+    });
   }
 
   /* Eased anchor scrolling — long jumps should feel carried, not teleported. */
