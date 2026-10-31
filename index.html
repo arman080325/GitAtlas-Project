@@ -332,35 +332,44 @@
           </div>
         </div>
 
-        <svg class="demo-graph" id="demoGraph" viewBox="0 0 400 132" aria-hidden="true">
-          <path class="g-line" d="M18 100H382"/>
-          <circle class="g-node" cx="30" cy="100" r="6"/>
-          <circle class="g-node" cx="76" cy="100" r="6"/>
-          <text class="g-label" x="18" y="122">main</text>
+        <svg class="demo-graph" id="demoGraph" viewBox="0 0 400 126" aria-hidden="true">
+          <!-- Baseline: main branch -->
+          <path class="g-line" d="M16 92H384"/>
+          <circle class="g-node" cx="36" cy="92" r="6"/>
+          <circle class="g-node" cx="82" cy="92" r="6"/>
+          <text class="g-label" x="16" y="114">main</text>
 
-          <path class="g-draw" data-step="1" style="--len:150" d="M76 100c44 0 34-58 78-58h84"/>
-          <text class="g-label g-accent g-fade" data-step="1" x="112" y="30">feat/login</text>
-          <circle class="g-node g-pop" data-step="2" cx="152" cy="42" r="6"/>
-          <circle class="g-node g-pop" data-step="3" cx="196" cy="42" r="6"/>
+          <!-- Step 1: branch feat/login -->
+          <path class="g-draw" data-step="1" style="--len:150" d="M82 92 C104 92, 114 36, 136 36 H206"/>
+          <text class="g-label g-accent g-fade" data-step="1" x="116" y="22">feat/login</text>
 
-          <path class="g-draw g-accent-s" data-step="4" style="--len:70" d="M240 42h42"/>
-          <g class="g-pop g-remote" data-step="4" transform="translate(300 30)">
-            <circle class="g-ring" r="19" fill="none" stroke-dasharray="4 6" stroke-width="1.5"/>
-            <g transform="translate(-11 -11) scale(.92)">
-              <path class="gh-mark" d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
-            </g>
+          <!-- Step 2: commit feat: login form -->
+          <circle class="g-node g-pop" data-step="2" cx="150" cy="36" r="6"/>
+
+          <!-- Step 3: commit test: cover login flow -->
+          <circle class="g-node g-pop" data-step="3" cx="198" cy="36" r="6"/>
+
+          <!-- Step 4: git push origin feat/login -->
+          <path class="g-draw g-accent-s" data-step="4" style="--len:60" d="M198 36 H244"/>
+          <g class="g-pop g-remote" data-step="4">
+            <circle class="g-ring" cx="254" cy="36" r="14" fill="none" stroke-dasharray="3 4" stroke-width="1.4"/>
+            <path class="gh-mark" transform="translate(245.5, 27.5) scale(0.708)" fill="currentColor" d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
           </g>
 
-          <g class="g-pop g-badge" data-step="5" transform="translate(332 4)">
-            <rect x="0" y="0" width="60" height="20" rx="10"/>
-            <text x="30" y="14">PR #42</text>
+          <!-- Step 5: gh pr create -->
+          <g class="g-pop g-badge" data-step="5">
+            <rect x="186" y="6" width="58" height="18" rx="9"/>
+            <text x="215" y="15" dominant-baseline="central" text-anchor="middle">PR #42</text>
           </g>
 
-          <path class="g-draw g-accent-s" data-step="6" style="--len:130" d="M196 42h22c46 0 30 58 72 58"/>
-          <circle class="g-node g-merged g-pop" data-step="6" cx="290" cy="100" r="7"/>
-          <g class="g-pop g-tag" data-step="7" transform="translate(306 88)">
-            <path d="M0 12 9 1h47a4 4 0 0 1 4 4v14a4 4 0 0 1-4 4H9z"/>
-            <text x="36" y="16">v1.2.0</text>
+          <!-- Step 6: gh pr merge 42 -->
+          <path class="g-draw g-accent-s" data-step="6" style="--len:90" d="M254 36 C274 36, 286 92, 302 92"/>
+          <circle class="g-node g-merged g-pop" data-step="6" cx="302" cy="92" r="7"/>
+
+          <!-- Step 7: git tag v1.2.0 -->
+          <g class="g-pop g-tag" data-step="7">
+            <path d="M316 92 L324 82 H368 A4 4 0 0 1 372 86 V98 A4 4 0 0 1 368 102 H324 Z"/>
+            <text x="348" y="92" dominant-baseline="central" text-anchor="middle">v1.2.0</text>
           </g>
         </svg>
       </figure>

@@ -1386,7 +1386,13 @@ mark {
 }
 
 /* the graph beneath the terminal, drawn in step with the commands */
-.demo-graph { width: 100%; height: auto; }
+.demo-graph {
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  display: block;
+  overflow: visible;
+}
 .demo-graph .g-line { fill: none; stroke: var(--line-strong); stroke-width: 2; }
 .demo-graph .g-node {
   fill: var(--bg); stroke: var(--line-strong); stroke-width: 2;
@@ -1423,11 +1429,16 @@ mark {
   transform-box: fill-box; transform-origin: center;
   animation: ghOrbit 14s linear infinite;
 }
+@keyframes ghOrbit {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
 .demo-graph .g-badge rect { fill: var(--purple); }
 .demo-graph .g-badge text,
 .demo-graph .g-tag text {
   font-family: "IBM Plex Mono", monospace; font-size: 10.5px;
-  fill: #fff; text-anchor: middle; font-weight: 500;
+  fill: #fff; text-anchor: middle; font-weight: 600;
+  letter-spacing: .2px;
 }
 .demo-graph .g-tag path { fill: var(--good); }
 
