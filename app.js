@@ -165,7 +165,7 @@
     branch: "branch", merge: "merge", rebase: "rebase", remotes: "sync",
     sync: "sync", fork: "pr", stash: "stash", undo: "undo", cherry: "cherry",
     tags: "tag", advanced: "clone", hooks: "pipeline", maintenance: "pipeline",
-    security: "shield", ghcli: "github", actions: "pipeline", workflows: "pr",
+    security: "shield", secrets: "shield", ghcli: "github", actions: "pipeline", workflows: "pr",
     fixes: "undo"
   };
 
@@ -255,7 +255,7 @@
     var result = el("fixResult"), query = raw.toLowerCase().replace(/\s+/g, " ").trim();
     var fix = FIXES.filter(function (item) { return item.match.test(query); })[0];
     if (!query) { result.hidden = true; return; }
-    if (!fix) result.innerHTML = '<div class="fix-result-head"><p class="eyebrow">No exact match yet</p><h3>Start with a safe snapshot.</h3><p>GitAtlas did not recognise that error. These checks reveal your branch, changed files, and recent history without changing anything.</p></div><div class="fix-next"><code>git status</code><button type="button" class="mini-copy" data-fix-copy="git status">Copy</button><code>git log --oneline -5</code><button type="button" class="mini-copy" data-fix-copy="git log --oneline -5">Copy</button><button type="button" class="text-btn" data-jump="fixes">Browse common errors</button></div>';
+    if (!fix) result.innerHTML = '<div class="fix-result-head"><p class="eyebrow">No exact match yet</p><h3>Start with a safe snapshot.</h3><p>GitAtlas did not recognise that error. These checks reveal your branch, changed files, and recent history without changing anything.</p></div><div class="fix-next"><code>git status</code><button type="button" class="mini-copy" data-fix-copy="git status">Copy</button><code>git log --oneline -5</code><button type="button" class="mini-copy" data-fix-copy="git log --oneline -5">Copy</button><button type="button" class="text-btn" data-jump="common-fixes">Browse common errors</button></div>';
     else result.innerHTML = fixHTML(fix);
     result.hidden = false;
     result.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "nearest" });
@@ -348,8 +348,37 @@
     return html + "</article>";
   }
 
+  var currentTopic = "basics";
+  var expandedCategories = {};
+  var allExpanded = false;
+
   function sectionHTML(cat, entries, terms) {
-    return '<section class="section" id="' + cat.id + '">' +
+    var isSearching = terms && terms.length > 0;
+    var isExpanded = allExpanded || !!expandedCategories[cat.id] || isSearching;
+    var hasExtra = entries.length > 4 && !isSearching;
+
+    var cardsHtml = "";
+    if (hasExtra) {
+      var topCards = entries.slice(0, 4).map(function (e) { return cardHTML(e, terms); }).join("");
+      var restCards = entries.slice(4).map(function (e) { return cardHTML(e, terms); }).join("");
+      cardsHtml = topCards + '<div class="cat-extra">' + restCards + '</div>';
+    } else {
+      cardsHtml = entries.map(function (e) { return cardHTML(e, terms); }).join("");
+    }
+
+    var expandBarHtml = "";
+    if (hasExtra) {
+      var remaining = entries.length - 4;
+      expandBarHtml = '<div class="cat-expand-bar">' +
+        '<button type="button" class="cat-expand-btn" data-cat-expand="' + cat.id + '" aria-label="Toggle extra commands in ' + esc(cat.label) + '">' +
+          '<span class="expand-text">+ Show ' + remaining + ' more commands</span>' +
+          '<span class="collapse-text">Show fewer commands</span>' +
+          '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 6l4 4 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>' +
+        '</button>' +
+      '</div>';
+    }
+
+    return '<section class="section' + (isExpanded ? ' is-expanded' : '') + '" id="' + cat.id + '">' +
       '<header class="section-head reveal">' +
         '<div class="section-head-text">' +
           '<p class="section-index"><i>' + esc(GROUPS[cat.tag] || cat.tag) + '</i>' +
@@ -361,7 +390,8 @@
         sceneHTML(cat.id) +
       '</header>' +
       '<div class="cards">' +
-        entries.map(function (e) { return cardHTML(e, terms); }).join("") +
+        cardsHtml +
+        expandBarHtml +
       '</div>' +
     '</section>';
   }
@@ -373,8 +403,13 @@
     });
 
     var html = "";
+    var isSearching = terms && terms.length > 0;
     ATLAS.forEach(function (cat, ci) {
-      if (byCat[ci]) html += sectionHTML(cat, byCat[ci], terms);
+      if (byCat[ci]) {
+        if (isSearching || currentTopic === "all" || cat.tag === currentTopic) {
+          html += sectionHTML(cat, byCat[ci], terms);
+        }
+      }
     });
 
     el("sections").innerHTML = html;
@@ -517,15 +552,29 @@
   /* ---------- search ---------- */
 
   var currentTerms = [];
+  var preSearchTopic = "basics";
 
   function runSearch(raw) {
     var q = raw.trim().toLowerCase();
     var note = el("filterNote");
+    if (q && currentTopic !== "all") {
+      preSearchTopic = currentTopic;
+      currentTopic = "all";
+      document.querySelectorAll(".atlas-topic-pill").forEach(function (p) {
+        p.classList.toggle("active", p.getAttribute("data-topic") === "all");
+      });
+    }
     el("searchClear").hidden = !q;
 
     if (!q) {
       currentTerms = [];
       note.hidden = true;
+      if (preSearchTopic && currentTopic === "all") {
+        currentTopic = preSearchTopic;
+        document.querySelectorAll(".atlas-topic-pill").forEach(function (p) {
+          p.classList.toggle("active", p.getAttribute("data-topic") === currentTopic);
+        });
+      }
       render(INDEX, []);
       return;
     }
@@ -772,6 +821,17 @@
     var max = doc.scrollHeight - window.innerHeight;
     progressBar.style.transform = "scaleX(" + (max > 0 ? y / max : 0) + ")";
 
+    var dockMeter = el("navDockMeter");
+    if (dockMeter) {
+      dockMeter.style.transform = "scaleY(" + (max > 0 ? y / max : 0) + ")";
+    }
+
+    if (y < 350) {
+      updateDockActive("top");
+    } else {
+      syncActiveSectionFromScroll(y);
+    }
+
     var showTop = y > 600;
     if (showTop === toTop.hidden) toTop.hidden = !showTop;
 
@@ -783,6 +843,71 @@
   window.addEventListener("scroll", function () {
     if (!ticking) { ticking = true; requestAnimationFrame(frame); }
   }, { passive: true });
+
+  /* Fixed Desktop Navigation Dock active state synchronization */
+  var dockBtns = {};
+  var dockTopBtn = null;
+
+  function initNavDock() {
+    dockBtns = {};
+    document.querySelectorAll(".nav-dock-btn[data-jump]").forEach(function (b) {
+      var j = b.getAttribute("data-jump");
+      if (!dockBtns[j] && j !== "top") dockBtns[j] = b;
+    });
+    dockTopBtn = document.querySelector(".nav-dock-btn[data-jump='top']");
+  }
+
+  function syncActiveSectionFromScroll(y) {
+    var topbarEl = document.getElementById("topbar");
+    var topbarH = topbarEl ? topbarEl.offsetHeight + 32 : 100;
+    var threshold = y + topbarH;
+
+    // Major sections descending by expected top offset on page
+    var order = ["atlas", "fix-assistant", "wizard", "builders", "cli", "visualizer", "security"];
+    for (var i = 0; i < order.length; i++) {
+      var sec = document.getElementById(order[i]);
+      if (sec) {
+        var top = sec.getBoundingClientRect().top + y;
+        if (threshold >= top) {
+          updateDockActive(order[i]);
+          return;
+        }
+      }
+    }
+    updateDockActive("top");
+  }
+
+  function updateDockActive(id) {
+    if (!dockTopBtn) initNavDock();
+    var y = window.scrollY || document.documentElement.scrollTop;
+    if (y < 350 || id === "top") {
+      if (dockTopBtn) dockTopBtn.classList.add("active");
+      Object.keys(dockBtns).forEach(function (k) { dockBtns[k].classList.remove("active"); });
+      return;
+    }
+    if (dockTopBtn) dockTopBtn.classList.remove("active");
+
+    var targetKey = null;
+    if (id === "fix-assistant" || id === "fixes") {
+      targetKey = "fix-assistant";
+    } else if (id === "atlas") {
+      targetKey = "atlas";
+    } else if (dockBtns[id]) {
+      targetKey = id;
+    } else {
+      var targetEl = document.getElementById(id);
+      if (targetEl && targetEl.closest("#atlas")) {
+        targetKey = "atlas";
+      }
+    }
+
+    if (targetKey && dockBtns[targetKey]) {
+      Object.keys(dockBtns).forEach(function (k) {
+        if (k === targetKey) dockBtns[k].classList.add("active");
+        else dockBtns[k].classList.remove("active");
+      });
+    }
+  }
 
   /* Which section am I in? Observed, not measured. */
   var railLinks = {};
@@ -796,12 +921,13 @@
     if (activeId && railLinks[activeId]) railLinks[activeId].classList.remove("active");
     activeId = id;
     var link = railLinks[id];
+    updateDockActive(id);
     if (!link) return;
     link.classList.add("active");
     var pane = link.closest(".rail-scroll");
     if (pane) {
       var box = link.getBoundingClientRect(), edge = pane.getBoundingClientRect();
-      if (box.top < edge.top || box.bottom > edge.bottom) link.scrollIntoView({ block: "nearest" });
+      if ((box.top < edge.top || box.bottom > edge.bottom) && window.innerWidth > 1000) link.scrollIntoView({ block: "nearest" });
     }
   }
 
@@ -826,6 +952,10 @@
     if (!spy) return;
     spy.disconnect();
     document.querySelectorAll(".section").forEach(function (sec) { spy.observe(sec); });
+    ["security", "visualizer", "cli", "builders", "wizard", "fix-assistant", "atlas"].forEach(function (secId) {
+      var node = document.getElementById(secId);
+      if (node) spy.observe(node);
+    });
   }
 
   /* Eased anchor scrolling — long jumps should feel carried, not teleported. */
@@ -855,10 +985,24 @@
   }
 
   function scrollToId(id) {
-    var target = document.getElementById(id);
-    if (!target && id === "fixes") {
-      target = document.getElementById("fix-assistant");
+    if (id === "fixes") id = "fix-assistant";
+
+    var catObj = null;
+    ATLAS.forEach(function (c) { if (c.id === id) catObj = c; });
+    if (catObj) {
+      if (currentTopic !== "all" && currentTopic !== catObj.tag) {
+        currentTopic = catObj.tag;
+        document.querySelectorAll(".atlas-topic-pill").forEach(function (p) {
+          p.classList.toggle("active", p.getAttribute("data-topic") === catObj.tag);
+        });
+        render(INDEX, currentTerms || []);
+      }
+      expandedCategories[id] = true;
+      var secEl = document.getElementById(id);
+      if (secEl) secEl.classList.add("is-expanded");
     }
+
+    var target = document.getElementById(id);
     if (!target) return;
     var topbarEl = document.getElementById("topbar");
     var topbarH = topbarEl ? topbarEl.offsetHeight + 16 : (window.innerWidth <= 720 ? 128 : 92);
@@ -1224,6 +1368,65 @@
     });
   }
 
+  /* ---------- atlas topic filter pills ---------- */
+  function updateTopicPillCounts() {
+    var counts = { all: 0 };
+    ATLAS.forEach(function (cat) {
+      var n = cat.commands.length;
+      counts[cat.tag] = (counts[cat.tag] || 0) + n;
+      counts.all += n;
+    });
+    var map = {
+      all: "countAll", basics: "countBasics", branching: "countBranching",
+      remote: "countRemote", inspect: "countInspect", rescue: "countRescue",
+      github: "countGithub", automation: "countAutomation", advanced: "countAdvanced",
+      config: "countConfig"
+    };
+    Object.keys(map).forEach(function (k) {
+      var elCount = el(map[k]);
+      if (elCount && counts[k] !== undefined) elCount.textContent = counts[k];
+    });
+  }
+
+  document.addEventListener("click", function (ev) {
+    var catBtn = ev.target.closest("[data-cat-expand]");
+    if (catBtn) {
+      var catId = catBtn.getAttribute("data-cat-expand");
+      var sec = document.getElementById(catId);
+      if (sec) {
+        var nowExp = sec.classList.toggle("is-expanded");
+        expandedCategories[catId] = nowExp;
+        track("category_expanded", { category: catId, expanded: nowExp });
+      }
+      return;
+    }
+
+    var toggleAll = ev.target.closest("#atlasToggleAll");
+    if (toggleAll) {
+      allExpanded = !allExpanded;
+      toggleAll.classList.toggle("all-expanded", allExpanded);
+      ATLAS.forEach(function (c) { expandedCategories[c.id] = allExpanded; });
+      document.querySelectorAll("#sections .section").forEach(function (s) {
+        s.classList.toggle("is-expanded", allExpanded);
+      });
+      track("all_categories_toggled", { expanded: allExpanded });
+      return;
+    }
+
+    var pill = ev.target.closest(".atlas-topic-pill");
+    if (pill) {
+      var topic = pill.getAttribute("data-topic");
+      if (topic === currentTopic) return;
+      currentTopic = topic;
+      document.querySelectorAll(".atlas-topic-pill").forEach(function (p) {
+        p.classList.toggle("active", p.getAttribute("data-topic") === topic);
+      });
+      render(INDEX, currentTerms || []);
+      track("topic_filter_selected", { topic: topic });
+      return;
+    }
+  });
+
   /* ---------- go ---------- */
 
   /* The wordmark is built letter by letter so each one can arrive on its own. */
@@ -1251,6 +1454,7 @@
     }).join(" ");
   }
 
+  updateTopicPillCounts();
   animateWordmark();
   animateLede();
   buildRail();

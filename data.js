@@ -485,7 +485,7 @@ const ATLAS = [
   ]
 },
 {
-  id: "security",
+  id: "secrets",
   label: "Security & secrets",
   tag: "automation",
   blurb: "Signing proves who wrote a commit. Everything else here is about keeping credentials out of history — and getting them out when they slip in.",
@@ -574,7 +574,7 @@ const ATLAS = [
   ]
 },
 {
-  id: "fixes",
+  id: "common-fixes",
   label: "Common errors, fixed",
   tag: "rescue",
   blurb: "The messages that stop you mid-flow, and the exact command that clears each one.",

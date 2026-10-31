@@ -340,7 +340,7 @@ const PLAYBOOKS = [
       cmd: "git push origin main" }
   ],
   after: "Never reach for --force here. The rejection is Git protecting a teammate's commits, not an obstacle to bulldoze.",
-  related: ["sync", "fixes"]
+  related: ["sync", "common-fixes"]
 },
 {
   id: "detached-head",
