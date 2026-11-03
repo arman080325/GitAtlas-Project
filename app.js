@@ -532,6 +532,17 @@
     }
 
     updateBranchedMarker(true);
+
+    var railScroll = document.querySelector(".rail-scroll");
+    if (railScroll && item) {
+      var itemTop = item.offsetTop;
+      var itemBottom = itemTop + item.offsetHeight;
+      var sTop = railScroll.scrollTop;
+      var sBottom = sTop + railScroll.clientHeight;
+      if (itemTop < sTop + 20 || itemBottom > sBottom - 20) {
+        item.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }
+    }
   }
   window.updateBranchedMenu = updateBranchedMenu;
 
@@ -561,6 +572,15 @@
       currentGrp.children.push(cat);
     });
 
+    var DEFAULT_OPEN_TAGS = {
+      config: true,
+      basics: true,
+      inspect: true,
+      branching: true,
+      rescue: true,
+      release: true
+    };
+
     var html = '<span class="branched-menu__marker" id="bmMarker" aria-hidden="true"></span>';
 
     branchedGroups.forEach(function (grp, gIdx) {
@@ -568,8 +588,8 @@
       var bodyH = BM_PAD * 2 + kids.length * BM_ROW_H;
       var totalCommands = kids.reduce(function (sum, c) { return sum + c.commands.length; }, 0);
 
-      // Section with "basics" (Everyday Git) open by default
-      var isOpen = true; // Elongate and expand all sections by default
+      // Default open groups match the user's reference mockup (config, basics, inspect, branching, rescue, release)
+      var isOpen = !!DEFAULT_OPEN_TAGS[grp.tag];
 
       html += '<div class="branched-menu__section" data-section-idx="' + gIdx + '" data-tag="' + grp.tag + '"' + (isOpen ? ' data-open' : '') + '>';
       html +=   '<button type="button" class="branched-menu__head" aria-expanded="' + (isOpen ? "true" : "false") + '">';
