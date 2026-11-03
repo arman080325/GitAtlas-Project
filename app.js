@@ -569,7 +569,7 @@
       var totalCommands = kids.reduce(function (sum, c) { return sum + c.commands.length; }, 0);
 
       // Section with "basics" (Everyday Git) open by default
-      var isOpen = (grp.tag === "basics");
+      var isOpen = true; // Elongate and expand all sections by default
 
       html += '<div class="branched-menu__section" data-section-idx="' + gIdx + '" data-tag="' + grp.tag + '"' + (isOpen ? ' data-open' : '') + '>';
       html +=   '<button type="button" class="branched-menu__head" aria-expanded="' + (isOpen ? "true" : "false") + '">';
@@ -966,7 +966,7 @@
     }, 280);
   }
 
-  var allSectionsOpen = false;
+  var allSectionsOpen = true;
   function toggleAllBranchedSections() {
     var sections = document.querySelectorAll(".branched-menu__section");
     allSectionsOpen = !allSectionsOpen;

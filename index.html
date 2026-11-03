@@ -1217,25 +1217,27 @@
   <div class="layout" id="atlas">
 
     <aside class="rail" id="rail" aria-label="Sections">
-      <div class="rail-header">
-        <span class="rail-title" data-i18n="rail.title">Sections</span>
-        <div class="rail-header-actions">
-          <button type="button" class="rail-head-btn" id="bmToggleAll" title="Expand or collapse all sections" aria-label="Expand or collapse all sections">
-            <svg class="bm-toggle-icon" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M4 6l4 4 4-4"/>
-            </svg>
-          </button>
-          <button type="button" class="rail-head-btn rail-collapse-toggle" id="railCollapseBtn" title="Collapse sidebar (Ctrl+B)" aria-label="Collapse sidebar navigation">
-            <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <rect x="2" y="2" width="12" height="12" rx="2.5"/>
-              <line x1="6.5" y1="2" x2="6.5" y2="14"/>
-              <polyline points="5 6.5 3.5 8 5 9.5"/>
-            </svg>
-          </button>
+      <div class="rail-sticky" id="railSticky">
+        <div class="rail-header">
+          <span class="rail-title" data-i18n="rail.title">Sections</span>
+          <div class="rail-header-actions">
+            <button type="button" class="rail-head-btn all-open" id="bmToggleAll" title="Collapse all sections" aria-label="Expand or collapse all sections">
+              <svg class="bm-toggle-icon" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M4 6l4 4 4-4"/>
+              </svg>
+            </button>
+            <button type="button" class="rail-head-btn rail-collapse-toggle" id="railCollapseBtn" title="Collapse sidebar (Ctrl+B)" aria-label="Collapse sidebar navigation">
+              <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="2" y="2" width="12" height="12" rx="2.5"/>
+                <line x1="6.5" y1="2" x2="6.5" y2="14"/>
+                <polyline points="5 6.5 3.5 8 5 9.5"/>
+              </svg>
+            </button>
+          </div>
         </div>
-      </div>
-      <div class="rail-scroll">
-        <nav id="railNav" class="rail-nav"></nav>
+        <div class="rail-scroll">
+          <nav id="railNav" class="rail-nav"></nav>
+        </div>
       </div>
     </aside>
     <div class="rail-scrim" id="railScrim" hidden></div>

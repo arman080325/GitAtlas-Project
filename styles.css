@@ -344,7 +344,8 @@ a { color: inherit; }
   max-width: 1240px; margin: 0 auto;
   padding: 0 24px;
   display: grid; grid-template-columns: 260px minmax(0, 1fr);
-  gap: 40px; align-items: start;
+  gap: 40px;
+  align-items: stretch; /* Rail stretches full height of layout down to the footer */
   position: relative;
   transition: grid-template-columns .3s cubic-bezier(.23, 1, .32, 1), gap .3s ease;
 }
@@ -354,31 +355,33 @@ a { color: inherit; }
   gap: 0;
 }
 
-/* ---------- rail (commit-graph navigation) ---------- */
+/* ---------- rail (stretches full height till footer) ---------- */
 .rail {
-  position: sticky;
-  top: 78px;
-  padding: 8px 0 12px;
   width: 260px;
   min-width: 260px;
-  height: calc(100vh - 94px);
-  max-height: calc(100vh - 94px);
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
-  align-self: flex-start;
-  transition: width .3s cubic-bezier(.23, 1, .32, 1), opacity .25s ease, padding .3s ease, transform .3s ease;
+  position: relative;
+  align-self: stretch; /* Stretches along full content height to the footer */
+  transition: width .3s cubic-bezier(.23, 1, .32, 1), opacity .25s ease;
 }
 
 .layout.rail-collapsed .rail {
   width: 0;
   min-width: 0;
-  padding: 12px 0;
   opacity: 0;
   pointer-events: none;
   visibility: hidden;
   overflow: hidden;
-  transform: translateX(-16px);
+}
+
+/* ---------- rail-sticky (stays pinned throughout the entire scroll till footer) ---------- */
+.rail-sticky {
+  position: sticky;
+  top: 78px;
+  max-height: calc(100vh - 96px);
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  padding: 8px 0 12px;
 }
 
 .rail-header {
