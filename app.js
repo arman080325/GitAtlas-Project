@@ -456,8 +456,8 @@
   };
 
   var BM_PAD = 6;
-  var BM_ROW_H = 34;
-  var BM_INDENT = 34;
+  var BM_ROW_H = 38;
+  var BM_INDENT = 36;
   var BM_TRUNK = 14;
   var BM_RADIUS = 10;
   var BM_R = Math.min(BM_RADIUS, BM_ROW_H / 2 - 2);
@@ -938,8 +938,88 @@
     scrim.hidden = true;
     navBtn.setAttribute("aria-expanded", "false");
   }
+  function toggleRailCollapse(forceState) {
+    var atlas = el("atlas");
+    var expandTab = el("railExpandTab");
+    var collapseBtn = el("railCollapseBtn");
+    var navBtnEl = el("navBtn");
+    if (!atlas) return;
+
+    var isCollapsed = typeof forceState === "boolean" ? forceState : !atlas.classList.contains("rail-collapsed");
+    atlas.classList.toggle("rail-collapsed", isCollapsed);
+
+    if (expandTab) expandTab.hidden = !isCollapsed;
+    if (collapseBtn) {
+      collapseBtn.setAttribute("aria-expanded", isCollapsed ? "false" : "true");
+      collapseBtn.title = isCollapsed ? "Expand navigation (Ctrl+B)" : "Collapse navigation (Ctrl+B)";
+    }
+    if (navBtnEl && window.innerWidth > 1000) {
+      navBtnEl.setAttribute("aria-expanded", isCollapsed ? "false" : "true");
+    }
+
+    try {
+      localStorage.setItem("gitatlas_rail_collapsed", isCollapsed ? "1" : "0");
+    } catch (e) {}
+
+    setTimeout(function () {
+      if (typeof updateBranchedMarker === "function") updateBranchedMarker(false);
+    }, 280);
+  }
+
+  var allSectionsOpen = false;
+  function toggleAllBranchedSections() {
+    var sections = document.querySelectorAll(".branched-menu__section");
+    allSectionsOpen = !allSectionsOpen;
+    sections.forEach(function (sec) {
+      var head = sec.querySelector(".branched-menu__head");
+      if (allSectionsOpen) {
+        sec.setAttribute("data-open", "");
+        if (head) head.setAttribute("aria-expanded", "true");
+      } else {
+        sec.removeAttribute("data-open");
+        if (head) head.setAttribute("aria-expanded", "false");
+      }
+    });
+    var btn = el("bmToggleAll");
+    if (btn) {
+      btn.classList.toggle("all-open", allSectionsOpen);
+      btn.title = allSectionsOpen ? "Collapse all sections" : "Expand all sections";
+    }
+    if (typeof updateBranchedMarker === "function") updateBranchedMarker(true);
+  }
+
+  var collapseBtn = el("railCollapseBtn");
+  if (collapseBtn) {
+    collapseBtn.addEventListener("click", function () { toggleRailCollapse(true); });
+  }
+  var expandTab = el("railExpandTab");
+  if (expandTab) {
+    expandTab.addEventListener("click", function () { toggleRailCollapse(false); });
+  }
+  var toggleAllBtn = el("bmToggleAll");
+  if (toggleAllBtn) {
+    toggleAllBtn.addEventListener("click", toggleAllBranchedSections);
+  }
+
+  window.addEventListener("keydown", function (e) {
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "b") {
+      e.preventDefault();
+      toggleRailCollapse();
+    }
+  });
+
+  try {
+    if (localStorage.getItem("gitatlas_rail_collapsed") === "1" && window.innerWidth > 1000) {
+      toggleRailCollapse(true);
+    }
+  } catch (e) {}
+
   navBtn.addEventListener("click", function () {
-    rail.classList.contains("open") ? closeRail() : openRail();
+    if (window.innerWidth <= 1000) {
+      rail.classList.contains("open") ? closeRail() : openRail();
+    } else {
+      toggleRailCollapse();
+    }
   });
   scrim.addEventListener("click", closeRail);
 
@@ -1036,6 +1116,20 @@
     var dockMeter = el("navDockMeter");
     if (dockMeter) {
       dockMeter.style.transform = "scaleY(" + (max > 0 ? y / max : 0) + ")";
+    }
+
+    var footerEl = document.querySelector(".footer");
+    var dockEl = document.querySelector(".nav-dock");
+    if (footerEl && dockEl && window.innerWidth > 1340) {
+      var footerTop = footerEl.getBoundingClientRect().top;
+      var dockH = dockEl.offsetHeight;
+      var dockBottom = (window.innerHeight / 2) + (dockH / 2) + 24;
+      if (footerTop < dockBottom) {
+        var diff = dockBottom - footerTop;
+        dockEl.style.transform = "translateY(calc(-50% - " + diff + "px))";
+      } else {
+        dockEl.style.transform = "translateY(-50%)";
+      }
     }
 
     if (y < 350) {
