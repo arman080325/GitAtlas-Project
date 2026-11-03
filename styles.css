@@ -348,8 +348,26 @@ a { color: inherit; }
 }
 
 /* ---------- rail (commit-graph navigation) ---------- */
-.rail { position: sticky; top: 78px; padding: 40px 0 30px; }
-.rail-scroll { max-height: calc(100vh - 130px); overflow-y: auto; padding-right: 6px; }
+/* Keep the section tree aligned with the content column and stop it at the footer. */
+.rail {
+  position: sticky;
+  top: 78px;
+  align-self: start;
+  height: calc(100vh - 118px);
+  min-height: 420px;
+  padding: 28px 0 24px;
+}
+
+.rail-scroll {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  max-height: none;
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 6px;
+}
+
 .rail-scroll::-webkit-scrollbar { width: 4px; }
 .rail-scroll::-webkit-scrollbar-thumb { background: var(--line-strong); border-radius: 4px; }
 
@@ -359,7 +377,7 @@ a { color: inherit; }
   color: var(--text-faint); margin: 0 0 16px 26px;
 }
 
-.rail-nav { position: relative; }
+.rail-nav { position: relative; flex: 1 0 auto; min-height: 100%; }
 .rail-nav::before {
   content: ""; position: absolute;
   left: 7px; top: 10px; bottom: 10px; width: 1.5px;
