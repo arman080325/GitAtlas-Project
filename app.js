@@ -456,8 +456,8 @@
   };
 
   var BM_PAD = 6;
-  var BM_ROW_H = 38;
-  var BM_INDENT = 36;
+  var BM_ROW_H = 34;
+  var BM_INDENT = 34;
   var BM_TRUNK = 14;
   var BM_RADIUS = 10;
   var BM_R = Math.min(BM_RADIUS, BM_ROW_H / 2 - 2);
@@ -569,7 +569,7 @@
       var totalCommands = kids.reduce(function (sum, c) { return sum + c.commands.length; }, 0);
 
       // Section with "basics" (Everyday Git) open by default
-      var isOpen = (grp.tag === "basics" || gIdx === 1);
+      var isOpen = (grp.tag === "basics");
 
       html += '<div class="branched-menu__section" data-section-idx="' + gIdx + '" data-tag="' + grp.tag + '"' + (isOpen ? ' data-open' : '') + '>';
       html +=   '<button type="button" class="branched-menu__head" aria-expanded="' + (isOpen ? "true" : "false") + '">';

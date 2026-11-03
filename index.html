@@ -1216,16 +1216,6 @@
 
   <div class="layout" id="atlas">
 
-    <!-- Floating expand button when rail is collapsed on desktop -->
-    <button type="button" class="rail-expand-tab" id="railExpandTab" aria-label="Expand sidebar navigation" title="Expand navigation (Ctrl+B)" hidden>
-      <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <rect x="2" y="2" width="12" height="12" rx="2.5"/>
-        <line x1="6.5" y1="2" x2="6.5" y2="14"/>
-        <polyline points="4 6.5 5.5 8 4 9.5"/>
-      </svg>
-      <span>Sections</span>
-    </button>
-
     <aside class="rail" id="rail" aria-label="Sections">
       <div class="rail-header">
         <span class="rail-title" data-i18n="rail.title">Sections</span>
@@ -1253,6 +1243,16 @@
     <div class="content">
       <div class="pinned-section" id="pinnedSection" hidden></div>
       <div class="filter-note" id="filterNote" hidden></div>
+
+      <!-- Expand navigation button when rail is collapsed (positioned inside content with 0 dock overlap) -->
+      <button type="button" class="rail-expand-tab" id="railExpandTab" aria-label="Expand sidebar navigation" title="Expand navigation (Ctrl+B)" hidden>
+        <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="2" y="2" width="12" height="12" rx="2.5"/>
+          <line x1="6.5" y1="2" x2="6.5" y2="14"/>
+          <polyline points="4 6.5 5.5 8 4 9.5"/>
+        </svg>
+        <span>Sections</span>
+      </button>
 
       <!-- Command Atlas Topic Filter & Progressive Disclosure Toolbar -->
       <nav class="atlas-topic-nav" id="atlasTopicNav" aria-label="Filter Command Atlas by Topic">
