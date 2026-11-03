@@ -422,21 +422,240 @@
     }
   }
 
-  /* ---------- rail ---------- */
+  /* =========================================================
+     Branched Menu — Collapsible tree rail with dynamic trunk branches
+     ========================================================= */
+
+  var CATEGORY_ICONS = {
+    setup: '<svg viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="2.5"/><path d="M8 1.5v1.8M8 12.7v1.8M1.5 8h1.8M12.7 8h1.8M3.4 3.4l1.3 1.3M11.3 11.3l1.3 1.3M3.4 12.6l1.3-1.3M11.3 4.7l1.3-1.3"/></svg>',
+    aliases: '<svg viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 4.5l3.5 3.5-3.5 3.5M8 11.5h5.5"/></svg>',
+    start: '<svg viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3.5A1.5 1.5 0 0 1 3.5 2h3l1.5 1.5h4.5A1.5 1.5 0 0 1 14 5v7.5a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 12.5v-9z"/><path d="M8 7v4M6 9h4"/></svg>',
+    staging: '<svg viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 4.5h11M2.5 8h11M2.5 11.5h7"/><circle cx="12" cy="11.5" r="1.5"/></svg>',
+    commit: '<svg viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="3"/><path d="M1.5 8h3.5M11 8h3.5"/></svg>',
+    ignore: '<svg viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="5.5"/><path d="M4 12L12 4"/></svg>',
+    history: '<svg viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="5.5"/><path d="M8 4.5V8l2.5 1.5"/></svg>',
+    inspect: '<svg viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="7" r="4.5"/><path d="M10.5 10.5L14 14"/></svg>',
+    branch: '<svg viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="4.5" cy="4" r="2"/><circle cx="4.5" cy="12" r="2"/><circle cx="11.5" cy="5.5" r="2"/><path d="M4.5 6v4M4.5 10c0-2.5 2.5-4.5 5-4.5"/></svg>',
+    merge: '<svg viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="4.5" cy="4" r="2"/><circle cx="4.5" cy="12" r="2"/><circle cx="11.5" cy="8" r="2"/><path d="M4.5 6v4M11.5 10c0 2-2 2-7 2"/></svg>',
+    rebase: '<svg viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="4" cy="4" r="1.8"/><circle cx="4" cy="12" r="1.8"/><circle cx="12" cy="7" r="1.8"/><circle cx="12" cy="12" r="1.8"/><path d="M4 6v4M12 9v1M4 9c0-1.5 2-2 6-2"/></svg>',
+    remotes: '<svg viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="5.5"/><path d="M2.5 8h11M8 2.5c2 2 2.5 3.5 2.5 5.5s-.5 3.5-2.5 5.5c-2-2-2.5-3.5-2.5-5.5s.5-3.5 2.5-5.5"/></svg>',
+    sync: '<svg viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 6l2.5-2.5 2.5 2.5M6 3.5V11M12.5 10l-2.5 2.5-2.5-2.5M10 12.5V5"/></svg>',
+    fork: '<svg viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="4.5" cy="4" r="2"/><circle cx="11.5" cy="4" r="2"/><circle cx="8" cy="12" r="2"/><path d="M4.5 6c0 2 2 3.5 3.5 4M11.5 6c0 2-2 3.5-3.5 4M8 10v0"/></svg>',
+    stash: '<svg viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 4h11v2.5h-11zM3.5 6.5v6a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1v-6M6.5 9h3"/></svg>',
+    undo: '<svg viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 6.5h6a3.5 3.5 0 0 1 0 7H4M6 4L3.5 6.5 6 9"/></svg>',
+    cherry: '<svg viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2l4.5 4.5L8 14 3.5 6.5z"/><circle cx="8" cy="7" r="1.5"/></svg>',
+    tags: '<svg viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 8.5L8.5 2.5H13v4.5l-6 6a1.5 1.5 0 0 1-2.1 0l-2.4-2.4a1.5 1.5 0 0 1 0-2.1z"/><circle cx="10.5" cy="5" r="1"/></svg>',
+    advanced: '<svg viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="2.5" width="4.5" height="4.5" rx="1"/><rect x="9" y="2.5" width="4.5" height="4.5" rx="1"/><rect x="2.5" y="9" width="4.5" height="4.5" rx="1"/><rect x="9" y="9" width="4.5" height="4.5" rx="1"/></svg>',
+    hooks: '<svg viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2L4 9h4.5L7 14l6-8H8.5z"/></svg>',
+    maintenance: '<svg viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12.5 10.5l-6.5-6.5a2.5 2.5 0 0 0-3.5 3.5l6.5 6.5a1.5 1.5 0 0 0 2.1 0l1.4-1.4a1.5 1.5 0 0 0 0-2.1z"/><path d="M10 4l2-2M14 6l-2-2"/></svg>',
+    secrets: '<svg viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2.5l5 2v4c0 3.5-2.5 5.5-5 6.5-2.5-1-5-3-5-6.5v-4l5-2z"/><path d="M6 7.5l1.5 1.5 3-3"/></svg>',
+    ghcli: '<svg viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="12" height="10" rx="2"/><path d="M5 6.5l2 1.5-2 1.5M9 10h2"/></svg>',
+    actions: '<svg viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="5.5"/><polygon points="7,5.5 11,8 7,10.5" fill="currentColor"/></svg>',
+    workflows: '<svg viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="5" r="2.5"/><circle cx="12" cy="7" r="2"/><path d="M2.5 13.5c0-2 1.8-3.5 3.5-3.5s3.5 1.5 3.5 3.5M10.5 12.5c0-1.5 1-2.5 2.5-2.5"/></svg>',
+    "common-fixes": '<svg viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="5.5"/><circle cx="8" cy="8" r="2.5"/><path d="M4 4l2.5 2.5M12 12l-2.5-2.5M4 12l2.5-2.5M12 4l-2.5 2.5"/></svg>'
+  };
+
+  var BM_PAD = 6;
+  var BM_ROW_H = 34;
+  var BM_INDENT = 34;
+  var BM_TRUNK = 14;
+  var BM_RADIUS = 10;
+  var BM_R = Math.min(BM_RADIUS, BM_ROW_H / 2 - 2);
+  var BM_END_X = BM_INDENT - 6;
+
+  function bmRowY(k) { return BM_PAD + k * BM_ROW_H + BM_ROW_H / 2; }
+  function bmBranch(k) {
+    var y = bmRowY(k);
+    return "M " + BM_TRUNK + " " + (y - BM_R) + " A " + BM_R + " " + BM_R + " 0 0 0 " + (BM_TRUNK + BM_R) + " " + y + " H " + BM_END_X;
+  }
+  function bmReach(k) {
+    var y = bmRowY(k);
+    return "M " + BM_TRUNK + " 0 V " + (y - BM_R) + " A " + BM_R + " " + BM_R + " 0 0 0 " + (BM_TRUNK + BM_R) + " " + y + " H " + BM_END_X;
+  }
+  function bmLength(k) {
+    var y = bmRowY(k);
+    return (y - BM_R) + (Math.PI * BM_R) / 2 + (BM_END_X - BM_TRUNK - BM_R);
+  }
+
+  function updateBranchedMarker(glide) {
+    var marker = el("bmMarker");
+    if (!marker) return;
+    var activeItem = document.querySelector('.branched-menu__item[data-active], .branched-menu__item.active');
+    if (!activeItem) {
+      marker.removeAttribute("data-on");
+      return;
+    }
+    var sectionEl = activeItem.closest(".branched-menu__section");
+    if (!sectionEl || !sectionEl.hasAttribute("data-open")) {
+      marker.removeAttribute("data-on");
+      return;
+    }
+    var headEl = sectionEl.querySelector(".branched-menu__head");
+    if (!headEl) return;
+    if (glide === false) marker.style.transition = "none";
+    var top = (headEl.offsetTop + (headEl.offsetHeight - 16) / 2);
+    marker.style.top = top + "px";
+    marker.setAttribute("data-on", "");
+    if (glide === false) {
+      void marker.offsetHeight;
+      marker.style.transition = "";
+    }
+  }
+
+  function updateBranchedMenu(id) {
+    var item = document.querySelector('.branched-menu__item[data-rail="' + id + '"]');
+    if (!item) return;
+
+    document.querySelectorAll('.branched-menu__item[data-active]').forEach(function (btn) {
+      btn.removeAttribute("data-active");
+      btn.classList.remove("active");
+      btn.setAttribute("aria-current", "false");
+    });
+    document.querySelectorAll('.branched-menu__reach').forEach(function (path) {
+      path.style.strokeDashoffset = path.getAttribute("data-len");
+    });
+
+    item.setAttribute("data-active", "");
+    item.classList.add("active");
+    item.setAttribute("aria-current", "true");
+
+    var sec = item.closest(".branched-menu__section");
+    if (sec && !sec.hasAttribute("data-open")) {
+      sec.setAttribute("data-open", "");
+      var h = sec.querySelector(".branched-menu__head");
+      if (h) h.setAttribute("aria-expanded", "true");
+    }
+
+    var reachPath = sec ? sec.querySelector('.branched-menu__reach[data-reach="' + id + '"]') : null;
+    if (reachPath) {
+      reachPath.style.strokeDashoffset = "0";
+    }
+
+    updateBranchedMarker(true);
+
+    var railScroll = document.querySelector(".rail-scroll");
+    if (railScroll && item) {
+      var itemTop = item.offsetTop;
+      var itemBottom = itemTop + item.offsetHeight;
+      var sTop = railScroll.scrollTop;
+      var sBottom = sTop + railScroll.clientHeight;
+      if (itemTop < sTop + 20 || itemBottom > sBottom - 20) {
+        item.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }
+    }
+  }
+  window.updateBranchedMenu = updateBranchedMenu;
 
   function buildRail() {
-    var html = "", lastTag = null;
+    var navEl = el("railNav");
+    if (!navEl) return;
+    navEl.className = "branched-menu";
+    navEl.style.setProperty("--bm-w", "260px");
+    navEl.style.setProperty("--bm-row", BM_ROW_H + "px");
+    navEl.style.setProperty("--bm-indent", BM_INDENT + "px");
+
+    var branchedGroups = [];
+    var lastTag = null;
+    var currentGrp = null;
+
     ATLAS.forEach(function (cat) {
       if (cat.tag !== lastTag) {
-        html += '<p class="rail-title">' + esc(GROUPS[cat.tag] || cat.tag) + "</p>";
+        var grpLabel = (cat.id === "common-fixes") ? "Troubleshooting" : (GROUPS[cat.tag] || cat.tag);
+        currentGrp = {
+          label: grpLabel,
+          tag: cat.tag,
+          children: []
+        };
+        branchedGroups.push(currentGrp);
         lastTag = cat.tag;
       }
-      html += '<a class="rail-link" href="#' + cat.id + '" data-rail="' + cat.id + '">' +
-                '<span>' + esc(cat.label) + '</span>' +
-                '<span class="rail-count">' + cat.commands.length + "</span>" +
-              "</a>";
+      currentGrp.children.push(cat);
     });
-    el("railNav").innerHTML = html;
+
+    var DEFAULT_OPEN_TAGS = {
+      config: true,
+      basics: true,
+      inspect: true,
+      branching: true,
+      rescue: true,
+      release: true
+    };
+
+    var html = '<span class="branched-menu__marker" id="bmMarker" aria-hidden="true"></span>';
+
+    branchedGroups.forEach(function (grp, gIdx) {
+      var kids = grp.children;
+      var bodyH = BM_PAD * 2 + kids.length * BM_ROW_H;
+      var totalCommands = kids.reduce(function (sum, c) { return sum + c.commands.length; }, 0);
+
+      // Default open groups match the user's reference mockup (config, basics, inspect, branching, rescue, release)
+      var isOpen = !!DEFAULT_OPEN_TAGS[grp.tag];
+
+      html += '<div class="branched-menu__section" data-section-idx="' + gIdx + '" data-tag="' + grp.tag + '"' + (isOpen ? ' data-open' : '') + '>';
+      html +=   '<button type="button" class="branched-menu__head" aria-expanded="' + (isOpen ? "true" : "false") + '">';
+      html +=     '<span class="branched-menu__head-title">';
+      html +=       '<span class="branched-menu__head-label">' + esc(grp.label) + '</span>';
+      html +=     '</span>';
+      html +=     '<span class="branched-menu__head-count" data-group-count="' + grp.tag + '">' + totalCommands + '</span>';
+      html +=     '<svg class="branched-menu__chevron" viewBox="0 0 12 12" aria-hidden="true"><path d="M4 2.5l3.5 3.5-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      html +=   '</button>';
+
+      html +=   '<div class="branched-menu__body">';
+      html +=     '<div class="branched-menu__fold">';
+      html +=       '<div class="branched-menu__tree" style="height:' + bodyH + 'px;">';
+
+      html +=         '<svg class="branched-menu__lines" width="' + BM_INDENT + '" height="' + bodyH + '" aria-hidden="true">';
+      html +=           '<path class="branched-menu__base" d="M ' + BM_TRUNK + ' 0 V ' + (bmRowY(kids.length - 1) - BM_R) + '"/>';
+      kids.forEach(function (kid, k) {
+        html +=         '<path class="branched-menu__base" d="' + bmBranch(k) + '"/>';
+      });
+      kids.forEach(function (kid, k) {
+        var len = bmLength(k).toFixed(2);
+        var isStart = (kid.id === "start");
+        html +=         '<path class="branched-menu__reach" data-reach="' + kid.id + '" data-len="' + len + '" d="' + bmReach(k) + '" style="stroke-dasharray:' + len + ';stroke-dashoffset:' + (isStart ? "0" : len) + ';"/>';
+      });
+      html +=         '</svg>';
+
+      kids.forEach(function (kid) {
+        var isStart = (kid.id === "start");
+        html +=       '<a href="#' + kid.id + '" class="branched-menu__item rail-link' + (isStart ? ' active' : '') + '" data-rail="' + kid.id + '"' + (isStart ? ' data-active' : '') + ' aria-current="' + (isStart ? "true" : "false") + '">';
+        html +=         '<span class="branched-menu__icon" aria-hidden="true">' + (CATEGORY_ICONS[kid.id] || "") + '</span>';
+        html +=         '<span class="branched-menu__label">' + esc(kid.label) + '</span>';
+        html +=         '<span class="rail-count branched-menu__count">' + kid.commands.length + '</span>';
+        html +=       '</a>';
+      });
+
+      html +=       '</div>';
+      html +=     '</div>';
+      html +=   '</div>';
+      html += '</div>';
+    });
+
+    navEl.innerHTML = html;
+
+    navEl.onclick = function (ev) {
+      var head = ev.target.closest(".branched-menu__head");
+      if (head) {
+        ev.preventDefault();
+        ev.stopPropagation();
+        var sec = head.closest(".branched-menu__section");
+        if (sec) {
+          var wasOpen = sec.hasAttribute("data-open");
+          if (wasOpen) {
+            sec.removeAttribute("data-open");
+            head.setAttribute("aria-expanded", "false");
+          } else {
+            sec.setAttribute("data-open", "");
+            head.setAttribute("aria-expanded", "true");
+          }
+          updateBranchedMarker(true);
+        }
+      }
+    };
+
+    requestAnimationFrame(function () {
+      updateBranchedMarker(false);
+    });
   }
 
   function updateRailCounts(byCat) {
@@ -444,8 +663,21 @@
       var link = document.querySelector('[data-rail="' + cat.id + '"]');
       if (!link) return;
       var n = byCat[ci] ? byCat[ci].length : 0;
-      link.querySelector(".rail-count").textContent = n;
+      var countEl = link.querySelector(".rail-count, .branched-menu__count");
+      if (countEl) countEl.textContent = n;
       link.classList.toggle("dimmed", n === 0);
+    });
+
+    document.querySelectorAll('.branched-menu__section').forEach(function (sec) {
+      var total = 0;
+      sec.querySelectorAll('.rail-count, .branched-menu__count').forEach(function (c) {
+        total += parseInt(c.textContent, 10) || 0;
+      });
+      var grpCount = sec.querySelector('[data-group-count]');
+      if (grpCount) {
+        grpCount.textContent = total;
+        grpCount.classList.toggle("dimmed", total === 0);
+      }
     });
   }
 
@@ -695,7 +927,7 @@
     var chip = ev.target.closest("[data-jump]");
     if (chip) { scrollToId(chip.getAttribute("data-jump")); return; }
 
-    var railLink = ev.target.closest(".rail-link");
+    var railLink = ev.target.closest(".rail-link, .branched-menu__item");
     if (railLink) {
       ev.preventDefault();
       var id = railLink.getAttribute("data-rail");
@@ -726,8 +958,88 @@
     scrim.hidden = true;
     navBtn.setAttribute("aria-expanded", "false");
   }
+  function toggleRailCollapse(forceState) {
+    var atlas = el("atlas");
+    var expandTab = el("railExpandTab");
+    var collapseBtn = el("railCollapseBtn");
+    var navBtnEl = el("navBtn");
+    if (!atlas) return;
+
+    var isCollapsed = typeof forceState === "boolean" ? forceState : !atlas.classList.contains("rail-collapsed");
+    atlas.classList.toggle("rail-collapsed", isCollapsed);
+
+    if (expandTab) expandTab.hidden = !isCollapsed;
+    if (collapseBtn) {
+      collapseBtn.setAttribute("aria-expanded", isCollapsed ? "false" : "true");
+      collapseBtn.title = isCollapsed ? "Expand navigation (Ctrl+B)" : "Collapse navigation (Ctrl+B)";
+    }
+    if (navBtnEl && window.innerWidth > 1000) {
+      navBtnEl.setAttribute("aria-expanded", isCollapsed ? "false" : "true");
+    }
+
+    try {
+      localStorage.setItem("gitatlas_rail_collapsed", isCollapsed ? "1" : "0");
+    } catch (e) {}
+
+    setTimeout(function () {
+      if (typeof updateBranchedMarker === "function") updateBranchedMarker(false);
+    }, 280);
+  }
+
+  var allSectionsOpen = true;
+  function toggleAllBranchedSections() {
+    var sections = document.querySelectorAll(".branched-menu__section");
+    allSectionsOpen = !allSectionsOpen;
+    sections.forEach(function (sec) {
+      var head = sec.querySelector(".branched-menu__head");
+      if (allSectionsOpen) {
+        sec.setAttribute("data-open", "");
+        if (head) head.setAttribute("aria-expanded", "true");
+      } else {
+        sec.removeAttribute("data-open");
+        if (head) head.setAttribute("aria-expanded", "false");
+      }
+    });
+    var btn = el("bmToggleAll");
+    if (btn) {
+      btn.classList.toggle("all-open", allSectionsOpen);
+      btn.title = allSectionsOpen ? "Collapse all sections" : "Expand all sections";
+    }
+    if (typeof updateBranchedMarker === "function") updateBranchedMarker(true);
+  }
+
+  var collapseBtn = el("railCollapseBtn");
+  if (collapseBtn) {
+    collapseBtn.addEventListener("click", function () { toggleRailCollapse(true); });
+  }
+  var expandTab = el("railExpandTab");
+  if (expandTab) {
+    expandTab.addEventListener("click", function () { toggleRailCollapse(false); });
+  }
+  var toggleAllBtn = el("bmToggleAll");
+  if (toggleAllBtn) {
+    toggleAllBtn.addEventListener("click", toggleAllBranchedSections);
+  }
+
+  window.addEventListener("keydown", function (e) {
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "b") {
+      e.preventDefault();
+      toggleRailCollapse();
+    }
+  });
+
+  try {
+    if (localStorage.getItem("gitatlas_rail_collapsed") === "1" && window.innerWidth > 1000) {
+      toggleRailCollapse(true);
+    }
+  } catch (e) {}
+
   navBtn.addEventListener("click", function () {
-    rail.classList.contains("open") ? closeRail() : openRail();
+    if (window.innerWidth <= 1000) {
+      rail.classList.contains("open") ? closeRail() : openRail();
+    } else {
+      toggleRailCollapse();
+    }
   });
   scrim.addEventListener("click", closeRail);
 
@@ -826,6 +1138,20 @@
       dockMeter.style.transform = "scaleY(" + (max > 0 ? y / max : 0) + ")";
     }
 
+    var footerEl = document.querySelector(".footer");
+    var dockEl = document.querySelector(".nav-dock");
+    if (footerEl && dockEl && window.innerWidth > 1340) {
+      var footerTop = footerEl.getBoundingClientRect().top;
+      var dockH = dockEl.offsetHeight;
+      var dockBottom = (window.innerHeight / 2) + (dockH / 2) + 24;
+      if (footerTop < dockBottom) {
+        var diff = dockBottom - footerTop;
+        dockEl.style.transform = "translateY(calc(-50% - " + diff + "px))";
+      } else {
+        dockEl.style.transform = "translateY(-50%)";
+      }
+    }
+
     if (y < 350) {
       updateDockActive("top");
     } else {
@@ -918,16 +1244,29 @@
   function setActive(id) {
     if (id === activeId) return;
     if (!reported[id]) { reported[id] = true; track("section_viewed", { section: id }); }
-    if (activeId && railLinks[activeId]) railLinks[activeId].classList.remove("active");
-    activeId = id;
-    var link = railLinks[id];
     updateDockActive(id);
-    if (!link) return;
-    link.classList.add("active");
-    var pane = link.closest(".rail-scroll");
-    if (pane) {
-      var box = link.getBoundingClientRect(), edge = pane.getBoundingClientRect();
-      if ((box.top < edge.top || box.bottom > edge.bottom) && window.innerWidth > 1000) link.scrollIntoView({ block: "nearest" });
+
+    var link = railLinks[id];
+    if (link) {
+      if (activeId && railLinks[activeId]) {
+        railLinks[activeId].classList.remove("active");
+        railLinks[activeId].removeAttribute("data-active");
+      }
+      activeId = id;
+      link.classList.add("active");
+      link.setAttribute("data-active", "");
+      if (window.updateBranchedMenu) window.updateBranchedMenu(id);
+      var pane = link.closest(".rail-scroll");
+      if (pane) {
+        var box = link.getBoundingClientRect(), edge = pane.getBoundingClientRect();
+        if ((box.top < edge.top || box.bottom > edge.bottom) && window.innerWidth > 1000) link.scrollIntoView({ block: "nearest" });
+      }
+    } else {
+      if (activeId && railLinks[activeId]) {
+        railLinks[activeId].classList.remove("active");
+        railLinks[activeId].removeAttribute("data-active");
+      }
+      activeId = id;
     }
   }
 
@@ -952,7 +1291,7 @@
     if (!spy) return;
     spy.disconnect();
     document.querySelectorAll(".section").forEach(function (sec) { spy.observe(sec); });
-    ["security", "visualizer", "cli", "builders", "wizard", "fix-assistant", "atlas"].forEach(function (secId) {
+    ["security", "visualizer", "cli", "builders", "wizard", "fix-assistant"].forEach(function (secId) {
       var node = document.getElementById(secId);
       if (node) spy.observe(node);
     });
@@ -1000,6 +1339,7 @@
       expandedCategories[id] = true;
       var secEl = document.getElementById(id);
       if (secEl) secEl.classList.add("is-expanded");
+      setActive(id);
     }
 
     var target = document.getElementById(id);

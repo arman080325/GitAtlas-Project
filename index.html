@@ -48,6 +48,7 @@
 <link rel="alternate" hreflang="x-default" href="https://git-atlas-project.vercel.app/">
 <link rel="alternate" hreflang="en" href="https://git-atlas-project.vercel.app/">
 <link rel="manifest" href="/site.webmanifest">
+<meta name="google-site-verification" content="google4f662540763affd5">
 
 <!-- Search Engine Optimization (SEO) & Robots -->
 <meta name="keywords" content="Git cheat sheet, Git commands, GitHub CLI, Git undo commit, fix git merge conflict, git filter-repo, secret leak scanner, git rebase guide, git cherry-pick, pre-commit hook, developer field guide, version control, interactive git simulator">
@@ -1217,9 +1218,26 @@
   <div class="layout" id="atlas">
 
     <aside class="rail" id="rail" aria-label="Sections">
-      <div class="rail-scroll">
-        <p class="rail-title">Sections</p>
-        <nav id="railNav" class="rail-nav"></nav>
+      <div class="rail-sticky" id="railSticky">
+        <div class="rail-header">
+          <span class="rail-title" data-i18n="rail.title">Sections</span>
+          <div class="rail-header-actions">
+            <button type="button" class="rail-head-btn rail-collapse-toggle" id="railCollapseBtn" title="Collapse sidebar (Ctrl+B)" aria-label="Collapse sidebar navigation">
+              <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M10 4L6 8l4 4"/>
+              </svg>
+            </button>
+            <button type="button" class="rail-head-btn all-open" id="bmToggleAll" title="Expand or collapse all sections" aria-label="Expand or collapse all sections">
+              <svg class="bm-toggle-icon" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="2.5" y="2.5" width="11" height="11" rx="2"/>
+                <line x1="6.5" y1="2.5" x2="6.5" y2="13.5"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div class="rail-scroll">
+          <nav id="railNav" class="rail-nav"></nav>
+        </div>
       </div>
     </aside>
     <div class="rail-scrim" id="railScrim" hidden></div>
@@ -1227,6 +1245,16 @@
     <div class="content">
       <div class="pinned-section" id="pinnedSection" hidden></div>
       <div class="filter-note" id="filterNote" hidden></div>
+
+      <!-- Expand navigation button when rail is collapsed (positioned inside content with 0 dock overlap) -->
+      <button type="button" class="rail-expand-tab" id="railExpandTab" aria-label="Expand sidebar navigation" title="Expand navigation (Ctrl+B)" hidden>
+        <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="2" y="2" width="12" height="12" rx="2.5"/>
+          <line x1="6.5" y1="2" x2="6.5" y2="14"/>
+          <polyline points="4 6.5 5.5 8 4 9.5"/>
+        </svg>
+        <span>Sections</span>
+      </button>
 
       <!-- Command Atlas Topic Filter & Progressive Disclosure Toolbar -->
       <nav class="atlas-topic-nav" id="atlasTopicNav" aria-label="Filter Command Atlas by Topic">
