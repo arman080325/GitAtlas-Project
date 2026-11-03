@@ -355,33 +355,40 @@ a { color: inherit; }
   gap: 0;
 }
 
-/* ---------- rail (stretches full height till footer) ---------- */
+/* ---------- rail (occupies full height of main content layout down to footer) ---------- */
 .rail {
   width: 260px;
   min-width: 260px;
   position: relative;
-  align-self: stretch; /* Stretches along full content height to the footer */
+  height: 100%;
+  align-self: stretch; /* Dynamically matches main content height down to footer */
+  padding: 40px 0 60px; /* Visually aligns with .content padding: 40px 0 60px */
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
   transition: width .3s cubic-bezier(.23, 1, .32, 1), opacity .25s ease;
 }
 
 .layout.rail-collapsed .rail {
   width: 0;
   min-width: 0;
+  padding: 40px 0 60px;
   opacity: 0;
   pointer-events: none;
   visibility: hidden;
   overflow: hidden;
 }
 
-/* ---------- rail-sticky (stays pinned throughout the entire scroll till footer) ---------- */
+/* ---------- rail-sticky (pinned to viewport across the entire main content area) ---------- */
 .rail-sticky {
   position: sticky;
   top: 78px;
-  max-height: calc(100vh - 96px);
+  height: calc(100vh - 78px - 40px);
+  max-height: calc(100% - 20px);
   display: flex;
   flex-direction: column;
+  min-height: 0;
   box-sizing: border-box;
-  padding: 8px 0 12px;
 }
 
 .rail-header {
@@ -526,6 +533,7 @@ a { color: inherit; }
   font-family: inherit;
   font-size: var(--bm-font);
   line-height: 1.2;
+  min-height: 100%;
 }
 
 .branched-menu::before {
@@ -536,7 +544,7 @@ a { color: inherit; }
   left: 0;
   width: 2px;
   border-radius: 1px;
-  background: linear-gradient(to bottom, var(--bm-line) 0%, var(--bm-line) 85%, transparent 100%);
+  background: var(--bm-line);
 }
 
 .branched-menu__marker {
@@ -1450,6 +1458,12 @@ mark {
     transform: none;
     visibility: visible;
     pointer-events: auto;
+  }
+  .rail-sticky {
+    position: static;
+    height: 100%;
+    max-height: 100%;
+    padding: 0;
   }
   .rail-scroll { max-height: 100%; }
   .rail-title { margin-top: 46px; }
