@@ -344,12 +344,31 @@ a { color: inherit; }
   max-width: 1220px; margin: 0 auto;
   padding: 0 24px;
   display: grid; grid-template-columns: 230px minmax(0, 1fr);
-  gap: 52px; align-items: start;
+  gap: 52px; align-items: stretch;
 }
 
 /* ---------- rail (commit-graph navigation) ---------- */
-.rail { position: sticky; top: 78px; padding: 40px 0 30px; }
-.rail-scroll { max-height: calc(100vh - 130px); overflow-y: auto; padding-right: 6px; }
+/*
+ * Let the rail share the full height of the atlas content row. The inner
+ * scroll area stays sticky in the viewport, while its containing rail ends
+ * naturally with the layout immediately before the footer.
+ */
+.rail {
+  position: relative;
+  align-self: stretch;
+  min-width: 0;
+  padding: 40px 0 30px;
+}
+
+.rail-scroll {
+  position: sticky;
+  top: 78px;
+  max-height: calc(100vh - 130px);
+  overflow-y: auto;
+  padding-right: 6px;
+  overscroll-behavior: contain;
+}
+
 .rail-scroll::-webkit-scrollbar { width: 4px; }
 .rail-scroll::-webkit-scrollbar-thumb { background: var(--line-strong); border-radius: 4px; }
 
@@ -359,7 +378,7 @@ a { color: inherit; }
   color: var(--text-faint); margin: 0 0 16px 26px;
 }
 
-.rail-nav { position: relative; }
+.rail-nav { position: relative; min-height: 100%; }
 .rail-nav::before {
   content: ""; position: absolute;
   left: 7px; top: 10px; bottom: 10px; width: 1.5px;
@@ -1075,7 +1094,7 @@ mark {
     visibility: visible;
     pointer-events: auto;
   }
-  .rail-scroll { max-height: 100%; }
+  .rail-scroll { position: static; max-height: 100%; height: 100%; }
   .rail-title { margin-top: 46px; }
   .content { padding-top: 30px; }
   .filter-note { top: 70px; }
